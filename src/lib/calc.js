@@ -36,6 +36,15 @@ export function calc(recipe, ING) {
   return { rows, cost, tot, grams, missing }
 }
 
+/* 排序用指標:每份成本、利潤率(無售價回傳 null,排序時沉底) */
+export function metrics(r, ING) {
+  const c = calc(r, ING)
+  const s = r.servings || 1
+  const per = c.cost / s
+  const margin = r.price != null && r.price > 0 && per > 0 ? ((r.price - per) / per) * 100 : null
+  return { cost: c.cost, per, margin }
+}
+
 /* rows → 依「層」分段(保持原順序);全部無層 → 單一無名段 */
 export function groupByLayer(rows) {
   const sections = []

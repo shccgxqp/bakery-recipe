@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { INGREDIENTS, RECIPES } from './data/base.js'
 import { SHEET_ID, SCRIPT_URL, AUTH_KEY, CAT_ORDER, LS_KEY } from './config.js'
-import { calc } from './lib/calc.js'
+import { calc, metrics } from './lib/calc.js'
 import { loadFromSheet } from './lib/sheet.js'
 import { pushToSheet, verifyPassword } from './lib/sync.js'
 import { exportFiles } from './lib/exportFiles.js'
@@ -26,6 +26,7 @@ export default function App() {
   const [dataSource, setDataSource] = useState('內建檔案')
   const [syncStat, setSyncStat] = useState('待命')
   const [query, setQuery] = useState('')
+  const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
   const [view, setView] = useState('recipe') // recipe | ings
   const [selName, setSelName] = useState(null)
   const [dlg, setDlg] = useState(null) // {type:'recipe',recipe}|{type:'recipe',recipe:null}|{type:'ing',name}
@@ -55,21 +56,38 @@ export default function App() {
 
   const editCount = Object.keys(edits.ingredients).length + Object.keys(edits.recipes).length
 
-  /* ---- 分類分組(含搜尋) ---- */
+  /* ---- 分類分組(含搜尋 + 排序) ----
+     sortBy==='category': 依分類分組,組內照原順序(預設)
+     其他:不分組,單一清單依指標排序,缺值(如未定價)沉底 */
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const g = {}
-    for (const r of RCP) {
-      if (q && !r.name.toLowerCase().includes(q)) continue
-      const c = r.category || '未分類'
-      ;(g[c] = g[c] || []).push(r)
+    const list = RCP.filter(r => !q || r.name.toLowerCase().includes(q))
+
+    if (sortBy === 'category') {
+      const g = {}
+      for (const r of list) {
+        const c = r.category || '未分類'
+        ;(g[c] = g[c] || []).push(r)
+      }
+      const cats = Object.keys(g).sort((a, b) => {
+        const ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b)
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
+      })
+      return { g, cats, flat: false }
     }
-    const cats = Object.keys(g).sort((a, b) => {
-      const ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b)
-      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
+
+    const withMetric = list.map(r => ({ r, m: metrics(r, ING) }))
+    withMetric.sort((a, b) => {
+      if (sortBy === 'name') return a.r.name.localeCompare(b.r.name, 'zh-Hant')
+      if (sortBy === 'cost') return b.m.per - a.m.per
+      // margin:高到低,null(未定價)沉底
+      if (a.m.margin == null && b.m.margin == null) return 0
+      if (a.m.margin == null) return 1
+      if (b.m.margin == null) return -1
+      return b.m.margin - a.m.margin
     })
-    return { g, cats }
-  }, [RCP, query])
+    return { g: { 全部: withMetric.map(x => x.r) }, cats: ['全部'], flat: true }
+  }, [RCP, ING, query, sortBy])
 
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r.name)), [groups])
   const selected = RCP.find(r => r.name === selName) || RCP.find(r => r.name === flat[0]) || null
@@ -210,11 +228,12 @@ export default function App() {
   }, [dlg, flat, selected])
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)]">
+    <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
       <Sidebar
         groups={groups} ING={ING} RCP={RCP}
         selected={view === 'recipe' ? selected?.name : null}
         query={query} setQuery={setQuery} searchRef={searchRef}
+        sortBy={sortBy} setSortBy={setSortBy}
         dataSource={dataSource} editCount={editCount} syncStat={syncStat}
         hasScript={!!SCRIPT_URL} isEditor={isEditor}
         onLogin={login} onLogout={logout}
@@ -237,7 +256,7 @@ export default function App() {
         ) : (
           <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
         )}
-        <p className="mt-7 hidden text-xs text-ink-soft md:block">
+        <p className="mt-7 hidden text-xs text-ink-soft md:block print:hidden">
           小技巧:<kbd>↑</kbd> <kbd>↓</kbd> 在清單中切換甜點,<kbd>/</kbd> 跳到搜尋。
         </p>
       </main>

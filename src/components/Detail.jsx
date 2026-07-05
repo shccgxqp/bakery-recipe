@@ -62,13 +62,20 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
           {r.category || '未分類'}
         </span>
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
-        {isEditor && (
-          <span className="ml-auto flex gap-2">
-            <button className="btn btn-sm" onClick={onEdit}>編輯</button>
-            <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
-          </span>
-        )}
+        <span className="ml-auto flex gap-2 print:hidden">
+          <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>
+          {isEditor && (
+            <>
+              <button className="btn btn-sm" onClick={onEdit}>編輯</button>
+              <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
+            </>
+          )}
+        </span>
       </div>
+
+      <p className="mt-2 hidden text-xs text-ink-soft print:block">
+        烘焙帳本 · https://shccgxqp.github.io/bakery-recipe/ · 列印於 {new Date().toLocaleDateString('zh-TW')}
+      </p>
 
       <div className="mt-4.5 grid grid-cols-2 overflow-hidden rounded-[10px] border border-line bg-white sm:grid-cols-3 lg:grid-cols-6">
         <Cell n={`$${fmt(per, 1)}`} l={`成本/份(共 $${fmt(c.cost, 0)})`} tone="text-yolk" />
@@ -97,7 +104,7 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr]">
+      <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr] print:grid-cols-1">
         <div>
           <table className="ltable">
             <thead>

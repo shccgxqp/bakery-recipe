@@ -1,13 +1,21 @@
-import { calc, fmt } from '../lib/calc.js'
+import { calc, metrics, fmt } from '../lib/calc.js'
+
+const SORTS = [
+  ['category', '分類'],
+  ['cost', '成本'],
+  ['margin', '利潤率'],
+  ['name', '名稱'],
+]
 
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
+  sortBy, setSortBy,
   dataSource, editCount, syncStat, hasScript, ingsMode, isEditor,
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onPush, onExport, onReset,
 }) {
   return (
-    <aside className="flex flex-col border-r border-line bg-paper-deep md:sticky md:top-0 md:h-screen">
+    <aside className="flex flex-col border-r border-line bg-paper-deep print:hidden md:sticky md:top-0 md:h-screen">
       <div className="border-b-[3px] border-ink px-4.5 pb-3.5 pt-5.5">
         <h1 className="font-serif text-[22px] font-bold tracking-[.06em]">烘焙帳本</h1>
         <small className="block text-xs text-ink-soft">配方 · 成本 · 營養,一頁看完</small>
@@ -22,18 +30,32 @@ export default function Sidebar({
         />
       </div>
 
-      <div className="max-h-[44vh] flex-1 overflow-y-auto pb-3 pt-1.5 md:max-h-none">
+      <div className="flex flex-wrap gap-1 px-3.5 pb-2 pt-2">
+        {SORTS.map(([key, label]) => (
+          <button key={key} onClick={() => setSortBy(key)}
+            className={'rounded-full border px-2.5 py-0.5 text-[11.5px] ' +
+              (sortBy === key ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="max-h-[44vh] flex-1 overflow-y-auto pb-3 pt-1 md:max-h-none">
         {groups.cats.length === 0 && (
           <p className="p-4 text-[13px] text-ink-soft">找不到符合的甜點。</p>
         )}
         {groups.cats.map(cat => (
           <div key={cat} className="px-3.5 pb-1 pt-3.5">
-            <div className="mb-1 flex items-baseline justify-between border-b border-ink px-1 pb-1 text-[11.5px] font-bold tracking-[.14em] text-ink-soft">
-              <span>{cat}</span>
-              <span className="font-mono font-medium tracking-normal">{groups.g[cat].length}</span>
-            </div>
+            {!groups.flat && (
+              <div className="mb-1 flex items-baseline justify-between border-b border-ink px-1 pb-1 text-[11.5px] font-bold tracking-[.14em] text-ink-soft">
+                <span>{cat}</span>
+                <span className="font-mono font-medium tracking-normal">{groups.g[cat].length}</span>
+              </div>
+            )}
             {groups.g[cat].map(r => {
               const c = calc(r, ING)
+              const per = c.cost / (r.servings || 1)
+              const m = groups.flat ? metrics(r, ING) : null
               const sel = r.name === selected
               return (
                 <button
@@ -47,9 +69,18 @@ export default function Sidebar({
                       : 'border-transparent hover:bg-yolk-soft')
                   }
                 >
-                  <span>{r.name}</span>
+                  <span className="flex min-w-0 items-center gap-1.5">
+                    <span className="truncate">{r.name}</span>
+                    {groups.flat && (
+                      <span className="shrink-0 whitespace-nowrap rounded-full bg-yolk-soft px-1.5 py-px text-[10px] font-normal text-ink-soft">
+                        {r.category || '未分類'}
+                      </span>
+                    )}
+                  </span>
                   <span className={'whitespace-nowrap font-mono text-xs ' + (sel ? 'text-yolk' : 'text-ink-soft')}>
-                    ${fmt(c.cost / (r.servings || 1), 1)}/份
+                    {sortBy === 'margin'
+                      ? (m.margin == null ? '未定價' : `${fmt(m.margin)}%`)
+                      : `$${fmt(per, 1)}/份`}
                   </span>
                 </button>
               )

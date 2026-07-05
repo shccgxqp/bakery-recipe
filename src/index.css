@@ -87,3 +87,8 @@ kbd {
 }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+@media print {
+  body { background: #fff; font-size: 12pt; }
+  .nlabel { break-inside: avoid; }
+}
