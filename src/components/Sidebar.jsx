@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { calc, metrics, fmt } from '../lib/calc.js'
 
 const SORTS = [
@@ -14,13 +15,25 @@ export default function Sidebar({
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onPush, onExport, onReset,
 }) {
+  const [collapsed, setCollapsed] = useState(false)
+
   return (
     <aside className="flex flex-col border-r border-line bg-paper-deep print:hidden md:sticky md:top-0 md:h-screen">
-      <div className="border-b-[3px] border-ink px-4.5 pb-3.5 pt-5.5">
-        <h1 className="font-serif text-[22px] font-bold tracking-[.06em]">烘焙帳本</h1>
-        <small className="block text-xs text-ink-soft">配方 · 成本 · 營養,一頁看完</small>
+      <div className="flex items-start justify-between gap-2 border-b-[3px] border-ink px-4.5 pb-3.5 pt-5.5">
+        <div>
+          <h1 className="font-serif text-[22px] font-bold tracking-[.06em]">烘焙帳本</h1>
+          <small className="block text-xs text-ink-soft">配方 · 成本 · 營養,一頁看完</small>
+        </div>
+        <button
+          className="btn btn-sm shrink-0 md:hidden"
+          onClick={() => setCollapsed(v => !v)}
+          aria-expanded={!collapsed}
+        >
+          {collapsed ? '▸ 展開清單' : '▾ 收起清單'}
+        </button>
       </div>
 
+      <div className={(collapsed ? 'hidden ' : '') + 'md:contents'}>
       <div className="px-3.5 pb-1 pt-3">
         <input
           ref={searchRef} type="search" value={query}
@@ -40,7 +53,7 @@ export default function Sidebar({
         ))}
       </div>
 
-      <div className="max-h-[44vh] flex-1 overflow-y-auto pb-3 pt-1 md:max-h-none">
+      <div className="no-scrollbar max-h-[44vh] flex-1 overflow-y-auto pb-3 pt-1 md:max-h-none">
         {groups.cats.length === 0 && (
           <p className="p-4 text-[13px] text-ink-soft">找不到符合的甜點。</p>
         )}
@@ -125,6 +138,7 @@ export default function Sidebar({
             🔑 我是主人,登入編輯
           </button>
         )}
+      </div>
       </div>
     </aside>
   )

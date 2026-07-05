@@ -81,6 +81,10 @@ button:focus-visible, input:focus-visible {
 }
 .field input[type="number"] { font-family: var(--font-mono); }
 
+/* 隱藏捲軸軌道,滑鼠滾輪/觸控捲動不受影響 */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
 kbd {
   font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--color-line);
   border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: #fff;
