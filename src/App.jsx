@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { INGREDIENTS, RECIPES } from './data/base.js'
-import { SHEET_ID, SCRIPT_URL, SYNC_TOKEN, CAT_ORDER, LS_KEY } from './config.js'
+import { SHEET_ID, SCRIPT_URL, AUTH_KEY, CAT_ORDER, LS_KEY } from './config.js'
 import { calc } from './lib/calc.js'
 import { loadFromSheet } from './lib/sheet.js'
-import { pushToSheet } from './lib/sync.js'
+import { pushToSheet, verifyPassword } from './lib/sync.js'
 import { exportFiles } from './lib/exportFiles.js'
 import Sidebar from './components/Sidebar.jsx'
 import Detail from './components/Detail.jsx'
@@ -29,6 +29,8 @@ export default function App() {
   const [view, setView] = useState('recipe') // recipe | ings
   const [selName, setSelName] = useState(null)
   const [dlg, setDlg] = useState(null) // {type:'recipe',recipe}|{type:'recipe',recipe:null}|{type:'ing',name}
+  const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
+  const isEditor = !!auth
 
   /* ---- 兩層合併:base + edits → 有效資料 ---- */
   const ING = useMemo(() => {
@@ -86,22 +88,49 @@ export default function App() {
   const latest = useRef({ ING, RCP })
   useEffect(() => { latest.current = { ING, RCP } }, [ING, RCP])
 
+  const authRef = useRef(auth)
+  useEffect(() => { authRef.current = auth }, [auth])
+
   const doPush = useCallback(async () => {
     if (!SCRIPT_URL) {
       alert('尚未設定 Apps Script 網址:部署 google-apps-script.gs 後,把 /exec 網址填入 src/config.js 的 SCRIPT_URL。')
       return
     }
+    if (!authRef.current) { setSyncStat('未登入,修改僅存本機'); return }
     setSyncStat('寫入中…')
     try {
       const { ING: i, RCP: r } = latest.current
-      await pushToSheet(SCRIPT_URL, SYNC_TOKEN, i, r)
+      await pushToSheet(SCRIPT_URL, authRef.current, i, r)
       setBase({ ing: structuredClone(i), rcp: structuredClone(r) })
       setEdits({ ingredients: {}, recipes: {} })
       setDataSource('Google Sheet ✓')
       setSyncStat('已寫入 ✓ ' + new Date().toLocaleTimeString('zh-TW', { hour12: false }))
     } catch (err) {
-      setSyncStat(`失敗:${err.message}(修改已存本機)`)
+      if (err.message === '密碼錯誤') {
+        setAuth(''); localStorage.removeItem(AUTH_KEY)
+        setSyncStat('密碼失效,請重新登入(修改已存本機)')
+      } else {
+        setSyncStat(`失敗:${err.message}(修改已存本機)`)
+      }
     }
+  }, [])
+
+  /* ---- 登入 / 登出 ---- */
+  const login = useCallback(async () => {
+    const pw = prompt('輸入編輯密碼:')
+    if (!pw) return
+    try {
+      const ok = await verifyPassword(SCRIPT_URL, pw)
+      if (!ok) { alert('密碼錯誤'); return }
+      setAuth(pw)
+      localStorage.setItem(AUTH_KEY, pw)
+    } catch (err) {
+      alert('驗證失敗:' + err.message)
+    }
+  }, [])
+  const logout = useCallback(() => {
+    setAuth('')
+    localStorage.removeItem(AUTH_KEY)
   }, [])
 
   const syncTimer = useRef(null)
@@ -187,7 +216,8 @@ export default function App() {
         selected={view === 'recipe' ? selected?.name : null}
         query={query} setQuery={setQuery} searchRef={searchRef}
         dataSource={dataSource} editCount={editCount} syncStat={syncStat}
-        hasScript={!!SCRIPT_URL}
+        hasScript={!!SCRIPT_URL} isEditor={isEditor}
+        onLogin={login} onLogout={logout}
         onSelect={name => { setSelName(name); setView('recipe') }}
         onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
         onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
@@ -196,12 +226,12 @@ export default function App() {
       />
       <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
         {view === 'ings' ? (
-          <IngredientsView ING={ING}
+          <IngredientsView ING={ING} isEditor={isEditor}
             onEdit={name => setDlg({ type: 'ing', name })}
             onAdd={() => setDlg({ type: 'ing', name: null })}
             onDelete={deleteIng} />
         ) : selected ? (
-          <Detail recipe={selected} ING={ING}
+          <Detail recipe={selected} ING={ING} isEditor={isEditor}
             onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
             onDelete={() => deleteRecipe(selected.name)} />
         ) : (

@@ -1,26 +1,50 @@
 /**
- * 烘焙帳本 — Google Sheet 寫入 API
+ * 烘焙帳本 — Google Sheet 寫入 API(密碼保護版)
  *
- * 安裝步驟(一次性):
- * 1. 開啟你的資料庫試算表(1CT2G8P8...)
- * 2. 上方選單「擴充功能」→「Apps Script」
- * 3. 刪掉編輯器裡的預設內容,貼上這整個檔案,存檔
- * 4. 右上「部署」→「新增部署作業」→ 齒輪選「網頁應用程式」
- *    - 執行身分:我
- *    - 誰可以存取:所有人
- * 5. 按「部署」→ 授權自己的 Google 帳號 → 複製「網頁應用程式 URL」(結尾是 /exec)
- * 6. 把 URL 填進 src/config.js 的 SCRIPT_URL
+ * 全站任何人可讀,只有知道密碼的人(你)能寫入。
+ * 密碼以 SHA-256 雜湊存在「指令碼屬性」,不會出現在程式碼或前端。
  *
- * 安全性:寫入需 token 相符;建議把試算表共用權限改回「檢視者」,
- * 寫入一律走這支 API(以你的身分執行,不需要開放編輯)。
+ * 更新步驟:
+ * 1. 開資料庫試算表 → 擴充功能 → Apps Script,整份貼上取代舊程式,存檔
+ * 2. 設定密碼:上方函式選單選「setPassword」→ 先把下面 setPassword 裡的
+ *    '在這裡輸入你的新密碼' 改成你要的密碼 → 執行一次 → 改回原字樣存檔
+ *    (密碼只會以雜湊形式存進指令碼屬性)
+ * 3. 部署 → 管理部署作業 → 鉛筆編輯 → 版本選「新版本」→ 部署
+ *    (網址不變,前端不用改)
+ * 4. 建議:試算表共用權限改回「知道連結的任何人:檢視者」。
+ *    讀取照常,寫入走這支 API(以你的身分執行),不需要開放編輯權。
  */
 
-const TOKEN = 'bakery-7f3a';
+/** 執行一次設定密碼,執行完把密碼字串改回預設字樣 */
+function setPassword() {
+  const newPassword = '在這裡輸入你的新密碼';
+  if (newPassword === '在這裡輸入你的新密碼') {
+    throw new Error('請先把 newPassword 改成你要的密碼再執行');
+  }
+  PropertiesService.getScriptProperties().setProperty('PASS_HASH', sha256Hex(newPassword));
+  Logger.log('密碼已設定完成,請把程式碼中的密碼改回預設字樣後存檔。');
+}
+
+function sha256Hex(s) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8)
+    .map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2) })
+    .join('');
+}
+
+function checkPass(pw) {
+  const h = PropertiesService.getScriptProperties().getProperty('PASS_HASH');
+  return !!h && typeof pw === 'string' && pw.length > 0 && sha256Hex(pw) === h;
+}
 
 function doPost(e) {
   try {
     const d = JSON.parse(e.postData.contents);
-    if (d.token !== TOKEN) return out({ ok: false, error: 'bad token' });
+
+    if (d.action === 'verify') {
+      return out({ ok: checkPass(d.password) });
+    }
+
+    if (!checkPass(d.password)) return out({ ok: false, error: '密碼錯誤' });
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 

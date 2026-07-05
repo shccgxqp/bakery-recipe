@@ -46,7 +46,7 @@ function Cell({ n, l, tone }) {
   )
 }
 
-export default function Detail({ recipe: r, ING, onEdit, onDelete }) {
+export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
   const c = calc(r, ING)
   const s = r.servings || 1
   const per = c.cost / s
@@ -62,10 +62,12 @@ export default function Detail({ recipe: r, ING, onEdit, onDelete }) {
           {r.category || '未分類'}
         </span>
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
-        <span className="ml-auto flex gap-2">
-          <button className="btn btn-sm" onClick={onEdit}>編輯</button>
-          <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
-        </span>
+        {isEditor && (
+          <span className="ml-auto flex gap-2">
+            <button className="btn btn-sm" onClick={onEdit}>編輯</button>
+            <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
+          </span>
+        )}
       </div>
 
       <div className="mt-4.5 grid grid-cols-2 overflow-hidden rounded-[10px] border border-line bg-white sm:grid-cols-3 lg:grid-cols-6">

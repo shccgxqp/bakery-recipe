@@ -2,7 +2,8 @@ import { calc, fmt } from '../lib/calc.js'
 
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
-  dataSource, editCount, syncStat, hasScript, ingsMode,
+  dataSource, editCount, syncStat, hasScript, ingsMode, isEditor,
+  onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onPush, onExport, onReset,
 }) {
   return (
@@ -58,7 +59,7 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line p-3.5">
-        {hasScript ? (
+        {isEditor && hasScript && (
           <div className="rounded-lg border border-yolk bg-yolk-soft px-2.5 py-2 text-[12.5px] leading-relaxed">
             雲端同步:<b className="text-yolk">{syncStat}</b>
             {editCount > 0 && <> · 待同步 {editCount} 筆</>}
@@ -67,7 +68,8 @@ export default function Sidebar({
               {editCount > 0 && <button className="btn btn-sm btn-danger flex-1" onClick={onReset}>還原</button>}
             </div>
           </div>
-        ) : editCount > 0 && (
+        )}
+        {isEditor && !hasScript && editCount > 0 && (
           <div className="rounded-lg border border-yolk bg-yolk-soft px-2.5 py-2 text-[12.5px] leading-relaxed">
             本機有 <b className="text-yolk">{editCount}</b> 筆修改(只存在這台瀏覽器)。
             <div className="mt-1.5 flex gap-1.5">
@@ -77,12 +79,21 @@ export default function Sidebar({
           </div>
         )}
         <div className="flex gap-2">
-          <button className="btn btn-primary flex-1" onClick={onNewRecipe}>＋ 新增食譜</button>
+          {isEditor && <button className="btn btn-primary flex-1" onClick={onNewRecipe}>＋ 新增食譜</button>}
           <button className={'btn flex-1 ' + (ingsMode ? 'btn-active' : '')} onClick={onToggleIngs}>材料主檔</button>
         </div>
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
         </div>
+        {isEditor ? (
+          <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>
+            登出編輯模式
+          </button>
+        ) : (
+          <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogin}>
+            🔑 我是主人,登入編輯
+          </button>
+        )}
       </div>
     </aside>
   )
