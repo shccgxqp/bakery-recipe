@@ -1,0 +1,5 @@
+# Google 服務帳戶金鑰 — 絕對不能 commit
+.env/
+*.json.key
+node_modules/
+dist/
