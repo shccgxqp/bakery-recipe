@@ -1,10 +1,4 @@
-// ============================================================
-// 材料主檔 — 由 Google Sheet「材料價目表 + 營養計算」匯入
-// 來源試算表:烘焙食譜成本表(2026-07-05 匯入)
-//   packPrice : 採購價格(NT$)
-//   packGrams : 採購重量(g)
-//   per100g   : 每 100g 營養(kcal/protein/fat/carbs/sugar)
-// ============================================================
+// 材料主檔 + 甜點食譜 — 內建備援資料(Google Sheet 為主來源)
 
 export const INGREDIENTS = {
   "中筋麵粉": {
@@ -197,11 +191,6 @@ export const INGREDIENTS = {
   }
 };
 
-// ============================================================
-// 甜點食譜 — 由 Google Sheet 各食譜分頁匯入(2026-07-05)
-//   items: [材料名稱, 用量g],名稱須與 ingredients.js 一致
-// ============================================================
-
 export const RECIPES = [
   {
     name: "黑糖奶油棒",
@@ -209,6 +198,9 @@ export const RECIPES = [
     category: "餅乾常溫",
     price: 80,
     note: "方形模21.5cm",
+    links: [
+      ["如此耐嚼👍完美的奶油糖果黃油棒(YouTube)", "https://www.youtube.com/watch?v=tTcFBrCDu6I&t=204s"]
+    ],
     items: [
       ["鑽石低筋麵粉", 160, "餅乾層"],
       ["杏仁粉", 25, "餅乾層"],
@@ -230,7 +222,11 @@ export const RECIPES = [
     servings: 12,
     category: "餅乾常溫",
     price: 80,
-    note: "方形模21.5cm · 180C 23M · 170C 40M",
+    note: "方形模21.5cm",
+    bakes: ["餅乾層 180°C 23分", "奶油層 170°C 40分"],
+    links: [
+      ["실패없는 버터바 만들기 (YouTube)", "https://www.youtube.com/watch?v=3nAbbCQLbn0"]
+    ],
     items: [
       ["鑽石低筋麵粉", 160, "餅乾層"],
       ["杏仁粉", 40, "餅乾層"],
@@ -253,6 +249,9 @@ export const RECIPES = [
     category: "餅乾常溫",
     price: 15,
     note: "",
+    links: [
+      ["厚燒奶油酥餅 / Galette au beurre — ciao.kitchen", "https://ciao.kitchen/thick-butter-cookies/"]
+    ],
     items: [
       ["依思尼 無鹽奶油", 100],
       ["杏仁粉", 30],
@@ -314,6 +313,10 @@ export const RECIPES = [
     category: "餅乾常溫",
     price: 70,
     note: "",
+    bakes: ["70°C 20分鐘結皮", "150-160°C 16分鐘"],
+    links: [
+      ["初學者馬卡龍(抹茶奶油夾心)(YouTube)", "https://www.youtube.com/watch?v=5lqotmZa-xc"]
+    ],
     items: [
       ["杏仁粉", 84, "馬卡龍麵糊"],
       ["糖粉", 84, "馬卡龍麵糊"],
@@ -362,6 +365,9 @@ export const RECIPES = [
     category: "餅乾常溫",
     price: 50,
     note: "(675) 겉바속촉 기본 휘낭시에 만들기 feat.금괴모양구음과자 - Plain Financier recipe l 호야 TV - YouTube",
+    links: [
+      ["기본 휘낭시에 Plain Financier — 호야TV (YouTube)", "https://www.youtube.com/watch?v=5-NrkmYUYZc"]
+    ],
     items: [
       ["蛋白", 124],
       ["糖粉", 126],
@@ -378,6 +384,9 @@ export const RECIPES = [
     category: "餅乾常溫",
     price: null,
     note: "https://www.youtube.com/watch?v=UyR1BD9M5Do",
+    links: [
+      ["司康做法 (YouTube)", "https://www.youtube.com/watch?v=UyR1BD9M5Do"]
+    ],
     items: [
       ["鑽石低筋麵粉", 300],
       ["依思尼 無鹽奶油", 180],
@@ -394,6 +403,9 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 100,
     note: "",
+    links: [
+      ["食不相瞞 #96 義式經典提拉米蘇 (YouTube)", "https://www.youtube.com/watch?v=IUt0l_QUGR0"]
+    ],
     items: [
       ["維西尼手指餅乾", 100],
       ["蛋黃", 40],
@@ -411,6 +423,9 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 70,
     note: "東京No.1起司蛋糕 Mr. Cheesecake 米其林三星主廚的夢幻甜點",
+    links: [
+      ["Mr. Cheesecake 東京No.1起司蛋糕 (YouTube)", "https://www.youtube.com/watch?v=_4q_Rn7_JgQ&t=339s"]
+    ],
     items: [
       ["菲力鮮奶油乳酪", 225],
       ["艾恩摩爾動物性鮮奶油", 280],
@@ -429,6 +444,10 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 60,
     note: "",
+    links: [
+      ["日式捲餅(字幕解釋)(YouTube)", "https://www.youtube.com/watch?v=d_DpRm33QdY"],
+      ["不掉皮蛋糕捲|濃郁起士生乳捲 (YouTube)", "https://www.youtube.com/watch?v=_Q1ixxFxNqA&t=673s"]
+    ],
     items: [
       ["全蛋", 100],
       ["沙拉油", 45],
@@ -447,6 +466,7 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 70,
     note: "",
+    bakes: ["170°C 40分"],
     items: [
       ["柳丁", 300],
       ["全蛋", 165],
@@ -466,6 +486,7 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 60,
     note: "",
+    bakes: ["170°C 30~40分"],
     items: [
       ["香蕉", 375],
       ["鑽石低筋麵粉", 240],
@@ -490,6 +511,10 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 120,
     note: "",
+    links: [
+      ["焙茶戚風 — Cookpad", "https://cookpad.com/jp/recipes/20310551"],
+      ["鐵觀音茶香戚風蛋糕:烤出皇冠/劃線/判斷爐溫 (YouTube)", "https://www.youtube.com/watch?v=tcCQaTpLeqg&t=3s"]
+    ],
     items: [
       ["全蛋", 165, "焙茶戚風蛋糕體"],
       ["細砂糖", 45, "焙茶戚風蛋糕體"],
@@ -516,6 +541,9 @@ export const RECIPES = [
     category: "蛋糕冷藏",
     price: 110,
     note: "8吋蛋糕模",
+    links: [
+      ["焦糖伯爵紅茶蛋糕 (YouTube)", "https://www.youtube.com/watch?v=rGboMSc3Nr0&list=PLYcmjDnmiHO6I_VhipyLIw3Dpc3pRNFmj&index=15"]
+    ],
     items: [
       ["沙拉油", 57, "伯爵茶蛋糕片"],
       ["伯爵茶粉", 9, "伯爵茶蛋糕片"],

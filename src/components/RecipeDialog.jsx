@@ -10,6 +10,9 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
   const [items, setItems] = useState(r
     ? r.items.map(([n, g, layer]) => ({ n, g, layer: layer || '' }))
     : [{ n: '', g: '', layer: '' }, { n: '', g: '', layer: '' }])
+  const [steps, setSteps] = useState(r?.steps?.join('\n') || '')
+  const [bakes, setBakes] = useState(r?.bakes?.join('\n') || '')
+  const [links, setLinks] = useState(r?.links?.map(([t, u]) => (t === u ? u : `${t} | ${u}`)).join('\n') || '')
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
   const ingNames = Object.keys(ING)
@@ -26,12 +29,19 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
       .filter(it => it.n && it.g > 0)
       .map(it => (it.layer ? [it.n, it.g, it.layer] : [it.n, it.g]))
     if (!list.length) { alert('至少填一項材料與用量。'); return }
+    const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean)
     onSave(r?.name || null, {
       name: nm,
       servings: Math.max(1, parseInt(servings) || 1),
       category: cat.trim() || '未分類',
       price: String(price).trim() === '' ? null : parseFloat(price),
       note: note.trim(),
+      steps: lines(steps),
+      bakes: lines(bakes),
+      links: lines(links).map(s => {
+        const i = s.lastIndexOf('|')
+        return i > 0 ? [s.slice(0, i).trim(), s.slice(i + 1).trim()] : [s, s]
+      }).filter(([, u]) => /^https?:\/\//.test(u)),
       items: list,
     })
   }
@@ -105,6 +115,27 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
         <button type="button" className="btn btn-sm" onClick={() => setItems(p => [...p, { n: '', g: '', layer: p[p.length - 1]?.layer || '' }])}>
           ＋ 加一項材料
         </button>
+
+        <div className="mb-2.5 mt-4.5 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
+          作法步驟(一行一步,可空)
+        </div>
+        <textarea rows={5} value={steps} onChange={e => setSteps(e.target.value)}
+          placeholder={'奶油乳酪回溫,與糖攪拌至滑順\n分次加入全蛋拌勻\n…'}
+          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+
+        <div className="mb-2.5 mt-4 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
+          烘烤(一行一段,分段烤就多行)
+        </div>
+        <textarea rows={2} value={bakes} onChange={e => setBakes(e.target.value)}
+          placeholder={'70°C 20分鐘結皮\n150-160°C 16分鐘'}
+          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 font-mono text-sm" />
+
+        <div className="mb-2.5 mt-4 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
+          參考食譜連結(一行一個,格式:標題 | 網址)
+        </div>
+        <textarea rows={2} value={links} onChange={e => setLinks(e.target.value)}
+          placeholder={'食不相瞞提拉米蘇 | https://www.youtube.com/watch?v=…'}
+          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
       </form>
     </Dialog>
   )

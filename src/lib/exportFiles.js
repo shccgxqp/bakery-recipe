@@ -20,11 +20,16 @@ export function exportFiles(ING, RCP) {
   ing += '\n};\n'
 
   let rec = `// 甜點食譜 — 由烘焙帳本網頁匯出 ${d}\n\nexport const RECIPES = [\n`
-  rec += RCP.map(r =>
-    `  {\n    name: "${r.name}",\n    servings: ${r.servings},\n    category: "${r.category || '未分類'}",\n` +
-    `    price: ${r.price == null ? 'null' : jsN(r.price)},\n    note: "${(r.note || '').replace(/"/g, '\\"')}",\n` +
-    `    items: [\n${r.items.map(([n, g, layer]) => (layer ? `      ["${n}", ${jsN(g)}, "${layer}"]` : `      ["${n}", ${jsN(g)}]`)).join(',\n')}\n    ]\n  }`)
-    .join(',\n')
+  const esc = s => String(s).replace(/"/g, '\\"')
+  rec += RCP.map(r => {
+    let b = `  {\n    name: "${esc(r.name)}",\n    servings: ${r.servings},\n    category: "${esc(r.category || '未分類')}",\n` +
+      `    price: ${r.price == null ? 'null' : jsN(r.price)},\n    note: "${esc(r.note || '')}",\n`
+    if (r.steps?.length) b += `    steps: [\n${r.steps.map(s => `      "${esc(s)}"`).join(',\n')}\n    ],\n`
+    if (r.bakes?.length) b += `    bakes: [${r.bakes.map(s => `"${esc(s)}"`).join(', ')}],\n`
+    if (r.links?.length) b += `    links: [\n${r.links.map(([t, u]) => `      ["${esc(t)}", "${esc(u)}"]`).join(',\n')}\n    ],\n`
+    b += `    items: [\n${r.items.map(([n, g, layer]) => (layer ? `      ["${esc(n)}", ${jsN(g)}, "${esc(layer)}"]` : `      ["${esc(n)}", ${jsN(g)}]`)).join(',\n')}\n    ]\n  }`
+    return b
+  }).join(',\n')
   rec += '\n];\n'
 
   download('base.js', ing + '\n' + rec)

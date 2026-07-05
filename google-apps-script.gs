@@ -64,6 +64,17 @@ function doPost(e) {
     });
     writeSheet(ss, '食譜', recRows);
 
+    const extraRows = [['食譜名稱', '步驟(一行一步)', '烘烤(一行一段)', '連結(標題 | 網址,一行一個)']];
+    d.recipes.forEach(function (r) {
+      extraRows.push([
+        r.name,
+        (r.steps || []).join('\n'),
+        (r.bakes || []).join('\n'),
+        (r.links || []).map(function (l) { return l[0] + ' | ' + l[1] }).join('\n'),
+      ]);
+    });
+    writeSheet(ss, '食譜補充', extraRows);
+
     return out({ ok: true, ingredients: ingRows.length - 1, recipeRows: recRows.length - 1 });
   } catch (err) {
     return out({ ok: false, error: String(err) });

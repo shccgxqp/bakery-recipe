@@ -85,6 +85,18 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
         <Cell n={fmt(c.grams / s)} l="每份約 g" />
       </div>
 
+      {(r.bakes?.length > 0) && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+          <span className="text-xs font-bold tracking-[.08em] text-ink-soft">烘烤</span>
+          {r.bakes.map((b, i) => (
+            <span key={i} className="flex items-center gap-2">
+              {i > 0 && <span className="text-ink-soft">→</span>}
+              <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">🔥 {b}</span>
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr]">
         <div>
           <table className="ltable">
@@ -107,6 +119,20 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
               </tr>
             </tbody>
           </table>
+
+          {(r.steps?.length > 0) && (
+            <div className="mt-7">
+              <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">作法步驟</div>
+              <ol className="mt-2.5 space-y-2">
+                {r.steps.map((st, i) => (
+                  <li key={i} className="flex gap-3 text-sm">
+                    <span className="mt-0.5 font-mono text-xs font-semibold text-yolk">{String(i + 1).padStart(2, '0')}</span>
+                    <span>{st}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </div>
         <div>
           <div className="nlabel">
@@ -128,6 +154,22 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
           <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
             依材料主檔數值估算,實際熱量會因烘焙水分蒸發而每 100g 略高。
           </p>
+
+          {(r.links?.length > 0) && (
+            <div className="mt-6 max-w-[340px]">
+              <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">參考食譜</div>
+              <ul className="mt-2 space-y-1.5">
+                {r.links.map(([t, u], i) => (
+                  <li key={i} className="text-[13px] leading-snug">
+                    <a href={u} target="_blank" rel="noopener noreferrer"
+                      className="text-ink underline decoration-line underline-offset-2 hover:text-yolk hover:decoration-yolk">
+                      {/youtu\.?be/i.test(u) ? '▶' : '🔗'} {t}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </>

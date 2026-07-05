@@ -30,7 +30,9 @@ const num = v => {
 export async function loadFromSheet(sheetId) {
   const url = s =>
     `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(s)}`
-  const [mRes, rRes] = await Promise.all([fetch(url('材料')), fetch(url('食譜'))])
+  const [mRes, rRes, xRes] = await Promise.all([
+    fetch(url('材料')), fetch(url('食譜')), fetch(url('食譜補充')),
+  ])
   if (!mRes.ok || !rRes.ok) throw new Error(`sheet fetch ${mRes.status}/${rRes.status}`)
 
   const ing = {}
@@ -64,5 +66,23 @@ export async function loadFromSheet(sheetId) {
   }
 
   if (!Object.keys(ing).length || !map.size) throw new Error('sheet empty')
+
+  /* 食譜補充:步驟 / 烘烤 / 連結(分頁不存在或空白不影響主資料) */
+  if (xRes.ok) {
+    const lines = v => String(v || '').split('\n').map(s => s.trim()).filter(Boolean)
+    for (const r of parseCSV(await xRes.text()).slice(1)) {
+      const rec = map.get((r[0] || '').trim())
+      if (!rec) continue
+      rec.steps = lines(r[1])
+      rec.bakes = lines(r[2])
+      rec.links = lines(r[3]).map(s => {
+        const i = s.lastIndexOf('|')
+        return i > 0
+          ? [s.slice(0, i).trim(), s.slice(i + 1).trim()]
+          : [s, s]
+      }).filter(([, u]) => /^https?:\/\//.test(u))
+    }
+  }
+
   return { ing, rcp: [...map.values()] }
 }
