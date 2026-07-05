@@ -39,6 +39,13 @@ function FragmentSection({ sec, hasLayers, subG, subC }) {
   )
 }
 
+/* 步驟文字裡的 (Pro Tip:……) 拆成獨立提示區塊,主敘述不被打斷 */
+function splitProTip(text) {
+  const m = text.match(/[((]\s*Pro\s*Tip\s*[::]\s*([^))]*)[))]/i)
+  if (!m) return { main: text, tip: null }
+  return { main: (text.slice(0, m.index) + text.slice(m.index + m[0].length)).trim(), tip: m[1].trim() }
+}
+
 function Cell({ n, l, tone }) {
   return (
     <div className="border-l border-line px-4 pb-3 pt-3.5 first:border-l-0">
@@ -146,15 +153,27 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
           </table>
 
           {(r.steps?.length > 0) && (
-            <div className="mt-7">
+            <div className="mt-8">
               <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">作法步驟</div>
-              <ol className="mt-2.5 space-y-2">
-                {r.steps.map((st, i) => (
-                  <li key={i} className="flex gap-3 text-sm">
-                    <span className="mt-0.5 font-mono text-xs font-semibold text-yolk">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{st}</span>
-                  </li>
-                ))}
+              <ol className="mt-4 space-y-5">
+                {r.steps.map((st, i) => {
+                  const { main, tip } = splitProTip(st)
+                  return (
+                    <li key={i} className="flex gap-3.5">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 pt-px">
+                        <p className="text-[14.5px] leading-[1.9] text-ink">{main}</p>
+                        {tip && (
+                          <p className="mt-2 rounded-md border border-line bg-yolk-soft/60 px-3 py-2 text-[12.5px] leading-relaxed text-ink-soft">
+                            💡 <b className="font-semibold text-ink">Pro Tip</b>:{tip}
+                          </p>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
               </ol>
             </div>
           )}
