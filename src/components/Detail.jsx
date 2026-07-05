@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { calc, fmt, NUTR, groupByLayer } from '../lib/calc.js'
+import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計 */
 function FragmentSection({ sec, hasLayers, subG, subC }) {
@@ -54,6 +56,20 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
   const profit = hasPrice ? r.price - per : null
   const margin = hasPrice ? ((r.price - per) / per) * 100 : null
 
+  const [copied, setCopied] = useState(false)
+  const copyList = async () => {
+    try {
+      await navigator.clipboard.writeText(shoppingListText(r, ING))
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1800)
+    } catch {
+      alert('複製失敗,瀏覽器不支援剪貼簿權限。')
+    }
+  }
+  const shareToLine = () => {
+    window.open(lineShareUrl(shoppingListText(r, ING)), '_blank', 'noopener,noreferrer')
+  }
+
   return (
     <>
       <div className="flex flex-wrap items-baseline gap-3.5 border-b-[3px] border-ink pb-3">
@@ -62,7 +78,9 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
           {r.category || '未分類'}
         </span>
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
-        <span className="ml-auto flex gap-2 print:hidden">
+        <span className="ml-auto flex flex-wrap gap-2 print:hidden">
+          <button className="btn btn-sm" onClick={copyList}>{copied ? '✓ 已複製' : '📋 複製購買清單'}</button>
+          <button className="btn btn-sm" onClick={shareToLine}>💬 傳到 LINE</button>
           <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>
           {isEditor && (
             <>
