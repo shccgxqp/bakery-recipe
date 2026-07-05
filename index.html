@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>烘焙成本與營養計算</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FCFBF7;
+    --ink:#1B1813;
+    --ink-soft:#6B6455;
+    --line:#E6E1D4;
+    --yolk:#C98A12;        /* 蛋黃 */
+    --yolk-soft:#F6EDD8;
+    --card:#FFFFFF;
+    --warn:#B4452C;
+    --serif:'Noto Serif TC',serif;
+    --sans:'Noto Sans TC',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:15px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+
+  /* ---------- header ---------- */
+  header{
+    border-bottom:3px solid var(--ink);
+    padding:28px 0 16px;margin-bottom:8px;
+  }
+  .brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  h1{font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:.04em}
+  .brand small{color:var(--ink-soft);font-size:13px}
+  nav{display:flex;gap:4px;margin-top:14px}
+  nav button{
+    font-family:var(--sans);font-size:14px;font-weight:500;
+    background:none;border:1px solid transparent;border-bottom:none;
+    padding:7px 16px;cursor:pointer;color:var(--ink-soft);
+    border-radius:6px 6px 0 0;
+  }
+  nav button.active{
+    color:var(--ink);font-weight:700;background:var(--card);
+    border-color:var(--line);position:relative;top:1px;
+  }
+  nav button:focus-visible{outline:2px solid var(--yolk);outline-offset:2px}
+
+  /* ---------- dessert grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:22px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:18px 18px 14px;cursor:pointer;text-align:left;width:100%;
+    transition:border-color .15s, transform .15s;
+    font-family:var(--sans);
+  }
+  .card:hover{border-color:var(--yolk)}
+  .card:focus-visible{outline:2px solid var(--yolk);outline-offset:2px}
+  .card.sel{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+  .card h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:2px}
+  .card .servings{color:var(--ink-soft);font-size:12.5px;margin-bottom:12px}
+  .card .stats{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px}
+  .stat .n{font-family:var(--mono);font-size:19px;font-weight:600}
+  .stat .l{font-size:11.5px;color:var(--ink-soft);letter-spacing:.05em}
+  .stat.cost .n{color:var(--yolk)}
+
+  /* ---------- detail ---------- */
+  #detail{margin-top:34px;display:none;scroll-margin-top:20px}
+  .d-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--ink);padding-bottom:10px}
+  .d-head h2{font-family:var(--serif);font-size:24px;font-weight:700}
+  .d-head .note{color:var(--ink-soft);font-size:13px}
+  .d-body{display:grid;grid-template-columns:1.4fr 1fr;gap:32px;margin-top:22px}
+  @media(max-width:760px){.d-body{grid-template-columns:1fr}}
+
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-soft);
+     text-align:left;border-bottom:2px solid var(--ink);padding:6px 8px}
+  td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tr.total td{border-bottom:none;border-top:2px solid var(--ink);font-weight:700;padding-top:10px}
+  tr.total td.num{color:var(--yolk)}
+  .missing{color:var(--warn);font-weight:700}
+  .per-serving{margin-top:14px;background:var(--yolk-soft);border-radius:8px;
+    padding:12px 16px;display:flex;gap:28px;flex-wrap:wrap}
+  .per-serving .n{font-family:var(--mono);font-size:20px;font-weight:600}
+  .per-serving .l{font-size:12px;color:var(--ink-soft)}
+
+  /* ---------- 營養標示(簽名元素:台式營養標示樣式) ---------- */
+  .label{
+    background:#fff;border:2.5px solid var(--ink);padding:12px 14px;
+    max-width:340px;font-family:var(--sans);
+  }
+  .label h4{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:.15em;
+    border-bottom:8px solid var(--ink);padding-bottom:6px;margin-bottom:6px}
+  .label .meta{font-size:13px;padding:2px 0;border-bottom:4px solid var(--ink);margin-bottom:4px}
+  .label table{font-size:13.5px}
+  .label td{padding:5px 0;border-bottom:1px solid var(--ink)}
+  .label tr:last-child td{border-bottom:none}
+  .label td.num{font-family:var(--mono)}
+  .label .hd td{font-weight:700;border-bottom:2px solid var(--ink);font-size:12.5px}
+  .label-caption{font-size:12px;color:var(--ink-soft);margin-top:8px;max-width:340px}
+
+  /* ---------- ingredients master ---------- */
+  #ingview{margin-top:22px}
+  #ingview .hint{color:var(--ink-soft);font-size:13px;margin-bottom:16px}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--yolk-soft);
+    padding:1px 5px;border-radius:4px}
+
+  .empty{margin-top:40px;color:var(--ink-soft);font-size:14px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <h1>烘焙帳本</h1>
+      <small>選一道甜點,看配方、成本與營養 — 資料改 <code>data/</code> 兩個檔就會自動更新</small>
+    </div>
+    <nav>
+      <button id="tab-recipes" class="active" onclick="switchTab('recipes')">甜點總覽</button>
+      <button id="tab-ings" onclick="switchTab('ings')">材料主檔</button>
+    </nav>
+  </header>
+
+  <main id="recipesview">
+    <div class="grid" id="grid"></div>
+    <section id="detail" aria-live="polite"></section>
+  </main>
+
+  <main id="ingview" style="display:none"></main>
+
+</div>
+
+<script src="data/ingredients.js"></script>
+<script src="data/recipes.js"></script>
+<script>
+const fmt  = (n,d=0)=> n.toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d});
+const NUTR = [["kcal","熱量","大卡",0],["protein","蛋白質","公克",1],
+              ["fat","脂肪","公克",1],["carbs","碳水化合物","公克",1],["sugar","糖","公克",1]];
+
+/* ---- 核心計算:一道食譜 → 成本 + 營養 ---- */
+function calc(recipe){
+  const rows=[]; let cost=0;
+  const tot={kcal:0,protein:0,fat:0,carbs:0,sugar:0}; let grams=0, missing=[];
+  for(const [name,g] of recipe.items){
+    const ing=INGREDIENTS[name];
+    if(!ing){ missing.push(name); rows.push({name,g,missing:true}); continue; }
+    const c = g * ing.packPrice / ing.packGrams;
+    cost += c; grams += g;
+    const n={};
+    for(const [k] of NUTR){ n[k]=ing.per100g[k]*g/100; tot[k]+=n[k]; }
+    rows.push({name,g,cost:c,n});
+  }
+  return {rows,cost,tot,grams,missing};
+}
+
+/* ---- 甜點卡片 ---- */
+function renderGrid(){
+  const grid=document.getElementById('grid');
+  if(!RECIPES.length){ grid.innerHTML='<p class="empty">還沒有食譜 — 到 data/recipes.js 加入第一道甜點吧。</p>'; return; }
+  grid.innerHTML = RECIPES.map((r,i)=>{
+    const c=calc(r), s=r.servings||1;
+    return `<button class="card" id="card-${i}" onclick="showDetail(${i})">
+      <h3>${r.name}</h3>
+      <div class="servings">${s} 份${c.missing.length?` · <span class="missing">缺 ${c.missing.length} 項材料</span>`:''}</div>
+      <div class="stats">
+        <div class="stat"><div class="n">${fmt(c.tot.kcal/s)}</div><div class="l">大卡/份</div></div>
+        <div class="stat cost"><div class="n">$${fmt(c.cost/s,1)}</div><div class="l">成本/份</div></div>
+        <div class="stat"><div class="n">$${fmt(c.cost,0)}</div><div class="l">總成本</div></div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+/* ---- 明細 + 營養標示 ---- */
+function showDetail(i){
+  const r=RECIPES[i], c=calc(r), s=r.servings||1;
+  document.querySelectorAll('.card').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('card-'+i).classList.add('sel');
+
+  const rowsHtml=c.rows.map(row=> row.missing
+    ? `<tr><td class="missing">${row.name}(材料主檔找不到)</td><td class="num">${fmt(row.g)}</td><td class="num">—</td><td class="num">—</td></tr>`
+    : `<tr><td>${row.name}</td><td class="num">${fmt(row.g)}</td><td class="num">$${fmt(row.cost,1)}</td><td class="num">${fmt(row.n.kcal)}</td></tr>`
+  ).join('');
+
+  const labelRows=NUTR.map(([k,zh,unit,d])=>`
+    <tr><td>${zh}</td>
+        <td class="num">${fmt(c.tot[k]/s,d)} ${unit==='大卡'?'大卡':'公克'}</td>
+        <td class="num">${fmt(c.tot[k]*100/Math.max(c.grams,1),d)} ${unit==='大卡'?'大卡':'公克'}</td></tr>`).join('');
+
+  document.getElementById('detail').innerHTML=`
+    <div class="d-head"><h2>${r.name}</h2>${r.note?`<span class="note">${r.note}</span>`:''}</div>
+    <div class="d-body">
+      <div>
+        <table>
+          <thead><tr><th>材料</th><th class="num">用量 g</th><th class="num">成本</th><th class="num">熱量</th></tr></thead>
+          <tbody>${rowsHtml}
+            <tr class="total"><td>合計(${fmt(c.grams)} g)</td><td></td>
+              <td class="num">$${fmt(c.cost,0)}</td><td class="num">${fmt(c.tot.kcal)}</td></tr>
+          </tbody>
+        </table>
+        <div class="per-serving">
+          <div><div class="n">$${fmt(c.cost/s,1)}</div><div class="l">每份成本</div></div>
+          <div><div class="n">${fmt(c.tot.kcal/s)}</div><div class="l">每份大卡</div></div>
+          <div><div class="n">${fmt(c.grams/s)}</div><div class="l">每份約 g</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="label">
+          <h4>營養標示</h4>
+          <div class="meta">本品每份 ${fmt(c.grams/s)} 公克 · 本包裝含 ${s} 份</div>
+          <table>
+            <tr class="hd"><td></td><td class="num">每份</td><td class="num">每100公克</td></tr>
+            ${labelRows}
+          </table>
+        </div>
+        <p class="label-caption">依材料主檔數值估算,實際熱量會因烘焙水分蒸發而每 100g 略高。</p>
+      </div>
+    </div>`;
+  document.getElementById('detail').style.display='block';
+  if(window.innerWidth<760) document.getElementById('detail').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---- 材料主檔 ---- */
+function renderIngs(){
+  const names=Object.keys(INGREDIENTS);
+  document.getElementById('ingview').innerHTML=`
+    <p class="hint">共 ${names.length} 種材料。新增或改價:編輯 <code>data/ingredients.js</code> → commit → 頁面自動更新。</p>
+    <table>
+      <thead><tr><th>材料</th><th class="num">採購價</th><th class="num">採購量 g</th>
+        <th class="num">$/100g</th><th class="num">大卡/100g</th><th class="num">蛋白質</th>
+        <th class="num">脂肪</th><th class="num">碳水</th><th class="num">糖</th></tr></thead>
+      <tbody>${names.map(n=>{const i=INGREDIENTS[n],p=i.per100g;return `
+        <tr><td>${n}</td><td class="num">$${fmt(i.packPrice)}</td><td class="num">${fmt(i.packGrams)}</td>
+        <td class="num">$${fmt(i.packPrice*100/i.packGrams,1)}</td>
+        <td class="num">${fmt(p.kcal)}</td><td class="num">${fmt(p.protein,1)}</td>
+        <td class="num">${fmt(p.fat,1)}</td><td class="num">${fmt(p.carbs,1)}</td><td class="num">${fmt(p.sugar,1)}</td></tr>`}).join('')}
+      </tbody>
+    </table>`;
+}
+
+function switchTab(t){
+  document.getElementById('recipesview').style.display = t==='recipes'?'block':'none';
+  document.getElementById('ingview').style.display     = t==='ings'?'block':'none';
+  document.getElementById('tab-recipes').classList.toggle('active',t==='recipes');
+  document.getElementById('tab-ings').classList.toggle('active',t==='ings');
+}
+
+renderGrid(); renderIngs();
+if(RECIPES.length) showDetail(0);
+</script>
+</body>
+</html>
