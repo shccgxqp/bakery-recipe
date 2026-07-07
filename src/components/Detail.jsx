@@ -196,7 +196,7 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
             </table>
           </div>
           <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
-            依材料主檔數值估算,實際熱量會因烘焙水分蒸發而每 100g 略高。飽和脂肪、反式脂肪、鈉如材料主檔尚未填入實際數值,將顯示為 0,對外正式標示前請先於「材料主檔」確認並補齊。
+            本表依材料主檔生料數值試算,非實際檢驗結果;烘焙過程水分蒸發,成品每 100 公克實際數值會較估算略高。材料主檔尚未填入之項目以 0 計算。依食品安全衛生管理法相關規定,正式對外標示前應以實際檢驗或供應商數據確認,不得逕以本估算值標示。
           </p>
 
           {(r.links?.length > 0) && (
