@@ -1,19 +1,23 @@
 export const fmt = (n, d = 0) =>
   n.toLocaleString('zh-TW', { minimumFractionDigits: d, maximumFractionDigits: d })
 
+/* 台灣「包裝食品營養標示應遵行事項」8 項必要標示,依規定順序排列 */
 export const NUTR = [
   ['kcal', '熱量', '大卡', 0],
   ['protein', '蛋白質', '公克', 1],
   ['fat', '脂肪', '公克', 1],
+  ['satFat', '飽和脂肪', '公克', 1],
+  ['transFat', '反式脂肪', '公克', 2],
   ['carbs', '碳水化合物', '公克', 1],
   ['sugar', '糖', '公克', 1],
+  ['sodium', '鈉', '毫克', 0],
 ]
 
 /* 一道食譜 → 成本 + 營養 + 缺料清單 */
 export function calc(recipe, ING) {
   const rows = []
   let cost = 0
-  const tot = { kcal: 0, protein: 0, fat: 0, carbs: 0, sugar: 0 }
+  const tot = Object.fromEntries(NUTR.map(([k]) => [k, 0]))
   let grams = 0
   const missing = []
   for (const [name, g, layer] of recipe.items) {
@@ -28,7 +32,7 @@ export function calc(recipe, ING) {
     grams += g
     const n = {}
     for (const [k] of NUTR) {
-      n[k] = (ing.per100g[k] * g) / 100
+      n[k] = ((ing.per100g[k] || 0) * g) / 100
       tot[k] += n[k]
     }
     rows.push({ name, g, layer: layer || '', cost: c, n })

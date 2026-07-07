@@ -5,8 +5,11 @@ const NUT_FIELDS = [
   ['kcal', '熱量(大卡)'],
   ['protein', '蛋白質(g)'],
   ['fat', '脂肪(g)'],
+  ['satFat', '飽和脂肪(g)'],
+  ['transFat', '反式脂肪(g)'],
   ['carbs', '碳水化合物(g)'],
   ['sugar', '糖(g)'],
+  ['sodium', '鈉(mg)'],
 ]
 
 export default function IngredientDialog({ name: orig, ING, onSave, onClose }) {
@@ -14,13 +17,9 @@ export default function IngredientDialog({ name: orig, ING, onSave, onClose }) {
   const [name, setName] = useState(orig || '')
   const [price, setPrice] = useState(ing?.packPrice ?? '')
   const [grams, setGrams] = useState(ing?.packGrams ?? '')
-  const [nut, setNut] = useState({
-    kcal: ing?.per100g.kcal ?? 0,
-    protein: ing?.per100g.protein ?? 0,
-    fat: ing?.per100g.fat ?? 0,
-    carbs: ing?.per100g.carbs ?? 0,
-    sugar: ing?.per100g.sugar ?? 0,
-  })
+  const [nut, setNut] = useState(
+    Object.fromEntries(NUT_FIELDS.map(([k]) => [k, ing?.per100g[k] ?? 0]))
+  )
 
   const submit = e => {
     e.preventDefault()
@@ -30,10 +29,7 @@ export default function IngredientDialog({ name: orig, ING, onSave, onClose }) {
     onSave(orig, nm, {
       packPrice: v(price),
       packGrams: Math.max(0.1, v(grams)),
-      per100g: {
-        kcal: v(nut.kcal), protein: v(nut.protein), fat: v(nut.fat),
-        carbs: v(nut.carbs), sugar: v(nut.sugar),
-      },
+      per100g: Object.fromEntries(NUT_FIELDS.map(([k]) => [k, v(nut[k])])),
     })
   }
 

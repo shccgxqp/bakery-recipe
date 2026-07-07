@@ -21,7 +21,8 @@ export default function IngredientsView({ ING, isEditor, onEdit, onAdd, onDelete
             <tr>
               <th>材料</th><th className="num">採購價</th><th className="num">採購量 g</th>
               <th className="num">$/100g</th><th className="num">大卡/100g</th><th className="num">蛋白質</th>
-              <th className="num">脂肪</th><th className="num">碳水</th><th className="num">糖</th>
+              <th className="num">脂肪</th><th className="num">飽和脂肪</th><th className="num">反式脂肪</th>
+              <th className="num">碳水</th><th className="num">糖</th><th className="num">鈉 mg</th>
               {isEditor && <th>操作</th>}
             </tr>
           </thead>
@@ -37,8 +38,11 @@ export default function IngredientsView({ ING, isEditor, onEdit, onAdd, onDelete
                   <td className="num">{fmt(p.kcal)}</td>
                   <td className="num">{fmt(p.protein, 1)}</td>
                   <td className="num">{fmt(p.fat, 1)}</td>
+                  <td className="num">{fmt(p.satFat || 0, 1)}</td>
+                  <td className="num">{fmt(p.transFat || 0, 2)}</td>
                   <td className="num">{fmt(p.carbs, 1)}</td>
                   <td className="num">{fmt(p.sugar, 1)}</td>
+                  <td className="num">{fmt(p.sodium || 0)}</td>
                   {isEditor && (
                     <td className="whitespace-nowrap">
                       <button className="btn btn-sm" onClick={() => onEdit(n)}>編輯</button>

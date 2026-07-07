@@ -188,15 +188,15 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
                 {NUTR.map(([k, zh, unit, d]) => (
                   <tr key={k}>
                     <td>{zh}</td>
-                    <td className="num">{fmt(c.tot[k] / s, d)} {unit === '大卡' ? '大卡' : '公克'}</td>
-                    <td className="num">{fmt((c.tot[k] * 100) / Math.max(c.grams, 1), d)} {unit === '大卡' ? '大卡' : '公克'}</td>
+                    <td className="num">{fmt(c.tot[k] / s, d)} {unit}</td>
+                    <td className="num">{fmt((c.tot[k] * 100) / Math.max(c.grams, 1), d)} {unit}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
-            依材料主檔數值估算,實際熱量會因烘焙水分蒸發而每 100g 略高。
+            依材料主檔數值估算,實際熱量會因烘焙水分蒸發而每 100g 略高。飽和脂肪、反式脂肪、鈉如材料主檔尚未填入實際數值,將顯示為 0,對外正式標示前請先於「材料主檔」確認並補齊。
           </p>
 
           {(r.links?.length > 0) && (

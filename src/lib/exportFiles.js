@@ -15,7 +15,7 @@ export function exportFiles(ING, RCP) {
   ing += Object.entries(ING)
     .map(([n, i]) =>
       `  "${n}": {\n    packPrice: ${jsN(i.packPrice)}, packGrams: ${jsN(i.packGrams)},\n` +
-      `    per100g: { kcal: ${jsN(i.per100g.kcal)}, protein: ${jsN(i.per100g.protein)}, fat: ${jsN(i.per100g.fat)}, carbs: ${jsN(i.per100g.carbs)}, sugar: ${jsN(i.per100g.sugar)} }\n  }`)
+      `    per100g: { kcal: ${jsN(i.per100g.kcal)}, protein: ${jsN(i.per100g.protein)}, fat: ${jsN(i.per100g.fat)}, satFat: ${jsN(i.per100g.satFat)}, transFat: ${jsN(i.per100g.transFat)}, carbs: ${jsN(i.per100g.carbs)}, sugar: ${jsN(i.per100g.sugar)}, sodium: ${jsN(i.per100g.sodium)} }\n  }`)
     .join(',\n')
   ing += '\n};\n'
 

@@ -42,7 +42,10 @@ export async function loadFromSheet(sheetId) {
     ing[name] = {
       packPrice: num(r[1]),
       packGrams: num(r[2]) || 100,
-      per100g: { kcal: num(r[3]), protein: num(r[4]), fat: num(r[5]), carbs: num(r[6]), sugar: num(r[7]) },
+      per100g: {
+        kcal: num(r[3]), protein: num(r[4]), fat: num(r[5]), carbs: num(r[6]), sugar: num(r[7]),
+        satFat: num(r[8]), transFat: num(r[9]), sodium: num(r[10]),
+      },
     }
   }
 

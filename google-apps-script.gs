@@ -48,10 +48,10 @@ function doPost(e) {
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-    const ingRows = [['材料名稱', '採購價NT', '採購重量g', '熱量kcal_100g', '蛋白質g_100g', '脂肪g_100g', '碳水g_100g', '糖g_100g']];
+    const ingRows = [['材料名稱', '採購價NT', '採購重量g', '熱量kcal_100g', '蛋白質g_100g', '脂肪g_100g', '碳水g_100g', '糖g_100g', '飽和脂肪g_100g', '反式脂肪g_100g', '鈉mg_100g']];
     Object.keys(d.ingredients).forEach(function (n) {
       const i = d.ingredients[n], p = i.per100g;
-      ingRows.push([n, i.packPrice, i.packGrams, p.kcal, p.protein, p.fat, p.carbs, p.sugar]);
+      ingRows.push([n, i.packPrice, i.packGrams, p.kcal, p.protein, p.fat, p.carbs, p.sugar, p.satFat || 0, p.transFat || 0, p.sodium || 0]);
     });
     writeSheet(ss, '材料', ingRows);
 
