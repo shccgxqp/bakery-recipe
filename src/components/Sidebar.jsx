@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { calc, metrics, fmt } from '../lib/calc.js'
+import { APP_VERSION } from '../config.js'
 
 const SORTS = [
   ['category', '分類'],
@@ -109,6 +110,9 @@ export default function Sidebar({
         </div>
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
+        </div>
+        <div className="text-center font-mono text-[10.5px] text-ink-soft/70" title="版本紀錄見 CHANGELOG.md">
+          v{APP_VERSION}
         </div>
         {isEditor ? (
           <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>

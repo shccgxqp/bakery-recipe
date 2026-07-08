@@ -1,4 +1,8 @@
 /* 前端設定 */
+import pkg from '../package.json'
+
+/* 版本號:唯一來源是 package.json 的 version,每次部署前記得 bump(規則見 CHANGELOG.md) */
+export const APP_VERSION = pkg.version
 
 /* 後端 API(Vercel Serverless Functions)網址,結尾不要斜線 */
 export const API_BASE = 'https://bakery-recipe-two.vercel.app'

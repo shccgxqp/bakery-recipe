@@ -78,6 +78,12 @@ React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript)。
   inline 指定,不要動 `git config --global`。
 - 疑似資料錯誤待確認:焙茶戚風蛋糕「蛋糕體」有一筆檸檬汁 200g,量異常大。
 
+## 版本規則(每次部署必做)
+
+每次 push 前:`package.json` 的 `version` 依語意化版本 +1(主=架構變動、次=新功能、
+修訂=修 bug/微調),並在 `CHANGELOG.md` 加一段紀錄(新的在上)。前端會自動從
+package.json 讀版本顯示在側欄底部,不用改程式。
+
 ## 常用指令
 
 ```
