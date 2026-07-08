@@ -11,9 +11,9 @@ const SORTS = [
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
-  dataSource, editCount, syncStat, hasScript, ingsMode, isEditor,
+  dataSource, editCount, syncStat, ingsMode, isEditor,
   onLogin, onLogout,
-  onSelect, onNewRecipe, onToggleIngs, onPush, onExport, onReset,
+  onSelect, onNewRecipe, onToggleIngs, onPush, onReset,
 }) {
   const [collapsed, setCollapsed] = useState(false)
 
@@ -69,11 +69,11 @@ export default function Sidebar({
               const c = calc(r, ING)
               const per = c.cost / (r.servings || 1)
               const m = groups.flat ? metrics(r, ING) : null
-              const sel = r.name === selected
+              const sel = r._id === selected
               return (
                 <button
-                  key={r.name} id={'ri-' + r.name}
-                  onClick={() => onSelect(r.name)}
+                  key={r._id} id={'ri-' + r._id}
+                  onClick={() => onSelect(r._id)}
                   aria-current={sel}
                   className={
                     'flex w-full items-center justify-between gap-2 rounded-md border-l-[3px] py-1.5 pl-3 pr-2.5 text-left text-sm ' +
@@ -103,22 +103,13 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line p-3.5">
-        {isEditor && hasScript && (
+        {isEditor && (
           <div className="rounded-lg border border-yolk bg-yolk-soft px-2.5 py-2 text-[12.5px] leading-relaxed">
             雲端同步:<b className="text-yolk">{syncStat}</b>
             {editCount > 0 && <> · 待同步 {editCount} 筆</>}
             <div className="mt-1.5 flex gap-1.5">
-              <button className="btn btn-sm flex-1" onClick={onPush}>⇪ 寫入 Google Sheet</button>
+              <button className="btn btn-sm flex-1" onClick={onPush}>☁ 立即寫入雲端</button>
               {editCount > 0 && <button className="btn btn-sm btn-danger flex-1" onClick={onReset}>還原</button>}
-            </div>
-          </div>
-        )}
-        {isEditor && !hasScript && editCount > 0 && (
-          <div className="rounded-lg border border-yolk bg-yolk-soft px-2.5 py-2 text-[12.5px] leading-relaxed">
-            本機有 <b className="text-yolk">{editCount}</b> 筆修改(只存在這台瀏覽器)。
-            <div className="mt-1.5 flex gap-1.5">
-              <button className="btn btn-sm flex-1" onClick={onExport}>匯出資料檔</button>
-              <button className="btn btn-sm btn-danger flex-1" onClick={onReset}>全部還原</button>
             </div>
           </div>
         )}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { calc, fmt, NUTR, groupByLayer } from '../lib/calc.js'
+import { calc, fmt, NUTR, groupByLayer, allergenSummary } from '../lib/calc.js'
 import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計 */
@@ -62,6 +62,10 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
   const hasPrice = r.price != null && r.price > 0
   const profit = hasPrice ? r.price - per : null
   const margin = hasPrice ? ((r.price - per) / per) * 100 : null
+  const al = allergenSummary(r, ING)
+  /* 標籤的「每份重量」「每100公克」以成品重(出爐實秤)為準;沒填就退回生料總重 */
+  const hasFinished = r.finishedGrams > 0
+  const labelGrams = hasFinished ? r.finishedGrams : c.grams
 
   const [copied, setCopied] = useState(false)
   const copyList = async () => {
@@ -114,8 +118,17 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
           ? <Cell n={`${fmt(margin)}%`} l="利潤率(利潤÷成本)" tone={margin >= 0 ? 'text-ok' : 'text-warn'} />
           : <Cell n="—" l="利潤率" />}
         <Cell n={fmt(c.tot.kcal / s)} l="大卡/份" />
-        <Cell n={fmt(c.grams / s)} l="每份約 g" />
+        <Cell n={fmt(labelGrams / s)} l={hasFinished ? '每份 g(成品)' : '每份約 g(生料)'} />
       </div>
+
+      {(r.storage || r.shelfLifeDays > 0) && (
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
+          <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
+          <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
+            🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
+          </span>
+        </div>
+      )}
 
       {(r.bakes?.length > 0) && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
@@ -181,7 +194,7 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
         <div>
           <div className="nlabel">
             <h4>營養標示</h4>
-            <div className="meta">本品每份 {fmt(c.grams / s)} 公克 · 本包裝含 {s} 份</div>
+            <div className="meta">本品每份 {fmt(labelGrams / s)} 公克 · 本包裝含 {s} 份</div>
             <table>
               <tbody>
                 <tr className="hd"><td></td><td className="num">每份</td><td className="num">每100公克</td></tr>
@@ -189,25 +202,43 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
                   <tr key={k}>
                     <td>{zh}</td>
                     <td className="num">{fmt(c.tot[k] / s, d)} {unit}</td>
-                    <td className="num">{fmt((c.tot[k] * 100) / Math.max(c.grams, 1), d)} {unit}</td>
+                    <td className="num">{fmt((c.tot[k] * 100) / Math.max(labelGrams, 1), d)} {unit}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
+          {(al.has.length > 0 || al.may.length > 0) && (
+            <div className="mt-3 max-w-[340px] rounded-md border border-line bg-white px-3 py-2 text-[12.5px] leading-relaxed">
+              <b className="text-ink">過敏原資訊</b>
+              {al.has.length > 0 && <div>本產品含有:<b>{al.has.join('、')}</b></div>}
+              {al.may.length > 0 && <div className="text-ink-soft">本產品可能含有:{al.may.join('、')}</div>}
+            </div>
+          )}
+
+          {c.noNutr.length > 0 && (
+            <p className="mt-2 max-w-[340px] text-xs text-warn">
+              ⚠ 下列材料尚無營養資料,以 0 計算:{c.noNutr.join('、')}
+            </p>
+          )}
+
           <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
-            本表依材料主檔生料數值試算,非實際檢驗結果;烘焙過程水分蒸發,成品每 100 公克實際數值會較估算略高。材料主檔尚未填入之項目以 0 計算。依食品安全衛生管理法相關規定,正式對外標示前應以實際檢驗或供應商數據確認,不得逕以本估算值標示。
+            {hasFinished
+              ? '本表依材料主檔數值與成品實秤重量試算,非實際檢驗結果。'
+              : '本表依材料主檔生料數值試算,非實際檢驗結果;烘焙過程水分蒸發,成品每 100 公克實際數值會較估算略高。'}
+            依食品安全衛生管理法相關規定,正式對外標示前應以實際檢驗或供應商數據確認,不得逕以本估算值標示。
           </p>
 
           {(r.links?.length > 0) && (
             <div className="mt-6 max-w-[340px]">
               <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">參考食譜</div>
               <ul className="mt-2 space-y-1.5">
-                {r.links.map(([t, u], i) => (
+                {r.links.map((l, i) => (
                   <li key={i} className="text-[13px] leading-snug">
-                    <a href={u} target="_blank" rel="noopener noreferrer"
+                    <a href={l.url} target="_blank" rel="noopener noreferrer"
                       className="text-ink underline decoration-line underline-offset-2 hover:text-yolk hover:decoration-yolk">
-                      {/youtu\.?be/i.test(u) ? '▶' : '🔗'} {t}
+                      {/youtu\.?be/i.test(l.url) ? '▶' : '🔗'} {l.title}
                     </a>
                   </li>
                 ))}

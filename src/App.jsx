@@ -1,10 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
-import { INGREDIENTS, RECIPES } from './data/base.js'
-import { SHEET_ID, SCRIPT_URL, AUTH_KEY, CAT_ORDER, LS_KEY } from './config.js'
+import { AUTH_KEY, LS_EDITS, LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS } from './config.js'
 import { calc, metrics } from './lib/calc.js'
-import { loadFromSheet } from './lib/sheet.js'
-import { pushToSheet, verifyPassword } from './lib/sync.js'
-import { exportFiles } from './lib/exportFiles.js'
+import { loadData, pushData, verifyPassword } from './lib/api.js'
 import Sidebar from './components/Sidebar.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
@@ -13,44 +10,56 @@ import IngredientDialog from './components/IngredientDialog.jsx'
 
 function loadEdits() {
   try {
-    const e = JSON.parse(localStorage.getItem(LS_KEY))
+    const e = JSON.parse(localStorage.getItem(LS_EDITS))
     return { ingredients: e?.ingredients || {}, recipes: e?.recipes || {} }
   } catch {
     return { ingredients: {}, recipes: {} }
   }
 }
 
+function loadCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(LS_CACHE))
+    if (Array.isArray(c?.ingredients) && Array.isArray(c?.recipes)) return c
+  } catch { /* 快取壞掉就當沒有 */ }
+  return { ingredients: [], recipes: [], settings: null }
+}
+
 export default function App() {
-  const [base, setBase] = useState({ ing: INGREDIENTS, rcp: RECIPES })
+  const [base, setBase] = useState(loadCache)
   const [edits, setEdits] = useState(loadEdits)
-  const [dataSource, setDataSource] = useState('內建檔案')
+  const [dataSource, setDataSource] = useState('讀取中…')
   const [syncStat, setSyncStat] = useState('待命')
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
   const [view, setView] = useState('recipe') // recipe | ings
-  const [selName, setSelName] = useState(null)
-  const [dlg, setDlg] = useState(null) // {type:'recipe',recipe}|{type:'recipe',recipe:null}|{type:'ing',name}
+  const [selId, setSelId] = useState(null)
+  const [dlg, setDlg] = useState(null) // {type:'recipe',recipe|null} | {type:'ing',id|null}
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
 
-  /* ---- 兩層合併:base + edits → 有效資料 ---- */
+  const catOrder = base.settings?.catOrder || DEFAULT_CAT_ORDER
+  const allergenList = base.settings?.allergenList || DEFAULT_ALLERGENS
+
+  /* ---- 兩層合併(以 _id 為 key):base + edits → 有效資料 ---- */
   const ING = useMemo(() => {
     const out = {}
-    for (const n of Object.keys(base.ing)) if (!(n in edits.ingredients)) out[n] = base.ing[n]
-    for (const [n, v] of Object.entries(edits.ingredients)) if (v) out[n] = v
+    for (const i of base.ingredients) if (!(i._id in edits.ingredients)) out[i._id] = i
+    for (const [id, v] of Object.entries(edits.ingredients)) if (v) out[id] = v
     return out
   }, [base, edits])
 
   const RCP = useMemo(() => {
     const out = []
-    for (const r of base.rcp) {
-      if (r.name in edits.recipes) {
-        const e = edits.recipes[r.name]
+    const seen = new Set()
+    for (const r of base.recipes) {
+      seen.add(r._id)
+      if (r._id in edits.recipes) {
+        const e = edits.recipes[r._id]
         if (e) out.push(e)
       } else out.push(r)
     }
-    const baseNames = new Set(base.rcp.map(r => r.name))
-    for (const [n, v] of Object.entries(edits.recipes)) if (v && !baseNames.has(n)) out.push(v)
+    for (const [id, v] of Object.entries(edits.recipes)) if (v && !seen.has(id)) out.push(v)
     return out
   }, [base, edits])
 
@@ -70,7 +79,7 @@ export default function App() {
         ;(g[c] = g[c] || []).push(r)
       }
       const cats = Object.keys(g).sort((a, b) => {
-        const ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b)
+        const ia = catOrder.indexOf(a), ib = catOrder.indexOf(b)
         return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
       })
       return { g, cats, flat: false }
@@ -87,41 +96,55 @@ export default function App() {
       return b.m.margin - a.m.margin
     })
     return { g: { 全部: withMetric.map(x => x.r) }, cats: ['全部'], flat: true }
-  }, [RCP, ING, query, sortBy])
+  }, [RCP, ING, query, sortBy, catOrder])
 
-  const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r.name)), [groups])
-  const selected = RCP.find(r => r.name === selName) || RCP.find(r => r.name === flat[0]) || null
+  const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
+  const selected = RCP.find(r => r._id === selId) || RCP.find(r => r._id === flat[0]) || null
 
   /* ---- localStorage 持久化 ---- */
-  useEffect(() => { localStorage.setItem(LS_KEY, JSON.stringify(edits)) }, [edits])
+  useEffect(() => { localStorage.setItem(LS_EDITS, JSON.stringify(edits)) }, [edits])
 
-  /* ---- 開站抓 Google Sheet ---- */
+  /* ---- 開站讀 API(成功就更新離線快取) ---- */
   useEffect(() => {
-    loadFromSheet(SHEET_ID)
-      .then(d => { setBase(d); setDataSource('Google Sheet ✓') })
-      .catch(err => console.warn('Google Sheet 讀取失敗,使用內建資料:', err.message))
+    localStorage.removeItem('bakery-edits-v1') // 舊版暫存格式,不相容,直接清掉
+    loadData()
+      .then(d => {
+        setBase(d)
+        localStorage.setItem(LS_CACHE, JSON.stringify(d))
+        setDataSource('雲端 ✓')
+      })
+      .catch(err => {
+        console.warn('API 讀取失敗,使用離線快取:', err.message)
+        setDataSource(loadCache().ingredients.length ? '離線快取' : '無資料(離線)')
+      })
   }, [])
 
-  /* ---- 雲端同步(debounce 1.5s) ---- */
-  const latest = useRef({ ING, RCP })
-  useEffect(() => { latest.current = { ING, RCP } }, [ING, RCP])
+  /* ---- 雲端同步(debounce 1.5s):送出本機修改,成功後以伺服器回讀為準 ---- */
+  const editsRef = useRef(edits)
+  useEffect(() => { editsRef.current = edits }, [edits])
 
   const authRef = useRef(auth)
   useEffect(() => { authRef.current = auth }, [auth])
 
   const doPush = useCallback(async () => {
-    if (!SCRIPT_URL) {
-      alert('尚未設定 Apps Script 網址:部署 google-apps-script.gs 後,把 /exec 網址填入 src/config.js 的 SCRIPT_URL。')
-      return
-    }
     if (!authRef.current) { setSyncStat('未登入,修改僅存本機'); return }
     setSyncStat('寫入中…')
     try {
-      const { ING: i, RCP: r } = latest.current
-      await pushToSheet(SCRIPT_URL, authRef.current, i, r)
-      setBase({ ing: structuredClone(i), rcp: structuredClone(r) })
+      const e = editsRef.current
+      const upserts = {
+        ingredients: Object.values(e.ingredients).filter(Boolean),
+        recipes: Object.values(e.recipes).filter(Boolean),
+      }
+      const deletes = {
+        ingredients: Object.entries(e.ingredients).filter(([, v]) => !v).map(([id]) => id),
+        recipes: Object.entries(e.recipes).filter(([, v]) => !v).map(([id]) => id),
+      }
+      await pushData(authRef.current, upserts, deletes)
+      const d = await loadData()
+      setBase(d)
+      localStorage.setItem(LS_CACHE, JSON.stringify(d))
       setEdits({ ingredients: {}, recipes: {} })
-      setDataSource('Google Sheet ✓')
+      setDataSource('雲端 ✓')
       setSyncStat('已寫入 ✓ ' + new Date().toLocaleTimeString('zh-TW', { hour12: false }))
     } catch (err) {
       if (err.message === '密碼錯誤') {
@@ -138,7 +161,7 @@ export default function App() {
     const pw = prompt('輸入編輯密碼:')
     if (!pw) return
     try {
-      const ok = await verifyPassword(SCRIPT_URL, pw)
+      const ok = await verifyPassword(pw)
       if (!ok) { alert('密碼錯誤'); return }
       setAuth(pw)
       localStorage.setItem(AUTH_KEY, pw)
@@ -153,52 +176,48 @@ export default function App() {
 
   const syncTimer = useRef(null)
   const touchSync = useCallback(() => {
-    if (!SCRIPT_URL) return
     clearTimeout(syncTimer.current)
     setSyncStat('等待寫入…')
     syncTimer.current = setTimeout(doPush, 1500)
   }, [doPush])
 
-  /* ---- 資料操作 ---- */
-  const saveRecipe = (origName, obj) => {
-    setEdits(prev => {
-      const recipes = { ...prev.recipes }
-      if (origName && origName !== obj.name) recipes[origName] = null
-      recipes[obj.name] = obj
-      return { ...prev, recipes }
-    })
-    setSelName(obj.name)
+  /* ---- 資料操作(全部以 _id 為 key;新資料由前端產生 UUID) ---- */
+  const saveRecipe = (orig, obj) => {
+    const _id = orig?._id || crypto.randomUUID()
+    const doc = { ...orig, ...obj, _id }
+    if (doc.sortOrder == null) doc.sortOrder = Math.max(0, ...RCP.map(r => r.sortOrder || 0)) + 10
+    setEdits(prev => ({ ...prev, recipes: { ...prev.recipes, [_id]: doc } }))
+    setSelId(_id)
     setView('recipe')
     setDlg(null)
     touchSync()
   }
-  const deleteRecipe = name => {
-    if (!confirm(`刪除「${name}」?(可用「全部還原」找回原始資料)`)) return
-    setEdits(prev => ({ ...prev, recipes: { ...prev.recipes, [name]: null } }))
-    if (selName === name) setSelName(null)
+  const deleteRecipe = r => {
+    if (!confirm(`刪除「${r.name}」?(刪除後可請管理者從資料庫救回)`)) return
+    setEdits(prev => ({ ...prev, recipes: { ...prev.recipes, [r._id]: null } }))
+    if (selId === r._id) setSelId(null)
     touchSync()
   }
-  const saveIng = (origName, name, data) => {
-    setEdits(prev => {
-      const ingredients = { ...prev.ingredients }
-      if (origName && origName !== name) ingredients[origName] = null
-      ingredients[name] = data
-      return { ...prev, ingredients }
-    })
+  const saveIng = (orig, obj) => {
+    const _id = orig?._id || crypto.randomUUID()
+    const doc = { ...orig, ...obj, _id }
+    setEdits(prev => ({ ...prev, ingredients: { ...prev.ingredients, [_id]: doc } }))
     setDlg(null)
     touchSync()
   }
-  const deleteIng = name => {
-    const used = RCP.filter(r => r.items.some(([n]) => n === name)).map(r => r.name)
+  const deleteIng = id => {
+    const ing = ING[id]
+    if (!ing) return
+    const used = RCP.filter(r => r.items.some(it => it.ingredientId === id)).map(r => r.name)
     const msg = used.length
-      ? `「${name}」被 ${used.length} 道食譜使用(${used.slice(0, 5).join('、')}${used.length > 5 ? '…' : ''}),刪除後這些食譜會顯示缺料。確定刪除?`
-      : `刪除「${name}」?`
+      ? `「${ing.name}」被 ${used.length} 道食譜使用(${used.slice(0, 5).join('、')}${used.length > 5 ? '…' : ''}),刪除後這些食譜會顯示缺料。確定刪除?`
+      : `刪除「${ing.name}」?`
     if (!confirm(msg)) return
-    setEdits(prev => ({ ...prev, ingredients: { ...prev.ingredients, [name]: null } }))
+    setEdits(prev => ({ ...prev, ingredients: { ...prev.ingredients, [id]: null } }))
     touchSync()
   }
   const resetEdits = () => {
-    if (!confirm(`清除全部 ${editCount} 筆本機修改,回到原始資料?`)) return
+    if (!confirm(`清除全部 ${editCount} 筆本機修改,回到雲端資料?`)) return
     setEdits({ ingredients: {}, recipes: {} })
   }
 
@@ -207,7 +226,7 @@ export default function App() {
   useEffect(() => {
     const onKey = e => {
       if (dlg) return
-      if (e.target.tagName === 'INPUT') {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
         if (e.key === 'Escape') { setQuery(''); e.target.blur() }
         return
       }
@@ -215,11 +234,11 @@ export default function App() {
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
       if (!flat.length) return
       e.preventDefault()
-      const pos = flat.indexOf(selected?.name)
+      const pos = flat.indexOf(selected?._id)
       const next = e.key === 'ArrowDown'
         ? flat[Math.min(pos + 1, flat.length - 1)]
         : flat[Math.max(pos - 1, 0)]
-      setSelName(next)
+      setSelId(next)
       setView('recipe')
       document.getElementById('ri-' + next)?.scrollIntoView({ block: 'nearest' })
     }
@@ -231,28 +250,28 @@ export default function App() {
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
       <Sidebar
         groups={groups} ING={ING} RCP={RCP}
-        selected={view === 'recipe' ? selected?.name : null}
+        selected={view === 'recipe' ? selected?._id : null}
         query={query} setQuery={setQuery} searchRef={searchRef}
         sortBy={sortBy} setSortBy={setSortBy}
         dataSource={dataSource} editCount={editCount} syncStat={syncStat}
-        hasScript={!!SCRIPT_URL} isEditor={isEditor}
+        isEditor={isEditor}
         onLogin={login} onLogout={logout}
-        onSelect={name => { setSelName(name); setView('recipe') }}
+        onSelect={id => { setSelId(id); setView('recipe') }}
         onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
         onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
         ingsMode={view === 'ings'}
-        onPush={doPush} onExport={() => exportFiles(ING, RCP)} onReset={resetEdits}
+        onPush={doPush} onReset={resetEdits}
       />
       <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
         {view === 'ings' ? (
           <IngredientsView ING={ING} isEditor={isEditor}
-            onEdit={name => setDlg({ type: 'ing', name })}
-            onAdd={() => setDlg({ type: 'ing', name: null })}
+            onEdit={id => setDlg({ type: 'ing', id })}
+            onAdd={() => setDlg({ type: 'ing', id: null })}
             onDelete={deleteIng} />
         ) : selected ? (
           <Detail recipe={selected} ING={ING} isEditor={isEditor}
             onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
-            onDelete={() => deleteRecipe(selected.name)} />
+            onDelete={() => deleteRecipe(selected)} />
         ) : (
           <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
         )}
@@ -266,7 +285,7 @@ export default function App() {
           onSave={saveRecipe} onClose={() => setDlg(null)} />
       )}
       {dlg?.type === 'ing' && (
-        <IngredientDialog name={dlg.name} ING={ING}
+        <IngredientDialog ing={dlg.id ? ING[dlg.id] : null} allergenList={allergenList}
           onSave={saveIng} onClose={() => setDlg(null)} />
       )}
     </div>

@@ -1,5 +1,10 @@
-# Google 服務帳戶金鑰 — 絕對不能 commit
-.env/
+# 環境變數(MongoDB 連線字串等機密)— 絕對不能 commit
+.env
+.env.*
+!.env.example
 *.json.key
+
+# 一次性資料匯入腳本,僅本機使用
+scripts/import-legacy.mjs
 node_modules/
 dist/

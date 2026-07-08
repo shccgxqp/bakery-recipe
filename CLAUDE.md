@@ -1,104 +1,84 @@
 # bakery-recipe(烘焙帳本)
 
-甜點食譜 + 成本/營養計算網站。單人使用,個人烘焙工作室的內部工具。
-線上網址:https://shccgxqp.github.io/bakery-recipe/(GitHub Pages,靜態網站)
+甜點食譜 + 成本/營養計算網站。個人烘焙工作室的工具,資料全公開。
+線上網址:https://shccgxqp.github.io/bakery-recipe/(GitHub Pages)
 
-## 技術棧
+## 技術棧與架構
 
-React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript,無型別定義檔)。
-沒有後端伺服器——GitHub Pages 只能放靜態檔案。
+React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript)。
 
-## 資料架構(目前,舊制)
+- **前端**:GitHub Pages 靜態站(`npm run build` → `dist/`)。
+- **資料庫**:MongoDB Atlas M0 免費叢集,資料庫名 `bakery-recipe-mongoDB`,
+  三個 collection:`ingredients`(59)/ `recipes`(20)/ `settings`。
+  完整 schema 見 `docs/db-schema.md`。
+- **API**:Vercel Serverless Functions(`api/` 目錄,push 自動部署):
+  - `GET /api/data` 公開讀取(過濾軟刪除)
+  - `POST /api/save` 帶密碼寫入:逐筆 upsert + 軟刪除,欄位不寫死
+  - `POST /api/verify` 密碼驗證(SHA-256 比對環境變數)
+  - 共用連線在 `api/_lib/mongo.js`(底線目錄不成為路由)
+- **環境變數**(`.env` 本機、Vercel 專案設定各一份):
+  `MONGODB_URI`、`MONGODB_DB`、`EDIT_PASSWORD_SHA256`。
+- **每日備份**:`.github/workflows/backup.yml` 每天台灣時間 04:00 把三個 collection
+  匯出成 `backup/*.json` commit 進 repo。單向純備份,網站不讀這些檔案。
+  需要 GitHub Secrets 的 `MONGODB_URI`。
 
-三層資料來源,優先順序由上到下:
+## 前端資料流
 
-1. **Google Sheet**(主要來源,唯讀)——`src/lib/sheet.js` 用 gviz CSV 匯出端點讀取
-   `材料`、`食譜`、`食譜補充` 三個分頁,不需要 API Key,分頁要設「知道連結者可檢視」。
-   Sheet ID 設在 `src/config.js`(`SHEET_ID`)。
-2. **`src/data/base.js`**(離線備援)——Google Sheet 讀取失敗時的內建常數,`INGREDIENTS`+`RECIPES`。
-3. **localStorage**(`bakery-edits-v1`)——使用者在網頁上編輯/新增的暫存修改,跟 base 合併成最終資料。
+1. 開站 `GET /api/data` → 成功就存 localStorage 快取(`bakery-cache-v1`);
+   失敗 fallback 到上次快取(離線可用)。
+2. 使用者修改存 `bakery-edits-v2`(以 `_id` 為 key,`null` = 待刪除),
+   與 base 合併成有效資料;登入後編輯 1.5 秒防抖自動同步,成功後以伺服器回讀為準。
+3. 新資料的 `_id` 由前端 `crypto.randomUUID()` 產生。
 
-**寫入**走 Google Apps Script Web App(`google-apps-script.gs`,部署在 Google 那邊,
-網址設在 `src/config.js` 的 `SCRIPT_URL`):密碼經 SHA-256 雜湊比對後,才允許把
-`材料`/`食譜`/`食譜補充` 三個分頁**整表清空重寫**。`src/lib/sync.js` 負責呼叫這支 API,
-`App.jsx` 裡編輯後 1.5 秒防抖(debounce)會自動觸發同步。
+## 核心資料結構(詳見 docs/db-schema.md)
 
-`src/lib/exportFiles.js` 是另一條路:把目前資料下載成新的 `base.js`,手動取代 repo 裡的
-檔案再 commit,當作「沒接 Apps Script 時」的備援存檔方式。
+- 材料/食譜都以字串 UUID `_id` 互相引用(改名不會斷)。
+- 食譜 `items: [{ ingredientId, grams, layer }]`、`links: [{ title, url }]`。
+- 材料 `per100g: null` 代表「無營養資料」(UI 顯示無資料,計算以 0 計並警示),
+  與真實為 0(如水)區分。
+- 材料的公開資料庫欄位:`brand`/`spec`/`allergens`/`mayContain`/`subIngredients`
+  (照包裝成分欄原文)/`labelDate`(標示登記日,廠商改配方要更新)。
+- 食譜合規標籤欄位:`finishedGrams`(成品重,營養標示每100g用它算)/
+  `shelfLifeDays`/`storage`。
+- **過敏原/內容物永遠即時計算**(`calc.js` 的 `allergenSummary`),不落地存在食譜上。
+- `calc.js` 的 `NUTR` 陣列驅動所有營養欄位渲染;`settings.allergenList`(台灣 11 類)
+  驅動過敏原勾選,加類別不用改程式。
 
-## 核心資料結構
+## 台灣營養標示合規(2026-07 完成)
 
-材料(ingredient),key 是材料名稱:
-```js
-"中筋麵粉": {
-  packPrice: 85, packGrams: 1000,
-  per100g: { kcal, protein, fat, satFat, transFat, carbs, sugar, sodium }
-}
-```
+「包裝食品營養標示應遵行事項」8 項必要標示:熱量、蛋白質、脂肪、飽和脂肪、
+反式脂肪、碳水化合物、糖、鈉,全部支援。反式脂肪注意:無鹽奶油(3.9g/100g)、
+依思尼無鹽奶油(2.2g)、各式動物性鮮奶油(1.0~1.8g)、菲力鮮奶油乳酪(1.7g)、
+沙拉油(1.5g)、馬斯卡邦起司(1.0g)、焦糖醬(0.9g)都超過「可標0」門檻
+(反式脂肪≤0.3g/100g 或總脂肪≤1.0g/100g),不能標 0。
 
-食譜(recipe):
-```js
-{
-  name, servings, category, price, note,
-  steps: [...], bakes: [...], links: [[title, url], ...],
-  items: [["材料名", 用量g, "層(可選)"], ...]
-}
-```
+無營養資料的材料(`per100g: null`):奶粉、蔓越莓乾、葡萄糖漿、吉利丁粉、粉紅色色膏。
 
-`src/lib/calc.js` 的 `NUTR` 陣列是「陣列驅動渲染」的核心——所有營養欄位的順序、中文名、
-單位、小數位數都在這裡定義一次,`Detail.jsx` 的營養標示表格、`IngredientDialog.jsx` 的
-編輯表單都是照這個陣列自動產生,新增欄位只需要改 `NUTR`(和對應的表單/列表如有寫死欄位)。
+## 願景與路線圖
 
-## 這次(2026-07)完成的工作:台灣營養標示合規
-
-台灣「包裝食品營養標示應遵行事項」要求 8 項必要標示:熱量、蛋白質、脂肪、**飽和脂肪**、
-**反式脂肪**、碳水化合物、糖、**鈉**。原本系統只有 5 項,缺後面加粗的 3 項。
-
-- `calc.js`、`Detail.jsx`、`IngredientDialog.jsx`、`IngredientsView.jsx`、`sheet.js`、
-  `google-apps-script.gs`、`exportFiles.js` 都已補齊這 3 個欄位(commit `d4fcdf3`)。
-- `base.js` 的 47 項材料中,43 項已用使用者提供的舊營養紀錄回填真實數值;
-  **棉花糖、奇福餅乾、奶粉、蔓越莓乾這 4 項還沒有資料**(舊資料也標「無資料」),
-  目前顯示 0,之後有真實數據要再補。
-- 反式脂肪特別注意:無鹽奶油(3.9g/100g)、依思尼無鹽奶油(2.2g)、各式動物性鮮奶油
-  (1.0~1.8g)、菲力鮮奶油乳酪(1.7g)、沙拉油(1.5g)、馬斯卡邦起司(1.0g)、焦糖醬(0.9g)
-  都**超過「可標0」的門檻(反式脂肪≤0.3g/100g 或總脂肪≤1.0g/100g)**,這些材料的食譜
-  營養標示上反式脂肪不能標 0,要顯示真實數值。
+- **公開的材料營養/過敏原資料庫是未來主力功能**:廠牌+規格+標示日期的市售品項資料,
+  是衛福部通用資料查不到的價值;做起來會有烘焙業者專程來查。SEO 屆時要考慮
+  預渲染(搬 Vercel)。
+- 待辦:標籤輸出(內容物依重量遞減+過敏原+有效日期)、半成品(食譜當材料引用)。
+- 需要帳戶系統才有意義的(末期):進貨紀錄/價格歷史、多工作室、商場綁定。
 
 ## 踩過的坑
 
-- **Apps Script 重新部署會換網址**:「管理部署作業 → 編輯現有部署 → 選新版本 → 部署」
-  才會保留原網址;如果用「新增部署作業」會產生全新網址,`config.js` 的 `SCRIPT_URL`
-  沒跟著改的話,前端還是打舊網址、吃不到新程式碼。已經因為這個踩過一次雷(commit `c158160`)。
-- **Apps Script 寫入邏輯目前是寫死欄位名稱**(`ingRows.push([n, i.packPrice, ..., p.kcal, ...])`),
-  每次資料結構加新欄位都要改程式碼+手動重新部署,使用者覺得很麻煩、也擔心漏部署導致資料被覆蓋
-  (`writeSheet()` 是整表 `clearContents()` 後重寫,舊欄位資料真的會被吃掉)。
-- **本機開發環境沒有安裝 Node/npm**,這個工作環境(Windows,Claude Code)沒辦法跑
-  `npm run build`/`npm run dev` 驗證,測試改用仔細看 diff + 追資料流的方式代替。
+- **本機網路的 DNS 不回應 SRV 查詢**(`mongodb+srv://` 需要):本機跑連線腳本要
+  `dns.setServers(['8.8.8.8'])`;Vercel/GitHub Actions 上不需要。
+- **Node 在 `C:\Program Files\nodejs\`**,安裝前就開著的終端機 PATH 沒刷新,
+  找不到 `node` 時用完整路徑或開新終端機;npm 有 allowScripts 政策,
+  esbuild 的 postinstall 被擋,跑 build 前先 `npm approve-scripts`。
+- **Atlas 密碼驗證失敗**時,到「Database Access」重設資料庫使用者密碼
+  (跟 Atlas 網站登入密碼是兩回事);連線字串裡不要留範本的角括號 `< >`。
 - **git 沒設全域身分**,commit 要用 `git -c user.name="shccgxqp" -c user.email="shccgxqp@gmail.com"`
-  inline 指定(照既有 commit 紀錄的作者),不要動 `git config --global`。
-
-## 進行中的決定:遷移到 MongoDB Atlas + Vercel
-
-使用者想擺脫 Google Sheets/Apps Script 這套(手動貼資料、手動重新部署太麻煩),決定改用：
-
-- **MongoDB Atlas M0 免費叢集**(512MB,永久免費)當資料庫。
-- **重要**:MongoDB Atlas 的 Data API 和 App Services(含 Functions、HTTPS Endpoints)
-  已於 **2025-09-30 正式下線**,不能再用這條路做寫入 API,官方也是叫大家自己架 API。
-- 因此改用 **Vercel(或 Netlify)Serverless Functions** 當中間層 API,連 MongoDB 驅動程式讀寫,
-  密碼驗證邏輯寫在 function 裡。Vercel 接上 GitHub repo 後**每次 git push 自動部署**,
-  這樣以後改後端程式碼(例如加新營養欄位)完全不需要使用者手動操作,直接 commit+push 生效——
-  這才是真正解決「太麻煩、常忘記部署」問題的做法。
-
-**目前卡在**:需要使用者自己完成兩個一次性帳號設定(我沒有瀏覽器操作能力,不能代勞):
-1. 註冊 MongoDB Atlas,開 M0 免費叢集,拿到連線字串。
-2. 註冊 Vercel,連結這個 GitHub repo。
-
-這兩步完成之後,才能繼續:設計 schema、把 `base.js` 資料搬進 MongoDB、重寫
-`sheet.js`/`sync.js`、砍掉舊的 Google Sheets/Apps Script 讀寫邏輯。
+  inline 指定,不要動 `git config --global`。
+- 疑似資料錯誤待確認:焙茶戚風蛋糕「蛋糕體」有一筆檸檬汁 200g,量異常大。
 
 ## 常用指令
 
 ```
-npm run dev      # 本機開發伺服器(此環境目前沒裝 node,需在使用者自己的機器上跑)
-npm run build    # build 到 dist/
+npm run dev                      # 本機開發伺服器
+npm run build                    # build 到 dist/
+node scripts/export-backup.mjs   # 手動備份資料庫到 backup/*.json
 ```

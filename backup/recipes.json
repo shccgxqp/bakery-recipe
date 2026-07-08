@@ -1,0 +1,1363 @@
+[
+  {
+    "_id": "0730fb02-2b9a-4400-863a-d94aff16a02e",
+    "name": "香蕉磅蛋糕",
+    "servings": 9,
+    "category": "蛋糕冷藏",
+    "price": 60,
+    "note": "",
+    "steps": [],
+    "bakes": [
+      "170°C 30~40分"
+    ],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "36aa8bb4-36b8-499c-af8e-d5fb2a68e3ef",
+        "grams": 375,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 240,
+        "layer": ""
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 165,
+        "layer": ""
+      },
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 75,
+        "layer": ""
+      },
+      {
+        "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
+        "grams": 75,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 60,
+        "layer": ""
+      },
+      {
+        "ingredientId": "27013fd1-17d1-4502-9603-c7bafbe955e4",
+        "grams": 75,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d41b55e1-8d9a-450a-bdeb-ae14596a4782",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3a83d6c5-80e3-4f05-9441-f0fc22a7ae5a",
+        "grams": 15,
+        "layer": ""
+      },
+      {
+        "ingredientId": "14eb8d38-2b47-4572-aa65-b04fbf3dd32d",
+        "grams": 5,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 7,
+        "layer": ""
+      },
+      {
+        "ingredientId": "34ac951e-00e1-47d9-b127-449de6eddcc9",
+        "grams": 2.5,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 3.5,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 160,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "07dbbb16-6e74-440c-aaef-0b9f301d411b",
+    "name": "可麗露",
+    "servings": 12,
+    "category": "餅乾常溫",
+    "price": 60,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 550,
+        "layer": ""
+      },
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "27013fd1-17d1-4502-9603-c7bafbe955e4",
+        "grams": 220,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 2,
+        "layer": ""
+      },
+      {
+        "ingredientId": "70d9946f-8694-4b94-a2cb-5fbf6bd44e4b",
+        "grams": 110,
+        "layer": ""
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 110,
+        "layer": ""
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "14eb8d38-2b47-4572-aa65-b04fbf3dd32d",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3800f388-41fc-472c-9005-6d2f7b48e336",
+        "grams": 15,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 5,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 80,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "1c926301-67ca-4a10-9b9e-18ad2add26fb",
+    "name": "焦糖伯爵紅茶蛋糕",
+    "servings": 8,
+    "category": "蛋糕冷藏",
+    "price": 110,
+    "note": "8吋蛋糕模",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "焦糖伯爵紅茶蛋糕 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=rGboMSc3Nr0&list=PLYcmjDnmiHO6I_VhipyLIw3Dpc3pRNFmj&index=15"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
+        "grams": 57,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "1e40d2d0-105b-43a0-b1fc-8b76fae363ec",
+        "grams": 9,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 85,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 89,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 89,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "d8b3cae2-b974-4b9d-adb4-97036cde6e16",
+        "grams": 169,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 80,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "60a849e6-9644-4e1b-9ce7-c553c214e41c",
+        "grams": 9,
+        "layer": "伯爵茶蛋糕片"
+      },
+      {
+        "ingredientId": "354fe373-ca04-4274-97d7-70c69d105d6a",
+        "grams": 160,
+        "layer": "焦糖鮮奶油"
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 71,
+        "layer": "焦糖鮮奶油"
+      },
+      {
+        "ingredientId": "2139d966-5100-4194-8228-a7e5aca16241",
+        "grams": 533,
+        "layer": "焦糖鮮奶油"
+      },
+      {
+        "ingredientId": "7266edcd-9bde-4581-b0e7-15aede89b2b6",
+        "grams": 178,
+        "layer": "焦糖鮮奶油"
+      }
+    ],
+    "sortOrder": 180,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "27f106b9-4d54-4707-ae87-af53283a8171",
+    "name": "費南雪",
+    "servings": 13,
+    "category": "餅乾常溫",
+    "price": 50,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "기본 휘낭시에 Plain Financier — 호야TV (YouTube)",
+        "url": "https://www.youtube.com/watch?v=5-NrkmYUYZc"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "d8b3cae2-b974-4b9d-adb4-97036cde6e16",
+        "grams": 124,
+        "layer": ""
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 126,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3800f388-41fc-472c-9005-6d2f7b48e336",
+        "grams": 12,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 2,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 48,
+        "layer": ""
+      },
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 125,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 100,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "4a83e050-0c26-4364-ab97-52ca9a3a7952",
+    "name": "馬卡龍",
+    "servings": 23,
+    "category": "餅乾常溫",
+    "price": 70,
+    "note": "",
+    "steps": [],
+    "bakes": [
+      "70°C 20分鐘結皮",
+      "150-160°C 16分鐘"
+    ],
+    "links": [
+      {
+        "title": "初學者馬卡龍(抹茶奶油夾心)(YouTube)",
+        "url": "https://www.youtube.com/watch?v=5lqotmZa-xc"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 84,
+        "layer": "馬卡龍麵糊"
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 84,
+        "layer": "馬卡龍麵糊"
+      },
+      {
+        "ingredientId": "d8b3cae2-b974-4b9d-adb4-97036cde6e16",
+        "grams": 84,
+        "layer": "馬卡龍麵糊"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 84,
+        "layer": "馬卡龍麵糊"
+      },
+      {
+        "ingredientId": "354fe373-ca04-4274-97d7-70c69d105d6a",
+        "grams": 80,
+        "layer": "果醬內餡"
+      },
+      {
+        "ingredientId": "36b4e873-9a6c-4100-9c1e-8c58944d6647",
+        "grams": 40,
+        "layer": "果醬內餡"
+      },
+      {
+        "ingredientId": "60a849e6-9644-4e1b-9ce7-c553c214e41c",
+        "grams": 5,
+        "layer": "果醬內餡"
+      }
+    ],
+    "sortOrder": 70,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "55d24a85-464c-4813-8236-1016ea1a857d",
+    "name": "雪Q餅",
+    "servings": 49,
+    "category": "餅乾常溫",
+    "price": null,
+    "note": "方形模21.5cm",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "6c125c54-5c67-474f-9019-e71d561c6bb8",
+        "grams": 200,
+        "layer": ""
+      },
+      {
+        "ingredientId": "80e15d70-8abc-4568-965a-c9e8757732b8",
+        "grams": 200,
+        "layer": ""
+      },
+      {
+        "ingredientId": "78dcb8c4-ad7c-4714-ac08-7ba1c404e6a2",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "e7b623e8-799f-47d3-b2d7-9d1915c72914",
+        "grams": 80,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 60,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "6150234a-5424-41d1-9637-8f57b1ac961c",
+    "name": "黑糖奶油棒",
+    "servings": 12,
+    "category": "餅乾常溫",
+    "price": 80,
+    "note": "方形模21.5cm",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "如此耐嚼👍完美的奶油糖果黃油棒(YouTube)",
+        "url": "https://www.youtube.com/watch?v=tTcFBrCDu6I&t=204s"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 160,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 25,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 42,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 1.7,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "459c1bef-8329-4ad2-aa20-a91527f09269",
+        "grams": 20,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 110,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 238,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "a135b48d-f830-4ade-a58c-4d77faedbc0c",
+        "grams": 263,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 2.5,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "459c1bef-8329-4ad2-aa20-a91527f09269",
+        "grams": 68,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 68,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 3.4,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "11327e75-ac66-4fe1-b612-b644095fefca",
+        "grams": 200,
+        "layer": "奶油層"
+      }
+    ],
+    "sortOrder": 10,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "67d3f3ca-1c27-4165-9a8c-a268334f1b32",
+    "name": "莎布蕾",
+    "servings": 35,
+    "category": "餅乾常溫",
+    "price": null,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 120,
+        "layer": ""
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 70,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 200,
+        "layer": ""
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 20,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 1,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 30,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 50,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "77d775ed-9b1f-40b0-9848-b96a83f5e776",
+    "name": "蛋黃醬",
+    "servings": 1,
+    "category": "醬料",
+    "price": null,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 400,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 80,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 5,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 200,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "786ed5e6-137c-4299-a005-3de0bbe9e972",
+    "name": "馬琳糖",
+    "servings": 80,
+    "category": "餅乾常溫",
+    "price": 1,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "d8b3cae2-b974-4b9d-adb4-97036cde6e16",
+        "grams": 80,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 80,
+        "layer": ""
+      },
+      {
+        "ingredientId": "eda0ce9a-b257-4778-801a-9e2e62453116",
+        "grams": 2,
+        "layer": ""
+      },
+      {
+        "ingredientId": "6fe5738b-cbbc-4f0e-9c8f-3f33dfb1656c",
+        "grams": 2,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 90,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "86fa8a6e-fb98-444a-bc3c-772c61892dfa",
+    "name": "雪球餅乾",
+    "servings": 35,
+    "category": "餅乾常溫",
+    "price": null,
+    "note": "",
+    "steps": [
+      "先將核桃切碎",
+      "用乾鍋以中小火輕炒核桃碎一分鐘，盛起放涼",
+      "把軟化的奶油，用攪拌勺攪至呈現奶油狀，質地有點像美奶茲",
+      "在奶油裡加入糖粉，並攪拌均勻",
+      "將低粉跟杏仁粉過篩加入，以切拌法拌到混合均勻",
+      "把核桃碎加入，用拌勺把麵團充份混勻",
+      "將麵團放在保鮮膜上，隔著保鮮膜壓揉，並整成長方型，送進冰箱冷藏半小時",
+      "把冰過的麵團切成21~24小份，每顆重量約6.5~7g，揉成圓球狀",
+      "烤箱以160˚C預熱，烘烤16~18分鐘，直到表面有淡淡的烤色",
+      "趁出爐的餅乾有一些熱度，立刻裏上一層糖粉，並放涼",
+      "在放涼後的雪球上再篩一些糖粉，就可以上桌了"
+    ],
+    "bakes": [
+      "160˚C預熱 16~18分鐘"
+    ],
+    "links": [
+      {
+        "title": "[食不相瞞]雪球餅乾食譜",
+        "url": "https://www.youtube.com/watch?v=Rs-x0mFSrPY&t=486s"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 52,
+        "layer": ""
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 15,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 58,
+        "layer": ""
+      },
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 22,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 1,
+        "layer": ""
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 20,
+        "layer": ""
+      },
+      {
+        "ingredientId": "89c77328-f6df-4585-b897-b4b02efa0a69",
+        "grams": 15,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 40,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "8b5f9b26-2f36-4508-8a55-0f36ab632921",
+    "name": "原味奶油棒",
+    "servings": 12,
+    "category": "餅乾常溫",
+    "price": 80,
+    "note": "方形模21.5cm",
+    "steps": [],
+    "bakes": [
+      "餅乾層 180°C 23分",
+      "奶油層 170°C 40分"
+    ],
+    "links": [
+      {
+        "title": "실패없는 버터바 만들기 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=3nAbbCQLbn0"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 160,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 40,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 40,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 1.7,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "459c1bef-8329-4ad2-aa20-a91527f09269",
+        "grams": 40,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 120,
+        "layer": "餅乾層"
+      },
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 300,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 230,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 4,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "459c1bef-8329-4ad2-aa20-a91527f09269",
+        "grams": 80,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 100,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "2139d966-5100-4194-8228-a7e5aca16241",
+        "grams": 48,
+        "layer": "奶油層"
+      },
+      {
+        "ingredientId": "11327e75-ac66-4fe1-b612-b644095fefca",
+        "grams": 234,
+        "layer": "奶油層"
+      }
+    ],
+    "sortOrder": 20,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "aa8bf531-7b53-477f-a890-7e9e2462d8d4",
+    "name": "司康",
+    "servings": 6,
+    "category": "餅乾常溫",
+    "price": null,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "司康做法 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=UyR1BD9M5Do"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 300,
+        "layer": ""
+      },
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 180,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3a83d6c5-80e3-4f05-9441-f0fc22a7ae5a",
+        "grams": 9,
+        "layer": ""
+      },
+      {
+        "ingredientId": "27013fd1-17d1-4502-9603-c7bafbe955e4",
+        "grams": 60,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 3,
+        "layer": ""
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 60,
+        "layer": ""
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 60,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 110,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "b361bf59-5710-427c-a992-2839d320dd76",
+    "name": "可爾必思生乳捲",
+    "servings": 8,
+    "category": "蛋糕冷藏",
+    "price": 60,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "日式捲餅(字幕解釋)(YouTube)",
+        "url": "https://www.youtube.com/watch?v=d_DpRm33QdY"
+      },
+      {
+        "title": "不掉皮蛋糕捲|濃郁起士生乳捲 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=_Q1ixxFxNqA&t=673s"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
+        "grams": 45,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 55,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3800f388-41fc-472c-9005-6d2f7b48e336",
+        "grams": 5,
+        "layer": ""
+      },
+      {
+        "ingredientId": "60a849e6-9644-4e1b-9ce7-c553c214e41c",
+        "grams": 3,
+        "layer": ""
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 45,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d714c64b-e1d8-4c5b-9c41-99eda133b460",
+        "grams": 300,
+        "layer": ""
+      },
+      {
+        "ingredientId": "489e8fd6-903e-4bdf-b0af-52410f157717",
+        "grams": 70,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 140,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "b9a5a8e7-815f-4f5d-8d3e-5be8e02ba246",
+    "name": "柳丁磅蛋糕",
+    "servings": 16,
+    "category": "蛋糕冷藏",
+    "price": 70,
+    "note": "",
+    "steps": [],
+    "bakes": [
+      "170°C 40分"
+    ],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "d27b8d79-54bf-4178-814b-c3b94f7eb2a6",
+        "grams": 300,
+        "layer": ""
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 165,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 280,
+        "layer": ""
+      },
+      {
+        "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 240,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3a83d6c5-80e3-4f05-9441-f0fc22a7ae5a",
+        "grams": 10,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d714c64b-e1d8-4c5b-9c41-99eda133b460",
+        "grams": 480,
+        "layer": ""
+      },
+      {
+        "ingredientId": "65a4ab22-fe5e-4f54-8101-2ab6dcbd71c4",
+        "grams": 12,
+        "layer": ""
+      },
+      {
+        "ingredientId": "489e8fd6-903e-4bdf-b0af-52410f157717",
+        "grams": 120,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d41b55e1-8d9a-450a-bdeb-ae14596a4782",
+        "grams": 70,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 150,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "bc433d48-c0c1-4037-bcbf-185cc102f25b",
+    "name": "焙茶戚風蛋糕",
+    "servings": 8,
+    "category": "蛋糕冷藏",
+    "price": 120,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "焙茶戚風 — Cookpad",
+        "url": "https://cookpad.com/jp/recipes/20310551"
+      },
+      {
+        "title": "鐵觀音茶香戚風蛋糕:烤出皇冠/劃線/判斷爐溫 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=tcCQaTpLeqg&t=3s"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 165,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 45,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "4ef86e49-ee27-4a56-89fb-4480ec01919c",
+        "grams": 43,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
+        "grams": 30,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 60,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "5c0e7df5-d0cd-4657-8c3a-02e9a54fde21",
+        "grams": 1,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "eda0ce9a-b257-4778-801a-9e2e62453116",
+        "grams": 8,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "60a849e6-9644-4e1b-9ce7-c553c214e41c",
+        "grams": 200,
+        "layer": "焙茶戚風蛋糕體"
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 42,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 42,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 16,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 10,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 2,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "ed2b5b52-0dd1-4b17-953f-e87ac60c4a31",
+        "grams": 160,
+        "layer": "卡士達鮮奶油內餡"
+      },
+      {
+        "ingredientId": "ed2b5b52-0dd1-4b17-953f-e87ac60c4a31",
+        "grams": 150,
+        "layer": "外層水果推薦"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 10,
+        "layer": "外層水果推薦"
+      },
+      {
+        "ingredientId": "36b4e873-9a6c-4100-9c1e-8c58944d6647",
+        "grams": 60,
+        "layer": "外層水果推薦"
+      }
+    ],
+    "sortOrder": 170,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "d71f656a-2bf3-4eab-921b-9a109fbcc198",
+    "name": "厚燒奶油酥餅",
+    "servings": 12,
+    "category": "餅乾常溫",
+    "price": 15,
+    "note": "",
+    "steps": [
+      "為了避免奶油融化,乾性材料(麵粉、糖粉、鹽、杏仁粉,以及紅茶口味的紅玉紅茶粉)秤在一起,進冷凍庫冰30分鐘以上。奶油切成小塊後,淋上香草醬、鮮奶油,進冷藏室冰30分鐘以上。(Pro Tip:奶油不要冰冷凍庫!溫度太低反而會讓麵團無法成團)",
+      "食物處理機內先加入乾性材料運轉30秒混合均勻,加入奶油碗,麵團一開始會呈現砂礫狀,不要擔心它不成團,繼續打2分鐘左右,當麵團開始成團後立即停止。",
+      "放在保鮮膜上來回整形成緊密的麵團(避免中心有孔洞),直徑約4cm的長條狀,移動到烘焙紙捲起來用刮板收成圓形。烘焙紙兩端扭轉收起,放進冷凍庫內冰兩小時以上。",
+      "不用退冰,直接切成一片1.5cm厚度,如果餅乾有變形的話這時候稍微在桌面滾一滾恢復圓形,用手捏著餅乾中心邊緣在粗砂糖的碗內滾一圈,沾滿糖粒。",
+      "烤盤上放洞洞矽膠墊,擺上餅乾,放中層以160/150度烤13分鐘,轉180/170度續烤10分鐘直到表面微微上色,總共烘烤23分鐘,出爐,完全放涼再移動至烤盤架上。(Pro Tip:山崎烤箱烤溫平均中途不需掉頭;若烤箱上色不均,第一階段結束請180度掉頭)"
+    ],
+    "bakes": [
+      "中層 160/150°C 13分鐘",
+      "180/170°C 續烤10分鐘(共23分鐘)"
+    ],
+    "links": [
+      {
+        "title": "厚燒奶油酥餅 / Galette au beurre — ciao.kitchen",
+        "url": "https://ciao.kitchen/thick-butter-cookies/"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "150279c8-0a80-4975-bc25-9db0b5a5e29e",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "cd6487dc-e0ef-4e23-adac-c1f7e1721394",
+        "grams": 30,
+        "layer": ""
+      },
+      {
+        "ingredientId": "70d9946f-8694-4b94-a2cb-5fbf6bd44e4b",
+        "grams": 70,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 30,
+        "layer": ""
+      },
+      {
+        "ingredientId": "fea94eff-1bd1-4e51-a3a4-83da4434d208",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 2,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d714c64b-e1d8-4c5b-9c41-99eda133b460",
+        "grams": 5,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 3,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 30,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "eaeb3c44-d70e-4cd9-8eaf-635077ecbcb1",
+    "name": "焦糖醬",
+    "servings": 1,
+    "category": "醬料",
+    "price": null,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [],
+    "items": [
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 213,
+        "layer": ""
+      },
+      {
+        "ingredientId": "2139d966-5100-4194-8228-a7e5aca16241",
+        "grams": 196,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 190,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "ecd72b68-085b-432a-8364-cef52a1b59dd",
+    "name": "起司蛋糕",
+    "servings": 8,
+    "category": "蛋糕冷藏",
+    "price": 70,
+    "note": "東京No.1起司蛋糕 Mr. Cheesecake 米其林三星主廚的夢幻甜點",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "Mr. Cheesecake 東京No.1起司蛋糕 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=_4q_Rn7_JgQ&t=339s"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "354fe373-ca04-4274-97d7-70c69d105d6a",
+        "grams": 225,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d714c64b-e1d8-4c5b-9c41-99eda133b460",
+        "grams": 280,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
+        "grams": 110,
+        "layer": ""
+      },
+      {
+        "ingredientId": "9ce099f1-ae2f-463a-8f0d-9a629c908940",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "eda0ce9a-b257-4778-801a-9e2e62453116",
+        "grams": 20,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d41b55e1-8d9a-450a-bdeb-ae14596a4782",
+        "grams": 50,
+        "layer": ""
+      },
+      {
+        "ingredientId": "60a849e6-9644-4e1b-9ce7-c553c214e41c",
+        "grams": 39,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 3,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 130,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  },
+  {
+    "_id": "fef0e3a7-19dc-4ca4-bef1-d473ab1cd712",
+    "name": "提拉米蘇",
+    "servings": 8,
+    "category": "蛋糕冷藏",
+    "price": 100,
+    "note": "",
+    "steps": [],
+    "bakes": [],
+    "links": [
+      {
+        "title": "食不相瞞 #96 義式經典提拉米蘇 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=IUt0l_QUGR0"
+      }
+    ],
+    "items": [
+      {
+        "ingredientId": "47779db8-dd96-4357-a42e-4328b1e07c34",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 53,
+        "layer": ""
+      },
+      {
+        "ingredientId": "b6a6d684-fa5a-4f71-967c-3ddd85fca821",
+        "grams": 340,
+        "layer": ""
+      },
+      {
+        "ingredientId": "ed2b5b52-0dd1-4b17-953f-e87ac60c4a31",
+        "grams": 120,
+        "layer": ""
+      },
+      {
+        "ingredientId": "14eb8d38-2b47-4572-aa65-b04fbf3dd32d",
+        "grams": 30,
+        "layer": ""
+      },
+      {
+        "ingredientId": "9211cc65-4f4e-49f3-9f17-6cff9aee984d",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3046a5e0-59d1-44af-af92-4490426b35e9",
+        "grams": 3,
+        "layer": ""
+      }
+    ],
+    "sortOrder": 120,
+    "createdAt": "2026-07-08T06:23:51.032Z",
+    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "finishedGrams": null,
+    "shelfLifeDays": null,
+    "storage": "",
+    "deletedAt": null
+  }
+]

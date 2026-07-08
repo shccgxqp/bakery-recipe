@@ -1,0 +1,31 @@
+# 每日自動備份 MongoDB → backup/*.json(見 docs/db-schema.md「每日自動備份」)
+# 需要在 repo Settings → Secrets and variables → Actions 新增 secret:MONGODB_URI
+name: backup-mongodb
+
+on:
+  schedule:
+    - cron: '0 20 * * *' # UTC 20:00 = 台灣時間早上 4 點
+  workflow_dispatch: {} # 也可以在 Actions 頁面手動觸發
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: node scripts/export-backup.mjs
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB: bakery-recipe-mongoDB
+      - name: Commit backup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backup
+          git diff --cached --quiet || git commit -m "chore: 每日資料備份 $(date -u +%F)"
+          git push

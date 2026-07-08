@@ -13,31 +13,50 @@ export const NUTR = [
   ['sodium', '鈉', '毫克', 0],
 ]
 
-/* 一道食譜 → 成本 + 營養 + 缺料清單 */
+/* 一道食譜 → 成本 + 營養 + 缺料/無營養資料清單(ING 以 _id 為 key)
+   材料 per100g === null 代表「尚無營養資料」,以 0 計並列入 noNutr 提示 */
 export function calc(recipe, ING) {
   const rows = []
   let cost = 0
   const tot = Object.fromEntries(NUTR.map(([k]) => [k, 0]))
   let grams = 0
   const missing = []
-  for (const [name, g, layer] of recipe.items) {
-    const ing = ING[name]
+  const noNutr = []
+  for (const it of recipe.items) {
+    const ing = ING[it.ingredientId]
+    const g = it.grams
     if (!ing) {
-      missing.push(name)
-      rows.push({ name, g, layer: layer || '', missing: true })
+      missing.push(it.ingredientId)
+      rows.push({ name: '(材料已刪除)', g, layer: it.layer || '', missing: true })
       continue
     }
-    const c = (g * ing.packPrice) / ing.packGrams
+    const c = (g * ing.packPrice) / (ing.packGrams || 1)
     cost += c
     grams += g
     const n = {}
     for (const [k] of NUTR) {
-      n[k] = ((ing.per100g[k] || 0) * g) / 100
+      n[k] = ((ing.per100g?.[k] || 0) * g) / 100
       tot[k] += n[k]
     }
-    rows.push({ name, g, layer: layer || '', cost: c, n })
+    if (ing.per100g == null) noNutr.push(ing.name)
+    rows.push({ name: ing.name, g, layer: it.layer || '', cost: c, n })
   }
-  return { rows, cost, tot, grams, missing }
+  return { rows, cost, tot, grams, missing, noNutr: [...new Set(noNutr)] }
+}
+
+/* 食譜過敏原標示 = 材料標註的聯集,即時計算、不落地儲存
+   has:含有;may:可能含有(交叉污染,已含有的不重複列) */
+export function allergenSummary(recipe, ING) {
+  const has = new Set()
+  const may = new Set()
+  for (const it of recipe.items) {
+    const ing = ING[it.ingredientId]
+    if (!ing) continue
+    for (const a of ing.allergens || []) has.add(a)
+    for (const a of ing.mayContain || []) may.add(a)
+  }
+  for (const a of has) may.delete(a)
+  return { has: [...has], may: [...may] }
 }
 
 /* 排序用指標:每份成本、利潤率(無售價回傳 null,排序時沉底) */
