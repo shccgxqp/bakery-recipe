@@ -29,10 +29,12 @@ function AllergenPicker({ list, value, onChange }) {
   )
 }
 
-export default function IngredientDialog({ ing, allergenList, onSave, onClose }) {
+export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSave, onClose }) {
   const [name, setName] = useState(ing?.name || '')
+  const [category, setCategory] = useState(ing?.category || '')
   const [brand, setBrand] = useState(ing?.brand || '')
   const [spec, setSpec] = useState(ing?.spec || '')
+  const [saving, setSaving] = useState(false)
   const [price, setPrice] = useState(ing?.packPrice ?? '')
   const [grams, setGrams] = useState(ing?.packGrams ?? '')
   const [noData, setNoData] = useState(ing ? ing.per100g == null : false)
@@ -45,24 +47,32 @@ export default function IngredientDialog({ ing, allergenList, onSave, onClose })
   const [labelDate, setLabelDate] = useState(ing?.labelDate || '')
   const [note, setNote] = useState(ing?.note || '')
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault()
     const nm = name.trim()
     if (!nm) return
     const v = x => { const f = parseFloat(x); return Number.isFinite(f) ? f : 0 }
-    onSave(ing || null, {
-      name: nm,
-      brand: brand.trim(),
-      spec: spec.trim(),
-      packPrice: v(price),
-      packGrams: Math.max(0.1, v(grams)),
-      per100g: noData ? null : Object.fromEntries(NUT_FIELDS.map(([k]) => [k, v(nut[k])])),
-      allergens,
-      mayContain,
-      subIngredients: subIngredients.trim(),
-      labelDate: labelDate || null,
-      note: note.trim(),
-    })
+    setSaving(true)
+    try {
+      await onSave(ing || null, {
+        name: nm,
+        category: category.trim() || '未分類',
+        brand: brand.trim(),
+        spec: spec.trim(),
+        packPrice: v(price),
+        packGrams: Math.max(0.1, v(grams)),
+        per100g: noData ? null : Object.fromEntries(NUT_FIELDS.map(([k]) => [k, v(nut[k])])),
+        allergens,
+        mayContain,
+        subIngredients: subIngredients.trim(),
+        labelDate: labelDate || null,
+        note: note.trim(),
+      })
+    } catch (err) {
+      alert('儲存失敗:' + err.message)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -71,8 +81,10 @@ export default function IngredientDialog({ ing, allergenList, onSave, onClose })
       onClose={onClose}
       footer={
         <>
-          <button type="button" className="btn" onClick={onClose}>取消</button>
-          <button type="submit" form="ing-form" className="btn btn-primary">儲存</button>
+          <button type="button" className="btn" onClick={onClose} disabled={saving}>取消</button>
+          <button type="submit" form="ing-form" className="btn btn-primary" disabled={saving}>
+            {saving ? '儲存中…' : '儲存'}
+          </button>
         </>
       }
     >
@@ -81,6 +93,14 @@ export default function IngredientDialog({ ing, allergenList, onSave, onClose })
           <div className="field sm:col-span-2">
             <label>材料名稱</label>
             <input value={name} onChange={e => setName(e.target.value)} required autoFocus />
+          </div>
+          <div className="field">
+            <label>分類</label>
+            <input value={category} onChange={e => setCategory(e.target.value)} list="ing-cat-list"
+              placeholder="例:乳製品" />
+            <datalist id="ing-cat-list">
+              {ingCatOrder.map(c => <option key={c} value={c} />)}
+            </datalist>
           </div>
           <div className="field">
             <label>廠牌(可空)</label>

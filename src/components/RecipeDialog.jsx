@@ -19,6 +19,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
   const [finishedGrams, setFinishedGrams] = useState(r?.finishedGrams ?? '')
   const [shelfLifeDays, setShelfLifeDays] = useState(r?.shelfLifeDays ?? '')
   const [storage, setStorage] = useState(r?.storage || '')
+  const [saving, setSaving] = useState(false)
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
   const ings = Object.values(ING)
@@ -27,7 +28,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
   const delItem = i => setItems(prev => prev.filter((_, j) => j !== i))
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault()
     const nm = name.trim()
     if (!nm) return
@@ -42,6 +43,17 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
     }
     const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean)
     const num = v => { const f = parseFloat(v); return Number.isFinite(f) && f > 0 ? f : null }
+    setSaving(true)
+    try {
+      await doSave(nm, rows, lines, num)
+    } catch (err) {
+      alert('儲存失敗:' + err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const doSave = (nm, rows, lines, num) =>
     onSave(r || null, {
       name: nm,
       servings: Math.max(1, parseInt(servings) || 1),
@@ -61,7 +73,6 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
       shelfLifeDays: num(shelfLifeDays),
       storage: storage.trim(),
     })
-  }
 
   return (
     <Dialog
@@ -69,8 +80,10 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
       onClose={onClose}
       footer={
         <>
-          <button type="button" className="btn" onClick={onClose}>取消</button>
-          <button type="submit" form="recipe-form" className="btn btn-primary">儲存</button>
+          <button type="button" className="btn" onClick={onClose} disabled={saving}>取消</button>
+          <button type="submit" form="recipe-form" className="btn btn-primary" disabled={saving}>
+            {saving ? '儲存中…' : '儲存'}
+          </button>
         </>
       }
     >

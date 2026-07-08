@@ -11,9 +11,9 @@ const SORTS = [
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
-  dataSource, editCount, syncStat, ingsMode, isEditor,
+  dataSource, ingsMode, isEditor,
   onLogin, onLogout,
-  onSelect, onNewRecipe, onToggleIngs, onPush, onReset,
+  onSelect, onNewRecipe, onToggleIngs,
 }) {
   const [collapsed, setCollapsed] = useState(false)
 
@@ -103,16 +103,6 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line p-3.5">
-        {isEditor && (
-          <div className="rounded-lg border border-yolk bg-yolk-soft px-2.5 py-2 text-[12.5px] leading-relaxed">
-            雲端同步:<b className="text-yolk">{syncStat}</b>
-            {editCount > 0 && <> · 待同步 {editCount} 筆</>}
-            <div className="mt-1.5 flex gap-1.5">
-              <button className="btn btn-sm flex-1" onClick={onPush}>☁ 立即寫入雲端</button>
-              {editCount > 0 && <button className="btn btn-sm btn-danger flex-1" onClick={onReset}>還原</button>}
-            </div>
-          </div>
-        )}
         <div className="flex gap-2">
           {isEditor && <button className="btn btn-primary flex-1" onClick={onNewRecipe}>＋ 新增食譜</button>}
           <button className={'btn flex-1 ' + (ingsMode ? 'btn-active' : '')} onClick={onToggleIngs}>材料主檔</button>

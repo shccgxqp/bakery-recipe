@@ -30,6 +30,7 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   packGrams: 500,               // 採購重量 g(成本 = 用量 × packPrice / packGrams)
 
   /* -- 公開參考資料(材料資料庫的主力內容)-- */
+  category: "乳製品",            // 分類,值取自 settings.ingCatOrder(台灣烘焙材料行通用分類)
   brand: "依思尼",               // 廠牌;'' = 無廠牌概念(如水、全蛋)
   spec: "",                     // 規格/型號(同廠同名不同型,如「35.1%乳脂」)
   per100g: {                    // 每 100g 營養;null = 尚無資料
@@ -91,6 +92,10 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   allergenList: [               // 台灣強制標示 11 類,驅動材料編輯表單(NUTR 模式)
     "甲殼類", "芒果", "花生", "牛奶羊奶", "蛋", "堅果",
     "芝麻", "含麩質之穀物", "大豆", "魚類", "亞硫酸鹽"
+  ],
+  ingCatOrder: [                // 材料分類顯示順序(台灣烘焙材料行通用分類)
+    "麵粉/澱粉", "糖/甜味劑", "乳製品", "蛋類", "油脂", "巧克力/可可",
+    "堅果/果乾", "水果", "茶/咖啡", "膨脹/凝固劑", "調味/香精/色素", "酒類", "其他"
   ]
 }
 ```

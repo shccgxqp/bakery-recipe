@@ -22,13 +22,16 @@ React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript)。
   匯出成 `backup/*.json` commit 進 repo。單向純備份,網站不讀這些檔案。
   需要 GitHub Secrets 的 `MONGODB_URI`。
 
-## 前端資料流
+## 前端資料流(直寫模式,2026-07-08 起)
 
 1. 開站 `GET /api/data` → 成功就存 localStorage 快取(`bakery-cache-v1`);
-   失敗 fallback 到上次快取(離線可用)。
-2. 使用者修改存 `bakery-edits-v2`(以 `_id` 為 key,`null` = 待刪除),
-   與 base 合併成有效資料;登入後編輯 1.5 秒防抖自動同步,成功後以伺服器回讀為準。
+   失敗 fallback 到上次快取(離線唯讀)。
+2. **按「儲存」直接寫資料庫**(對話框 await,失敗留在原地顯示錯誤、儲存中鎖按鈕),
+   成功後整份重新讀取。沒有本機暫存層、沒有防抖同步(舊的 `bakery-edits-v*` 已廢棄,
+   開站會清掉)。
 3. 新資料的 `_id` 由前端 `crypto.randomUUID()` 產生。
+4. 材料頁:前端即時搜尋(名稱/廠牌/規格/分類子字串)+ 依 `settings.ingCatOrder`
+   分類區段顯示;資料量小,搜尋排序都在前端做,不動後端。
 
 ## 核心資料結構(詳見 docs/db-schema.md)
 
