@@ -12,8 +12,8 @@ export const MOLD_SHAPES = [
 
 export const shapeName = s => MOLD_SHAPES.find(([k]) => k === s)?.[1] || s
 
-/* 容積 cm³ */
-export function moldVolume(m) {
+/* 單穴容積 cm³ */
+function cavityVolume(m) {
   const d = m.dims || {}
   switch (m.shape) {
     case 'round':
@@ -30,21 +30,29 @@ export function moldVolume(m) {
   }
 }
 
-/* 尺寸描述文字,如「Ø15.2×高7cm」 */
+/* 總容積 cm³ = 單穴容積 × 連穴數(count 預設 1;食譜一份對應一整模,含全部穴數) */
+export function moldVolume(m) {
+  return cavityVolume(m) * (m.count || 1)
+}
+
+/* 尺寸描述文字,如「Ø15.2×高7cm」;連模附註穴數 */
 export function moldDimsText(m) {
   const d = m.dims || {}
   const n = v => (Number.isFinite(v) ? +v.toFixed(1) : '?')
-  switch (m.shape) {
-    case 'round':
-    case 'tart':
-      return `Ø${n(d.d)}×高${n(d.h)}cm`
-    case 'square':
-      return `${n(d.w)}×${n(d.w)}×高${n(d.h)}cm`
-    case 'rect':
-      return `${n(d.l)}×${n(d.w)}×高${n(d.h)}cm`
-    case 'tube':
-      return `Ø${n(d.d)}(中柱Ø${n(d.innerD)})×高${n(d.h)}cm`
-    default:
-      return '手動容積'
-  }
+  const base = (() => {
+    switch (m.shape) {
+      case 'round':
+      case 'tart':
+        return `Ø${n(d.d)}×高${n(d.h)}cm`
+      case 'square':
+        return `${n(d.w)}×${n(d.w)}×高${n(d.h)}cm`
+      case 'rect':
+        return `${n(d.l)}×${n(d.w)}×高${n(d.h)}cm`
+      case 'tube':
+        return `Ø${n(d.d)}(中柱Ø${n(d.innerD)})×高${n(d.h)}cm`
+      default:
+        return '手動容積'
+    }
+  })()
+  return m.count > 1 ? `${base} ×${m.count}穴` : base
 }

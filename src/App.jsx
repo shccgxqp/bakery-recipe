@@ -236,7 +236,7 @@ export default function App() {
         {view === 'changelog' ? (
           <ChangelogView />
         ) : view === 'molds' ? (
-          <MoldsView molds={MOLDS} RCP={RCP} isEditor={isEditor}
+          <MoldsView molds={MOLDS} isEditor={isEditor}
             onEdit={id => setDlg({ type: 'mold', id })}
             onAdd={() => setDlg({ type: 'mold', id: null })}
             onDelete={deleteMold} />

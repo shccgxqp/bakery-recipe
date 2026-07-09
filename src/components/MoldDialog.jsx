@@ -24,6 +24,8 @@ function DiaInput({ label, value, unit, setValue, setUnit }) {
 
 export default function MoldDialog({ mold, onSave, onClose }) {
   const [name, setName] = useState(mold?.name || '')
+  const [brand, setBrand] = useState(mold?.brand || '')
+  const [count, setCount] = useState(mold?.count ?? 1)
   const [shape, setShape] = useState(mold?.shape || 'round')
   const [dia, setDia] = useState(mold?.dims?.d ?? '')
   const [diaUnit, setDiaUnit] = useState('cm')
@@ -45,7 +47,10 @@ export default function MoldDialog({ mold, onSave, onClose }) {
       : shape === 'rect' ? { l: v(len), w: v(wid), h: v(hei) }
       : shape === 'tube' ? { d: toCm(dia, diaUnit), innerD: v(innerD), h: v(hei) }
       : {}
-    return { name: name.trim(), shape, dims, volume: shape === 'other' ? v(vol) : null, note: note.trim() }
+    return {
+      name: name.trim(), brand: brand.trim(), count: Math.max(1, parseInt(count, 10) || 1),
+      shape, dims, volume: shape === 'other' ? v(vol) : null, note: note.trim(),
+    }
   }
 
   const preview = moldVolume(buildDoc())
@@ -81,11 +86,19 @@ export default function MoldDialog({ mold, onSave, onClose }) {
       <form id="mold-form" onSubmit={submit}>
         <div className="grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">
           <div className="field sm:col-span-2">
-            <label>模具名稱(品牌寫這裡即可,計算只看尺寸)</label>
+            <label>模具名稱(不含廠牌,廠牌另外填)</label>
             <input value={name} onChange={e => setName(e.target.value)} required autoFocus
-              placeholder="例:三能 6吋活動圓模" />
+              placeholder="例:6吋活動圓模" />
           </div>
           <div className="field">
+            <label>廠牌(可空)</label>
+            <input value={brand} onChange={e => setBrand(e.target.value)} placeholder="例:三能" />
+          </div>
+          <div className="field">
+            <label>連穴數(單模幾穴;非連模填1)</label>
+            <input type="number" min="1" step="1" value={count} onChange={e => setCount(e.target.value)} />
+          </div>
+          <div className="field sm:col-span-2">
             <label>形狀</label>
             <select value={shape} onChange={e => setShape(e.target.value)}
               className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm">

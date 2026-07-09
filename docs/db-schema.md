@@ -90,7 +90,10 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 ```js
 {
   _id: "uuid…",
-  name: "三能 6吋活動圓模",     // 品牌寫在名稱當識別,計算只看尺寸
+  name: "6吋活動圓模",          // 不含廠牌(廠牌獨立欄,可搜尋)
+  brand: "三能",                // 選填,'' = 無品牌
+  count: 1,                    // 連穴數;非連模固定 1。食譜一份對應「一整模」
+                               // (含全部穴數),故總容積 = 單穴容積 × count
   shape: "round",              // round|square|rect|tube|tart|other
   dims: { d: 15.2, h: 7 },     // 公分;round/tart:{d,h} square:{w,h}
                                // rect:{l,w,h} tube:{d,innerD,h} other:{}
