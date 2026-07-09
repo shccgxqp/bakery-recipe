@@ -13,6 +13,17 @@
 
 ---
 
+## 3.2.0 — 2026-07-09
+
+- 營養標示 PNG 下載(canvas 繪製,免責聲明烙印圖片下緣);
+  標示表補「每日參考值百分比」欄與參考值註腳(NUTR 陣列加第 5 欄 DV 值)
+- 材料漲價模擬(`PriceSim.jsx`,材料頁內收合面板)
+- 多食譜合併採購清單(`ShoppingDialog.jsx`,同材料合併、依材料分類排列)
+- 使用者版更新紀錄頁(`ChangelogView.jsx`,資料源 `src/data/releases.js`,
+  側欄版本號點擊進入;**bump 版本時 releases.js 也要加一筆**)
+- 資料匯出:全庫 JSON 備份 + 材料 CSV(含 BOM,Excel 可開)
+- PWA:manifest + service worker(shell 採 stale-while-revalidate,/api/ 不快取)
+
 ## 3.1.0 — 2026-07-08
 
 - 材料主檔:即時搜尋(名稱/廠牌/規格/分類),結果依分類分區段顯示

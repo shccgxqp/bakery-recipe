@@ -5,8 +5,11 @@ import { loadData, pushData, verifyPassword } from './lib/api.js'
 import Sidebar from './components/Sidebar.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
+import ChangelogView from './components/ChangelogView.jsx'
 import RecipeDialog from './components/RecipeDialog.jsx'
 import IngredientDialog from './components/IngredientDialog.jsx'
+import ShoppingDialog from './components/ShoppingDialog.jsx'
+import { exportBackupJSON } from './lib/exportData.js'
 
 function loadCache() {
   try {
@@ -21,9 +24,9 @@ export default function App() {
   const [dataSource, setDataSource] = useState('讀取中…')
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
-  const [view, setView] = useState('recipe') // recipe | ings
+  const [view, setView] = useState('recipe') // recipe | ings | changelog
   const [selId, setSelId] = useState(null)
-  const [dlg, setDlg] = useState(null) // {type:'recipe',recipe|null} | {type:'ing',id|null}
+  const [dlg, setDlg] = useState(null) // {type:'recipe',recipe|null} | {type:'ing',id|null} | {type:'shopping'}
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
 
@@ -202,10 +205,15 @@ export default function App() {
         onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
         onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
         ingsMode={view === 'ings'}
+        onShopping={() => setDlg({ type: 'shopping' })}
+        onExportJSON={() => exportBackupJSON(base)}
+        onChangelog={() => setView('changelog')}
       />
       <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
-        {view === 'ings' ? (
-          <IngredientsView ING={ING} ingCatOrder={ingCatOrder} isEditor={isEditor}
+        {view === 'changelog' ? (
+          <ChangelogView />
+        ) : view === 'ings' ? (
+          <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
             onEdit={id => setDlg({ type: 'ing', id })}
             onAdd={() => setDlg({ type: 'ing', id: null })}
             onDelete={deleteIng} />
@@ -229,6 +237,9 @@ export default function App() {
         <IngredientDialog ing={dlg.id ? ING[dlg.id] : null}
           allergenList={allergenList} ingCatOrder={ingCatOrder}
           onSave={saveIng} onClose={() => setDlg(null)} />
+      )}
+      {dlg?.type === 'shopping' && (
+        <ShoppingDialog ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} onClose={() => setDlg(null)} />
       )}
     </div>
   )

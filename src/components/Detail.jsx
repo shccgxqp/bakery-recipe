@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { calc, fmt, NUTR, groupByLayer, allergenSummary } from '../lib/calc.js'
+import { calc, fmt, NUTR, DV_NOTE, groupByLayer, allergenSummary } from '../lib/calc.js'
 import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
+import { downloadNutritionLabel } from '../lib/labelImage.js'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計 */
 function FragmentSection({ sec, hasLayers, subG, subC }) {
@@ -197,17 +198,23 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
             <div className="meta">本品每份 {fmt(labelGrams / s)} 公克 · 本包裝含 {s} 份</div>
             <table>
               <tbody>
-                <tr className="hd"><td></td><td className="num">每份</td><td className="num">每100公克</td></tr>
-                {NUTR.map(([k, zh, unit, d]) => (
+                <tr className="hd"><td></td><td className="num">每份</td><td className="num">每100公克</td><td className="num">每日參考值%</td></tr>
+                {NUTR.map(([k, zh, unit, d, dv]) => (
                   <tr key={k}>
                     <td>{zh}</td>
                     <td className="num">{fmt(c.tot[k] / s, d)} {unit}</td>
                     <td className="num">{fmt((c.tot[k] * 100) / Math.max(labelGrams, 1), d)} {unit}</td>
+                    <td className="num">{dv ? fmt((c.tot[k] / s / dv) * 100) + '%' : '＊'}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className="meta">＊參考值未訂定。{DV_NOTE}</div>
           </div>
+
+          <button className="btn btn-sm mt-2 print:hidden" onClick={() => downloadNutritionLabel(r, c, al)}>
+            ⬇ 下載營養標示圖片
+          </button>
 
           {(al.has.length > 0 || al.may.length > 0) && (
             <div className="mt-3 max-w-[340px] rounded-md border border-line bg-white px-3 py-2 text-[12.5px] leading-relaxed">

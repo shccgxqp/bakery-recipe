@@ -1,10 +1,13 @@
 import { useState, useMemo } from 'react'
 import { fmt } from '../lib/calc.js'
+import { exportIngredientsCSV } from '../lib/exportData.js'
+import PriceSim from './PriceSim.jsx'
 
 /* 材料主檔:搜尋(名稱/廠牌/規格/分類)+ 依分類區段顯示
    資料量小(全載入),搜尋與分組都在前端即時完成 */
-export default function IngredientsView({ ING, ingCatOrder, isEditor, onEdit, onAdd, onDelete }) {
+export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdit, onAdd, onDelete }) {
   const [q, setQ] = useState('')
+  const [simOpen, setSimOpen] = useState(false)
 
   const { sections, total, shown } = useMemo(() => {
     const list = Object.values(ING)
@@ -41,12 +44,15 @@ export default function IngredientsView({ ING, ingCatOrder, isEditor, onEdit, on
         <span className="text-[13px] text-ink-soft">
           {q.trim() ? `符合 ${shown} / ${total} 筆` : `共 ${total} 筆`}
         </span>
-        {isEditor && (
-          <span className="ml-auto">
-            <button className="btn btn-sm btn-primary" onClick={onAdd}>＋ 新增材料</button>
-          </span>
-        )}
+        <span className="ml-auto flex flex-wrap gap-2">
+          <button className={'btn btn-sm ' + (simOpen ? 'btn-active' : '')}
+            onClick={() => setSimOpen(v => !v)}>📈 漲價模擬</button>
+          <button className="btn btn-sm" onClick={() => exportIngredientsCSV(ING)}>⬇ CSV</button>
+          {isEditor && <button className="btn btn-sm btn-primary" onClick={onAdd}>＋ 新增材料</button>}
+        </span>
       </div>
+
+      {simOpen && <PriceSim ING={ING} RCP={RCP} />}
 
       <div className="mt-4 max-w-md">
         <input

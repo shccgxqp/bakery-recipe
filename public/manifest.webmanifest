@@ -1,0 +1,13 @@
+{
+  "name": "烘焙帳本",
+  "short_name": "烘焙帳本",
+  "description": "甜點食譜 + 成本/營養/過敏原計算",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf6ef",
+  "theme_color": "#e0a10b",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

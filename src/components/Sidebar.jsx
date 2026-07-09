@@ -15,6 +15,7 @@ export default function Sidebar({
   dataSource, ingsMode, isEditor,
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs,
+  onShopping, onExportJSON, onChangelog,
 }) {
   const [collapsed, setCollapsed] = useState(false)
 
@@ -108,12 +109,17 @@ export default function Sidebar({
           {isEditor && <button className="btn btn-primary flex-1" onClick={onNewRecipe}>＋ 新增食譜</button>}
           <button className={'btn flex-1 ' + (ingsMode ? 'btn-active' : '')} onClick={onToggleIngs}>材料主檔</button>
         </div>
+        <div className="flex gap-2">
+          <button className="btn btn-sm flex-1" onClick={onShopping}>🛒 採購清單</button>
+          <button className="btn btn-sm flex-1" onClick={onExportJSON} title="下載全部資料的 JSON 備份">⬇ 備份</button>
+        </div>
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
         </div>
-        <div className="text-center font-mono text-[10.5px] text-ink-soft/70" title="版本紀錄見 CHANGELOG.md">
-          v{APP_VERSION}
-        </div>
+        <button className="text-center font-mono text-[10.5px] text-ink-soft/70 underline decoration-dotted underline-offset-2 hover:text-ink"
+          onClick={onChangelog} title="看每一版更新了什麼">
+          v{APP_VERSION} · 更新紀錄
+        </button>
         {isEditor ? (
           <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>
             登出編輯模式
