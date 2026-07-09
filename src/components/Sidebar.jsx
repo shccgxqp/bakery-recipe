@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { calc, metrics, fmt } from '../lib/calc.js'
 import { APP_VERSION } from '../config.js'
+import Chip from './Chip.jsx'
 
 const SORTS = [
   ['category', '分類'],
@@ -54,26 +55,16 @@ export default function Sidebar({
 
       <div className="flex flex-wrap gap-1 px-3.5 pb-2 pt-2">
         {SORTS.map(([key, label]) => (
-          <button key={key} onClick={() => setSortBy(key)}
-            className={'rounded-full border px-2.5 py-0.5 text-[11.5px] ' +
-              (sortBy === key ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
-            {label}
-          </button>
+          <Chip key={key} size="sm" active={sortBy === key} onClick={() => setSortBy(key)}>{label}</Chip>
         ))}
-        <button onClick={() => setAllergyOpen(v => !v)}
-          className={'rounded-full border px-2.5 py-0.5 text-[11.5px] ' +
-            (excludeAllergens.size > 0 ? 'border-warn text-warn font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
+        <Chip size="sm" tone="warn" active={excludeAllergens.size > 0} onClick={() => setAllergyOpen(v => !v)}>
           ⚠ 排除過敏原{excludeAllergens.size > 0 ? `(${excludeAllergens.size})` : ''}
-        </button>
+        </Chip>
       </div>
       {allergyOpen && (
         <div className="flex flex-wrap gap-1 px-3.5 pb-2">
           {allergenList.map(a => (
-            <button key={a} onClick={() => toggleAllergen(a)}
-              className={'rounded-full border px-2 py-0.5 text-[11px] ' +
-                (excludeAllergens.has(a) ? 'border-warn bg-warn/10 font-bold text-warn' : 'border-line text-ink-soft hover:border-yolk')}>
-              {a}
-            </button>
+            <Chip key={a} size="sm" tone="warn" active={excludeAllergens.has(a)} onClick={() => toggleAllergen(a)}>{a}</Chip>
           ))}
         </div>
       )}

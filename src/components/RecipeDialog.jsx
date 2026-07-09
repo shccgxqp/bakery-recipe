@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Dialog from './Dialog.jsx'
+import { toast } from '../lib/toast.js'
 
 export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClose }) {
   const [name, setName] = useState(r?.name || '')
@@ -44,10 +45,10 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
     const rows = items
       .map(it => ({ n: it.n.trim(), g: parseFloat(it.g), layer: (it.layer || '').trim() }))
       .filter(it => it.n && it.g > 0)
-    if (!rows.length) { alert('至少填一項材料與用量。'); return }
+    if (!rows.length) { toast('至少填一項材料與用量。', { type: 'error' }); return }
     const unknown = [...new Set(rows.filter(it => !idByName[it.n]).map(it => it.n))]
     if (unknown.length) {
-      alert(`材料主檔找不到:${unknown.join('、')}。請先到「材料主檔」新增,再回來儲存。`)
+      toast(`材料主檔找不到:${unknown.join('、')}。請先到「材料主檔」新增,再回來儲存。`, { type: 'error' })
       return
     }
     const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean)
@@ -56,7 +57,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
     try {
       await doSave(nm, rows, lines, num)
     } catch (err) {
-      alert('儲存失敗:' + err.message)
+      toast('儲存失敗:' + err.message, { type: 'error' })
     } finally {
       setSaving(false)
     }

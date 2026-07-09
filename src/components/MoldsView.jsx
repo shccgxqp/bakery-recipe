@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { fmt } from '../lib/calc.js'
 import { MOLD_SHAPES, shapeName, moldVolume, moldDimsText } from '../lib/molds.js'
 import { LENGTH_UNITS, loadUnitPref, saveUnitPref } from '../lib/units.js'
+import Chip from './Chip.jsx'
 
 /* 模具庫:幾何制模具主檔(配方換算的基礎)
    分類:依形狀分組(圓模/方模/…),組內容積由小到大排列;搜尋比對名稱/廠牌/備註。 */
@@ -49,11 +50,7 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
         <div className="flex gap-1">
           <span className="mr-1 self-center text-[12px] text-ink-soft">尺寸單位</span>
           {LENGTH_UNITS.map(([k, zh]) => (
-            <button key={k} type="button" onClick={() => changeUnit(k)}
-              className={'rounded-full border px-2.5 py-0.5 text-[12px] ' +
-                (unit === k ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
-              {zh}
-            </button>
+            <Chip key={k} active={unit === k} onClick={() => changeUnit(k)}>{zh}</Chip>
           ))}
         </div>
       </div>

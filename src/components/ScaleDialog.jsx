@@ -3,6 +3,8 @@ import Dialog from './Dialog.jsx'
 import { fmt } from '../lib/calc.js'
 import { moldVolume, moldDimsText } from '../lib/molds.js'
 import { loadUnitPref } from '../lib/units.js'
+import Chip from './Chip.jsx'
+import { toast } from '../lib/toast.js'
 
 /* 配方換算:按份數(任何食譜)或按模具(食譜需綁定模具)
    結果唯讀+可複製;倍率僅供參考,烤溫烤時需人工調整 */
@@ -56,7 +58,7 @@ export default function ScaleDialog({ recipe: r, ING, molds, onClose }) {
       await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
-    } catch { alert('複製失敗,瀏覽器不支援剪貼簿權限。') }
+    } catch { toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' }) }
   }
 
   return (
@@ -74,11 +76,7 @@ export default function ScaleDialog({ recipe: r, ING, molds, onClose }) {
     >
       <div className="flex gap-1.5">
         {[['servings', '按份數'], ['mold', '按模具']].map(([k, zh]) => (
-          <button key={k} type="button" onClick={() => setMode(k)}
-            className={'rounded-full border px-3 py-1 text-[13px] ' +
-              (mode === k ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
-            {zh}
-          </button>
+          <Chip key={k} size="lg" active={mode === k} onClick={() => setMode(k)}>{zh}</Chip>
         ))}
       </div>
 

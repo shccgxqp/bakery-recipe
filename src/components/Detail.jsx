@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { calc, fmt, NUTR, DV_NOTE, groupByLayer, allergenSummary } from '../lib/calc.js'
 import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 import { downloadNutritionLabel } from '../lib/labelImage.js'
+import { toast } from '../lib/toast.js'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計 */
 function FragmentSection({ sec, hasLayers, subG, subC }) {
@@ -75,7 +76,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {
-      alert('複製失敗,瀏覽器不支援剪貼簿權限。')
+      toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
     }
   }
   const shareToLine = () => {

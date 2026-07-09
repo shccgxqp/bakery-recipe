@@ -13,6 +13,10 @@ import IngredientDialog from './components/IngredientDialog.jsx'
 import ShoppingDialog from './components/ShoppingDialog.jsx'
 import MoldDialog from './components/MoldDialog.jsx'
 import ScaleDialog from './components/ScaleDialog.jsx'
+import LoginDialog from './components/LoginDialog.jsx'
+import ToastHost from './components/ToastHost.jsx'
+import Skeleton from './components/Skeleton.jsx'
+import { toast } from './lib/toast.js'
 import { exportBackupJSON } from './lib/exportData.js'
 
 function loadCache() {
@@ -125,28 +129,21 @@ export default function App() {
     await refresh()
   }, [refresh])
 
-  /* ---- 登入 / 登出 ---- */
-  const login = useCallback(async () => {
-    const pw = prompt('輸入編輯密碼:')
-    if (!pw) return
-    try {
-      const ok = await verifyPassword(pw)
-      if (!ok) { alert('密碼錯誤'); return }
+  /* ---- 登入 / 登出:LoginDialog 送出密碼 → doLogin 驗證,錯誤顯示在對話框內(不用 alert) ---- */
+  const doLogin = useCallback(async pw => {
+    const ok = await verifyPassword(pw)
+    if (ok) {
       setAuth(pw)
       localStorage.setItem(AUTH_KEY, pw)
-    } catch (err) {
-      alert('驗證失敗:' + err.message)
     }
+    return ok
   }, [])
   const logout = useCallback(() => {
     setAuth('')
     localStorage.removeItem(AUTH_KEY)
   }, [])
-  /* 首頁「登入編輯」:登入成功後直接進站,不用登入完再按一次「進入瀏覽」 */
-  const loginFromLanding = useCallback(async () => {
-    await login()
-    if (localStorage.getItem(AUTH_KEY)) setView('recipe')
-  }, [login])
+  /* enterAfter:首頁「登入編輯」登入成功後直接進站,不用登入完再按一次「進入瀏覽」 */
+  const openLogin = (enterAfter = false) => setDlg({ type: 'login', enterAfter })
 
   /* ---- 資料操作(全部以 _id 為 key;新資料由前端產生 UUID) ----
      save 由對話框 await,失敗時對話框留在原地顯示錯誤 */
@@ -169,7 +166,7 @@ export default function App() {
     try {
       await write({ deletes: { recipes: [r._id] } })
       if (selId === r._id) setSelId(null)
-    } catch (err) { alert('刪除失敗:' + err.message) }
+    } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   const saveMold = async (orig, obj) => {
     const _id = orig?._id || crypto.randomUUID()
@@ -186,7 +183,7 @@ export default function App() {
     if (!confirm(msg)) return
     try {
       await write({ deletes: { molds: [id] } })
-    } catch (err) { alert('刪除失敗:' + err.message) }
+    } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   const deleteIng = async id => {
     const ing = ING[id]
@@ -198,7 +195,7 @@ export default function App() {
     if (!confirm(msg)) return
     try {
       await write({ deletes: { ingredients: [id] } })
-    } catch (err) { alert('刪除失敗:' + err.message) }
+    } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
 
   /* ---- 鍵盤:↑↓ 切換、/ 搜尋 ---- */
@@ -226,81 +223,98 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [dlg, flat, selected])
 
-  if (view === 'landing') {
-    return (
-      <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
-        onEnter={() => setView('recipe')}
-        onLogin={loginFromLanding} />
-    )
-  }
+  /* 冷啟動(無快取)資料還在讀時秀骨架屏;有快取則沿用現行「先顯示快取,背景刷新」 */
+  const coldLoading = view !== 'landing' && dataSource === '讀取中…' && RCP.length === 0
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
-      <Sidebar
-        groups={groups} ING={ING} RCP={RCP}
-        selected={view === 'recipe' ? selected?._id : null}
-        query={query} setQuery={setQuery} searchRef={searchRef}
-        sortBy={sortBy} setSortBy={setSortBy}
-        allergenList={allergenList}
-        excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
-        dataSource={dataSource} isEditor={isEditor}
-        onLogin={login} onLogout={logout}
-        onSelect={id => { setSelId(id); setView('recipe') }}
-        onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
-        onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
-        ingsMode={view === 'ings'}
-        onToggleMolds={() => setView(view === 'molds' ? 'recipe' : 'molds')}
-        moldsMode={view === 'molds'}
-        onShopping={() => setDlg({ type: 'shopping' })}
-        onExportJSON={() => exportBackupJSON(base)}
-        onChangelog={() => setView('changelog')}
-      />
-      <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
-        {view === 'changelog' ? (
-          <ChangelogView />
-        ) : view === 'molds' ? (
-          <MoldsView molds={MOLDS} isEditor={isEditor}
-            onEdit={id => setDlg({ type: 'mold', id })}
-            onAdd={() => setDlg({ type: 'mold', id: null })}
-            onDelete={deleteMold} />
-        ) : view === 'ings' ? (
-          <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
-            onEdit={id => setDlg({ type: 'ing', id })}
-            onAdd={() => setDlg({ type: 'ing', id: null })}
-            onDelete={deleteIng} />
-        ) : selected ? (
-          <Detail recipe={selected} ING={ING} isEditor={isEditor}
-            mold={MOLDS.find(m => m._id === selected.moldId) || null}
-            onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
-            onDelete={() => deleteRecipe(selected)}
-            onScale={() => setDlg({ type: 'scale' })} />
-        ) : (
-          <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
-        )}
-        <p className="mt-7 hidden text-xs text-ink-soft md:block print:hidden">
-          小技巧:<kbd>↑</kbd> <kbd>↓</kbd> 在清單中切換甜點,<kbd>/</kbd> 跳到搜尋。
-        </p>
-      </main>
+    <>
+      {view === 'landing' ? (
+        <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
+          onEnter={() => setView('recipe')}
+          onLogin={() => openLogin(true)} />
+      ) : coldLoading ? (
+        <Skeleton />
+      ) : (
+        <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
+          <Sidebar
+            groups={groups} ING={ING} RCP={RCP}
+            selected={view === 'recipe' ? selected?._id : null}
+            query={query} setQuery={setQuery} searchRef={searchRef}
+            sortBy={sortBy} setSortBy={setSortBy}
+            allergenList={allergenList}
+            excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
+            dataSource={dataSource} isEditor={isEditor}
+            onLogin={() => openLogin(false)} onLogout={logout}
+            onSelect={id => { setSelId(id); setView('recipe') }}
+            onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
+            onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
+            ingsMode={view === 'ings'}
+            onToggleMolds={() => setView(view === 'molds' ? 'recipe' : 'molds')}
+            moldsMode={view === 'molds'}
+            onShopping={() => setDlg({ type: 'shopping' })}
+            onExportJSON={() => exportBackupJSON(base)}
+            onChangelog={() => setView('changelog')}
+          />
+          <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
+            {view === 'changelog' ? (
+              <ChangelogView />
+            ) : view === 'molds' ? (
+              <MoldsView molds={MOLDS} isEditor={isEditor}
+                onEdit={id => setDlg({ type: 'mold', id })}
+                onAdd={() => setDlg({ type: 'mold', id: null })}
+                onDelete={deleteMold} />
+            ) : view === 'ings' ? (
+              <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
+                onEdit={id => setDlg({ type: 'ing', id })}
+                onAdd={() => setDlg({ type: 'ing', id: null })}
+                onDelete={deleteIng} />
+            ) : selected ? (
+              <Detail recipe={selected} ING={ING} isEditor={isEditor}
+                mold={MOLDS.find(m => m._id === selected.moldId) || null}
+                onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
+                onDelete={() => deleteRecipe(selected)}
+                onScale={() => setDlg({ type: 'scale' })} />
+            ) : (
+              <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
+            )}
+            <p className="mt-7 hidden text-xs text-ink-soft md:block print:hidden">
+              小技巧:<kbd>↑</kbd> <kbd>↓</kbd> 在清單中切換甜點,<kbd>/</kbd> 跳到搜尋。
+            </p>
+          </main>
 
-      {dlg?.type === 'recipe' && (
-        <RecipeDialog recipe={dlg.recipe} ING={ING} RCP={RCP} molds={MOLDS}
-          onSave={saveRecipe} onClose={() => setDlg(null)} />
+          {dlg?.type === 'recipe' && (
+            <RecipeDialog recipe={dlg.recipe} ING={ING} RCP={RCP} molds={MOLDS}
+              onSave={saveRecipe} onClose={() => setDlg(null)} />
+          )}
+          {dlg?.type === 'ing' && (
+            <IngredientDialog ing={dlg.id ? ING[dlg.id] : null}
+              allergenList={allergenList} ingCatOrder={ingCatOrder}
+              onSave={saveIng} onClose={() => setDlg(null)} />
+          )}
+          {dlg?.type === 'shopping' && (
+            <ShoppingDialog ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} onClose={() => setDlg(null)} />
+          )}
+          {dlg?.type === 'mold' && (
+            <MoldDialog mold={dlg.id ? MOLDS.find(m => m._id === dlg.id) : null}
+              onSave={saveMold} onClose={() => setDlg(null)} />
+          )}
+          {dlg?.type === 'scale' && selected && (
+            <ScaleDialog recipe={selected} ING={ING} molds={MOLDS} onClose={() => setDlg(null)} />
+          )}
+        </div>
       )}
-      {dlg?.type === 'ing' && (
-        <IngredientDialog ing={dlg.id ? ING[dlg.id] : null}
-          allergenList={allergenList} ingCatOrder={ingCatOrder}
-          onSave={saveIng} onClose={() => setDlg(null)} />
+
+      {dlg?.type === 'login' && (
+        <LoginDialog
+          onClose={() => setDlg(null)}
+          onSubmit={async pw => {
+            const ok = await doLogin(pw)
+            if (ok) { setDlg(null); if (dlg.enterAfter) setView('recipe') }
+            return ok
+          }}
+        />
       )}
-      {dlg?.type === 'shopping' && (
-        <ShoppingDialog ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} onClose={() => setDlg(null)} />
-      )}
-      {dlg?.type === 'mold' && (
-        <MoldDialog mold={dlg.id ? MOLDS.find(m => m._id === dlg.id) : null}
-          onSave={saveMold} onClose={() => setDlg(null)} />
-      )}
-      {dlg?.type === 'scale' && selected && (
-        <ScaleDialog recipe={selected} ING={ING} molds={MOLDS} onClose={() => setDlg(null)} />
-      )}
-    </div>
+      <ToastHost />
+    </>
   )
 }

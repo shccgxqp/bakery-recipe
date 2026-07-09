@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import Dialog from './Dialog.jsx'
+import Chip from './Chip.jsx'
+import { toast } from '../lib/toast.js'
 
 const NUT_FIELDS = [
   ['kcal', '熱量(大卡)'],
@@ -19,11 +21,7 @@ function AllergenPicker({ list, value, onChange }) {
   return (
     <div className="flex flex-wrap gap-1.5">
       {list.map(a => (
-        <button key={a} type="button" onClick={() => toggle(a)}
-          className={'rounded-full border px-2.5 py-0.5 text-[12px] ' +
-            (value.includes(a) ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
-          {a}
-        </button>
+        <Chip key={a} active={value.includes(a)} onClick={() => toggle(a)}>{a}</Chip>
       ))}
     </div>
   )
@@ -73,7 +71,7 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
         note: note.trim(),
       })
     } catch (err) {
-      alert('儲存失敗:' + err.message)
+      toast('儲存失敗:' + err.message, { type: 'error' })
     } finally {
       setSaving(false)
     }

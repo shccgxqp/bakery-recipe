@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react'
 import Dialog from './Dialog.jsx'
 import { fmt } from '../lib/calc.js'
 import { lineShareUrl } from '../lib/shareText.js'
+import Chip from './Chip.jsx'
+import { toast } from '../lib/toast.js'
 
 /* 多食譜合併採購清單:勾選食譜 → 同材料用量合併,依材料分類排列(逛材料行順序) */
 export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
@@ -60,7 +62,7 @@ export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {
-      alert('複製失敗,瀏覽器不支援剪貼簿權限。')
+      toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
     }
   }
 
@@ -84,11 +86,7 @@ export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
       <p className="mb-2 text-[13px] text-ink-soft">勾選這次要做的甜點,同材料自動合併、依材料分類排好。</p>
       <div className="flex flex-wrap gap-1.5">
         {RCP.map(r => (
-          <button key={r._id} type="button" onClick={() => toggle(r._id)}
-            className={'rounded-full border px-3 py-1 text-[13px] ' +
-              (sel.has(r._id) ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
-            {r.name}
-          </button>
+          <Chip key={r._id} size="lg" active={sel.has(r._id)} onClick={() => toggle(r._id)}>{r.name}</Chip>
         ))}
       </div>
       {text && (

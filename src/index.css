@@ -90,7 +90,23 @@ kbd {
   border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: #fff;
 }
 
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ---------- 對話框開關轉場 ---------- */
+@keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes panel-in { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+.dlg-backdrop { animation: backdrop-in .15s ease-out both; }
+.dlg-panel { animation: panel-in .18s cubic-bezier(.19,1,.22,1) both; }
+
+/* ---------- Loading 骨架屏 ---------- */
+@keyframes skel-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+.skel {
+  background: linear-gradient(90deg, var(--color-line) 25%, var(--color-paper-deep) 37%, var(--color-line) 63%);
+  background-size: 400% 100%;
+  animation: skel-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
 
 @media print {
   body { background: #fff; font-size: 12pt; }

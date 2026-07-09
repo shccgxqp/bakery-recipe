@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Dialog from './Dialog.jsx'
 import { fmt } from '../lib/calc.js'
 import { MOLD_SHAPES, moldVolume } from '../lib/molds.js'
+import { toast } from '../lib/toast.js'
 
 /* 直徑類欄位支援 吋/cm 輸入(存檔一律換算成 cm;1吋=2.54cm) */
 function DiaInput({ label, value, unit, setValue, setUnit, required = true }) {
@@ -80,12 +81,12 @@ export default function MoldDialog({ mold, onSave, onClose }) {
     e.preventDefault()
     const doc = buildDoc()
     if (!doc.name) return
-    if (!(moldVolume(doc) > 0)) { alert('尺寸(或容積)必須填寫完整,容積要大於 0 才能用於換算。'); return }
+    if (!(moldVolume(doc) > 0)) { toast('尺寸(或容積)必須填寫完整,容積要大於 0 才能用於換算。', { type: 'error' }); return }
     setSaving(true)
     try {
       await onSave(mold || null, doc)
     } catch (err) {
-      alert('儲存失敗:' + err.message)
+      toast('儲存失敗:' + err.message, { type: 'error' })
     } finally {
       setSaving(false)
     }
