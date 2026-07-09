@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
 import { fmt } from '../lib/calc.js'
 import { MOLD_SHAPES, shapeName, moldVolume, moldDimsText } from '../lib/molds.js'
+import { LENGTH_UNITS, loadUnitPref, saveUnitPref } from '../lib/units.js'
 
 /* 模具庫:幾何制模具主檔(配方換算的基礎)
    分類:依形狀分組(圓模/方模/…),組內容積由小到大排列;搜尋比對名稱/廠牌/備註。 */
 export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) {
   const [q, setQ] = useState('')
+  const [unit, setUnit] = useState(loadUnitPref)
+  const changeUnit = u => { setUnit(u); saveUnitPref(u) }
 
   const groups = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -37,11 +40,23 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
         模具以<b>幾何尺寸</b>登記(品牌獨立一欄,計算只看尺寸);同直徑不同高度(拉高版)請建成兩筆。
         食譜綁定模具後,就能用「⇄ 換算」把配方換算到別的模具。
       </p>
-      <input
-        value={q} onChange={e => setQ(e.target.value)}
-        placeholder="搜尋名稱/廠牌/備註…"
-        className="mb-4 w-full max-w-xs rounded-md border border-line bg-white px-2.5 py-1.5 text-sm"
-      />
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        <input
+          value={q} onChange={e => setQ(e.target.value)}
+          placeholder="搜尋名稱/廠牌/備註…"
+          className="w-full max-w-xs rounded-md border border-line bg-white px-2.5 py-1.5 text-sm"
+        />
+        <div className="flex gap-1">
+          <span className="mr-1 self-center text-[12px] text-ink-soft">尺寸單位</span>
+          {LENGTH_UNITS.map(([k, zh]) => (
+            <button key={k} type="button" onClick={() => changeUnit(k)}
+              className={'rounded-full border px-2.5 py-0.5 text-[12px] ' +
+                (unit === k ? 'border-ink bg-yolk-soft font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
+              {zh}
+            </button>
+          ))}
+        </div>
+      </div>
       {molds.length === 0 ? (
         <p className="mt-6 text-sm text-ink-soft">
           還沒有模具。{isEditor ? '按「＋ 新增模具」建立第一個(例:6吋圓模、方形模21.5cm)。' : '登入後即可建立。'}
@@ -53,7 +68,7 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
           <table className="ltable">
             <thead>
               <tr>
-                <th>廠牌</th><th>名稱</th><th>尺寸</th><th className="num">容積 cm³</th><th>備註</th>
+                <th>廠牌</th><th>名稱</th><th>尺寸</th><th className="num">容積 cc</th><th>備註</th>
                 {isEditor && <th>操作</th>}
               </tr>
             </thead>
@@ -75,7 +90,7 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
                             className="ml-1.5 rounded border border-warn px-1 text-[10px] text-warn">網路</span>
                         )}
                       </td>
-                      <td className="font-mono text-[12.5px]">{moldDimsText(m)}</td>
+                      <td className="font-mono text-[12.5px]">{moldDimsText(m, unit)}</td>
                       <td className="num">{fmt(moldVolume(m))}</td>
                       <td className="text-[12.5px] text-ink-soft">{m.note || '—'}</td>
                       {isEditor && (

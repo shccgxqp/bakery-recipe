@@ -209,7 +209,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
           </div>
         </div>
         <p className="mt-3 text-[13px] text-ink-soft">
-          容積試算:<b className="font-mono text-ink">{preview > 0 ? `${fmt(preview)} cm³` : '—'}</b>
+          容積試算:<b className="font-mono text-ink">{preview > 0 ? `${fmt(preview)} cc` : '—'}</b>
           (換算倍率 = 目標模具容積 ÷ 原模具容積)
         </p>
       </form>

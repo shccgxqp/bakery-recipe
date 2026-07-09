@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { AUTH_KEY, LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_CAT_ORDER } from './config.js'
-import { calc, metrics } from './lib/calc.js'
+import { calc, metrics, allergenSummary } from './lib/calc.js'
 import { loadData, pushData, verifyPassword } from './lib/api.js'
 import Sidebar from './components/Sidebar.jsx'
 import Detail from './components/Detail.jsx'
@@ -27,6 +27,7 @@ export default function App() {
   const [dataSource, setDataSource] = useState('讀取中…')
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
+  const [excludeAllergens, setExcludeAllergens] = useState(() => new Set())
   const [view, setView] = useState('recipe') // recipe | ings | molds | changelog
   const [selId, setSelId] = useState(null)
   const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale', ...}
@@ -50,7 +51,13 @@ export default function App() {
      其他:不分組,單一清單依指標排序,缺值(如未定價)沉底 */
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const list = RCP.filter(r => !q || r.name.toLowerCase().includes(q))
+    const list = RCP
+      .filter(r => !q || r.name.toLowerCase().includes(q))
+      .filter(r => {
+        if (excludeAllergens.size === 0) return true
+        const { has, may } = allergenSummary(r, ING)
+        return ![...has, ...may].some(a => excludeAllergens.has(a))
+      })
 
     if (sortBy === 'category') {
       const g = {}
@@ -76,7 +83,7 @@ export default function App() {
       return b.m.margin - a.m.margin
     })
     return { g: { 全部: withMetric.map(x => x.r) }, cats: ['全部'], flat: true }
-  }, [RCP, ING, query, sortBy, catOrder])
+  }, [RCP, ING, query, sortBy, catOrder, excludeAllergens])
 
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
   const selected = RCP.find(r => r._id === selId) || RCP.find(r => r._id === flat[0]) || null
@@ -220,6 +227,8 @@ export default function App() {
         selected={view === 'recipe' ? selected?._id : null}
         query={query} setQuery={setQuery} searchRef={searchRef}
         sortBy={sortBy} setSortBy={setSortBy}
+        allergenList={allergenList}
+        excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
         dataSource={dataSource} isEditor={isEditor}
         onLogin={login} onLogout={logout}
         onSelect={id => { setSelId(id); setView('recipe') }}

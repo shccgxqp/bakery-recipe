@@ -7,10 +7,11 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
   const [servings, setServings] = useState(r?.servings ?? 8)
   const [price, setPrice] = useState(r?.price ?? '')
   const [note, setNote] = useState(r?.note || '')
-  /* 編輯時把 ingredientId 轉回名稱顯示;儲存時再由名稱查回 id */
+  /* 編輯時把 ingredientId 轉回名稱顯示;儲存時再由名稱查回 id。
+     qty 只是輸入輔助(材料有設 unitName/unitGrams 時,填數量自動換算成 g),不會存檔 */
   const [items, setItems] = useState(r
-    ? r.items.map(it => ({ n: ING[it.ingredientId]?.name || '', g: it.grams, layer: it.layer || '' }))
-    : [{ n: '', g: '', layer: '' }, { n: '', g: '', layer: '' }])
+    ? r.items.map(it => ({ n: ING[it.ingredientId]?.name || '', g: it.grams, layer: it.layer || '', qty: '' }))
+    : [{ n: '', g: '', layer: '', qty: '' }, { n: '', g: '', layer: '', qty: '' }])
   const [steps, setSteps] = useState(r?.steps?.join('\n') || '')
   const [bakes, setBakes] = useState(r?.bakes?.join('\n') || '')
   const [links, setLinks] = useState(
@@ -25,8 +26,15 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
   const ings = Object.values(ING)
   const idByName = Object.fromEntries(ings.map(i => [i.name, i._id]))
+  const ingByName = Object.fromEntries(ings.map(i => [i.name, i]))
 
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
+  const setQty = (i, qty) => setItems(prev => prev.map((it, j) => {
+    if (j !== i) return it
+    const unit = ingByName[it.n]
+    const g = unit?.unitGrams > 0 && qty !== '' ? +(parseFloat(qty) * unit.unitGrams).toFixed(1) : it.g
+    return { ...it, qty, g }
+  }))
   const delItem = i => setItems(prev => prev.filter((_, j) => j !== i))
 
   const submit = async e => {
@@ -141,17 +149,29 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
         <div className="mb-2.5 mt-4.5 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
           配方(材料 + 用量g + 層,層可空;例:餅乾層、奶油層、塔皮、內餡)
         </div>
+        <p className="mb-2 text-[12px] text-ink-soft">
+          材料有設「單位換算」(如全蛋=顆)時,「數量」欄可直接填「3」自動算成克數,填了g欄自動跟著改。
+        </p>
         <datalist id="ing-list">{ings.map(i => <option key={i._id} value={i.name} />)}</datalist>
         <datalist id="layer-list">
           {[...new Set([...items.map(it => it.layer).filter(Boolean), '餅乾層', '奶油層', '塔皮', '內餡', '蛋糕體', '淋面'])]
             .map(l => <option key={l} value={l} />)}
         </datalist>
-        {items.map((it, i) => (
-          <div key={i} className="mb-2 grid grid-cols-[1fr_76px_96px_32px] gap-2">
+        {items.map((it, i) => {
+          const unit = ingByName[it.n]
+          const hasUnit = unit?.unitName && unit?.unitGrams > 0
+          return (
+          <div key={i} className="mb-2 grid grid-cols-[1fr_64px_76px_76px_32px] gap-2">
             <input
               className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm"
               list="ing-list" placeholder="材料名稱" value={it.n}
               onChange={e => setItem(i, 'n', e.target.value)}
+            />
+            <input
+              className="rounded-md border border-line bg-white px-2.5 py-1.5 text-right font-mono text-sm disabled:bg-paper-deep disabled:text-ink-soft"
+              type="number" min="0" step="0.1" placeholder={hasUnit ? unit.unitName : '—'} value={it.qty}
+              disabled={!hasUnit}
+              onChange={e => setQty(i, e.target.value)}
             />
             <input
               className="rounded-md border border-line bg-white px-2.5 py-1.5 text-right font-mono text-sm"
@@ -167,8 +187,9 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
               className="rounded-md border border-line font-bold text-warn hover:border-warn"
               onClick={() => delItem(i)}>×</button>
           </div>
-        ))}
-        <button type="button" className="btn btn-sm" onClick={() => setItems(p => [...p, { n: '', g: '', layer: p[p.length - 1]?.layer || '' }])}>
+          )
+        })}
+        <button type="button" className="btn btn-sm" onClick={() => setItems(p => [...p, { n: '', g: '', layer: p[p.length - 1]?.layer || '', qty: '' }])}>
           ＋ 加一項材料
         </button>
 

@@ -37,6 +37,8 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
   const [saving, setSaving] = useState(false)
   const [price, setPrice] = useState(ing?.packPrice ?? '')
   const [grams, setGrams] = useState(ing?.packGrams ?? '')
+  const [unitName, setUnitName] = useState(ing?.unitName || '')
+  const [unitGrams, setUnitGrams] = useState(ing?.unitGrams ?? '')
   const [noData, setNoData] = useState(ing ? ing.per100g == null : false)
   const [nut, setNut] = useState(
     Object.fromEntries(NUT_FIELDS.map(([k]) => [k, ing?.per100g?.[k] ?? 0]))
@@ -61,6 +63,8 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
         spec: spec.trim(),
         packPrice: v(price),
         packGrams: Math.max(0.1, v(grams)),
+        unitName: unitName.trim(),
+        unitGrams: unitName.trim() ? v(unitGrams) : null,
         per100g: noData ? null : Object.fromEntries(NUT_FIELDS.map(([k]) => [k, v(nut[k])])),
         allergens,
         mayContain,
@@ -117,6 +121,15 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
           <div className="field">
             <label>採購重量(g)</label>
             <input type="number" min="0.1" step="0.1" value={grams} onChange={e => setGrams(e.target.value)} required />
+          </div>
+          <div className="field">
+            <label>單位名稱(可空;例:顆、大匙、片)</label>
+            <input value={unitName} onChange={e => setUnitName(e.target.value)} placeholder="填了才會開放食譜用「數量」輸入" />
+          </div>
+          <div className="field">
+            <label>單位換算克數(1{unitName || '單位'} = 幾克)</label>
+            <input type="number" min="0" step="0.1" value={unitGrams} onChange={e => setUnitGrams(e.target.value)}
+              disabled={!unitName.trim()} placeholder="例:55(1顆蛋≈55g)" />
           </div>
         </div>
 

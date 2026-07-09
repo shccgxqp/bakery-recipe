@@ -2,11 +2,13 @@ import { useState, useMemo } from 'react'
 import Dialog from './Dialog.jsx'
 import { fmt } from '../lib/calc.js'
 import { moldVolume, moldDimsText } from '../lib/molds.js'
+import { loadUnitPref } from '../lib/units.js'
 
 /* 配方換算:按份數(任何食譜)或按模具(食譜需綁定模具)
    結果唯讀+可複製;倍率僅供參考,烤溫烤時需人工調整 */
 export default function ScaleDialog({ recipe: r, ING, molds, onClose }) {
   const srcMold = molds.find(m => m._id === r.moldId)
+  const unit = loadUnitPref()
   const [mode, setMode] = useState('servings') // servings | mold
   const [target, setTarget] = useState((r.servings || 1) * 2)
   const [dstId, setDstId] = useState('')
@@ -95,7 +97,7 @@ export default function ScaleDialog({ recipe: r, ING, molds, onClose }) {
       ) : (
         <div className="mt-3 space-y-2 text-sm">
           <div className="text-[13px] text-ink-soft">
-            原模具:{srcMold.name}({moldDimsText(srcMold)},{fmt(moldVolume(srcMold))} cm³)
+            原模具:{srcMold.name}({moldDimsText(srcMold, unit)},{fmt(moldVolume(srcMold))} cc)
           </div>
           <div className="flex items-center gap-2">
             換到
@@ -103,7 +105,7 @@ export default function ScaleDialog({ recipe: r, ING, molds, onClose }) {
               className="rounded-md border border-line bg-white px-2 py-1.5 text-sm">
               <option value="">選擇目標模具…</option>
               {molds.filter(m => m._id !== srcMold._id).map(m => (
-                <option key={m._id} value={m._id}>{m.name}({fmt(moldVolume(m))} cm³)</option>
+                <option key={m._id} value={m._id}>{m.name}({fmt(moldVolume(m))} cc)</option>
               ))}
             </select>
           </div>

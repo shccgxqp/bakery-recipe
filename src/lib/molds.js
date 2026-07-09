@@ -59,25 +59,32 @@ export function moldVolume(m) {
   return cavityVolume(m) * (m.count || 1)
 }
 
-/* 尺寸描述文字,如「Ø15.2×高7cm」;上下徑不同才顯示兩個數字;連模附註穴數 */
-export function moldDimsText(m) {
+/* 尺寸描述文字,如「Ø15.2×高7cm」;上下徑不同才顯示兩個數字;連模附註穴數。
+   unit: 'cm'(預設)|'mm'|'in' ——只換算顯示,資料庫仍一律存 cm(src/lib/units.js) */
+export function moldDimsText(m, unit = 'cm') {
   const d = m.dims || {}
-  const n = v => (Number.isFinite(v) ? +v.toFixed(1) : '?')
+  const suffix = unit === 'in' ? '"' : unit
+  const n = v => {
+    if (!Number.isFinite(v)) return '?'
+    const cm = unit === 'mm' ? v * 10 : unit === 'in' ? v / 2.54 : v
+    const dec = unit === 'mm' ? 0 : unit === 'in' ? 2 : 1
+    return cm.toFixed(dec)
+  }
   const pair = (top, bot) => (Number.isFinite(top) && Number.isFinite(bot) && top !== bot
     ? `${n(top)}/${n(bot)}` : n(top ?? bot))
   const base = (() => {
     switch (m.shape) {
       case 'round':
       case 'tart':
-        return `Ø${pair(d.topD ?? d.d, d.bottomD ?? d.d)}×高${n(d.h)}cm`
+        return `Ø${pair(d.topD ?? d.d, d.bottomD ?? d.d)}×高${n(d.h)}${suffix}`
       case 'square':
-        return `${pair(d.topW ?? d.w, d.botW ?? d.w)}邊×高${n(d.h)}cm`
+        return `${pair(d.topW ?? d.w, d.botW ?? d.w)}邊×高${n(d.h)}${suffix}`
       case 'rect':
-        return `${pair(d.topL ?? d.l, d.botL ?? d.l)}×${pair(d.topW ?? d.w, d.botW ?? d.w)}×高${n(d.h)}cm`
+        return `${pair(d.topL ?? d.l, d.botL ?? d.l)}×${pair(d.topW ?? d.w, d.botW ?? d.w)}×高${n(d.h)}${suffix}`
       case 'tube':
-        return `Ø${pair(d.topD ?? d.d, d.bottomD ?? d.d)}(中柱Ø${n(d.innerD)})×高${n(d.h)}cm`
+        return `Ø${pair(d.topD ?? d.d, d.bottomD ?? d.d)}(中柱Ø${n(d.innerD)})×高${n(d.h)}${suffix}`
       case 'log':
-        return `Ø${n(d.d)}×長${n(d.length)}cm(臥式)`
+        return `Ø${n(d.d)}×長${n(d.length)}${suffix}(臥式)`
       default:
         return '手動容積'
     }

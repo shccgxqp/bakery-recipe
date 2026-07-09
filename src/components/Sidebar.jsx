@@ -12,12 +12,19 @@ const SORTS = [
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
+  allergenList, excludeAllergens, setExcludeAllergens,
   dataSource, ingsMode, moldsMode, isEditor,
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
   onShopping, onExportJSON, onChangelog,
 }) {
   const [collapsed, setCollapsed] = useState(false)
+  const [allergyOpen, setAllergyOpen] = useState(false)
+  const toggleAllergen = a => setExcludeAllergens(prev => {
+    const next = new Set(prev)
+    next.has(a) ? next.delete(a) : next.add(a)
+    return next
+  })
 
   return (
     <aside className="flex flex-col border-r border-line bg-paper-deep print:hidden md:sticky md:top-0 md:h-screen">
@@ -53,7 +60,23 @@ export default function Sidebar({
             {label}
           </button>
         ))}
+        <button onClick={() => setAllergyOpen(v => !v)}
+          className={'rounded-full border px-2.5 py-0.5 text-[11.5px] ' +
+            (excludeAllergens.size > 0 ? 'border-warn text-warn font-bold' : 'border-line text-ink-soft hover:border-yolk')}>
+          ⚠ 排除過敏原{excludeAllergens.size > 0 ? `(${excludeAllergens.size})` : ''}
+        </button>
       </div>
+      {allergyOpen && (
+        <div className="flex flex-wrap gap-1 px-3.5 pb-2">
+          {allergenList.map(a => (
+            <button key={a} onClick={() => toggleAllergen(a)}
+              className={'rounded-full border px-2 py-0.5 text-[11px] ' +
+                (excludeAllergens.has(a) ? 'border-warn bg-warn/10 font-bold text-warn' : 'border-line text-ink-soft hover:border-yolk')}>
+              {a}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="no-scrollbar max-h-[44vh] flex-1 overflow-y-auto pb-3 pt-1 md:max-h-none">
         {groups.cats.length === 0 && (

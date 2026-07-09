@@ -38,7 +38,8 @@ export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
       total += cost
       const cat = ing.category || '未分類'
       if (!byCat.has(cat)) byCat.set(cat, [])
-      byCat.get(cat).push({ name: ing.name, g, cost })
+      const unitTxt = ing.unitName && ing.unitGrams > 0 ? `${fmt(g / ing.unitGrams, 1)}${ing.unitName}` : null
+      byCat.get(cat).push({ name: ing.name, g, cost, unitTxt })
     }
     const cats = [...byCat.keys()].sort((a, b) => rank(a) - rank(b))
 
@@ -46,7 +47,7 @@ export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
     for (const cat of cats) {
       lines.push(`◆ ${cat}`)
       for (const it of byCat.get(cat).sort((a, b) => b.g - a.g))
-        lines.push(`${it.name}  ${fmt(it.g)}g($${fmt(it.cost, 0)})`)
+        lines.push(`${it.name}  ${it.unitTxt ? `${it.unitTxt}(${fmt(it.g)}g)` : `${fmt(it.g)}g`}($${fmt(it.cost, 0)})`)
     }
     lines.push('', `預估材料成本合計 $${fmt(total, 0)}`)
     lines.push('', '—— 烘焙帳本 https://shccgxqp.github.io/bakery-recipe/')

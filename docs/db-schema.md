@@ -28,6 +28,9 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   /* -- 私人營運資料 -- */
   packPrice: 285,               // 採購價 NT$
   packGrams: 500,               // 採購重量 g(成本 = 用量 × packPrice / packGrams)
+  unitName: "顆",                // 選填,單位換算用(顆/大匙/片…);'' 或 null = 不提供單位輸入
+  unitGrams: 55,                 // 1 個 unitName 是幾克(如全蛋 1 顆≈55g);
+                                //  食譜輸入配方時可直接填「3 顆」自動換算成克數
 
   /* -- 公開參考資料(材料資料庫的主力內容)-- */
   category: "乳製品",            // 分類,值取自 settings.ingCatOrder(台灣烘焙材料行通用分類)
