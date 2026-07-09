@@ -153,11 +153,13 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 
 ## 三、API(Vercel Serverless Functions,`api/` 目錄)
 
-- `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, settings }`。
-- `POST /api/save` — 帶密碼;逐筆 upsert + 軟刪除
-  (`{ password, upserts: {ingredients, recipes}, deletes: {ingredients, recipes} }`)。
+- `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, molds, settings }`(已過濾軟刪除)。
+- `POST /api/save` — 帶密碼;逐筆 upsert + 軟刪除 + 復原
+  (`{ password, upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
   時間戳由伺服器管;名稱撞唯一索引回 409。
 - `POST /api/verify` — 密碼驗證(SHA-256 比對環境變數 `EDIT_PASSWORD_SHA256`)。
+- `POST /api/deleted` — 帶密碼;回收桶用,回傳三個 collection 裡 `deletedAt` 不是
+  `null` 的文件。跟編輯同一信任等級(已刪除資料不公開)。
 
 環境變數:`MONGODB_URI`、`MONGODB_DB`、`EDIT_PASSWORD_SHA256`
 (`.env` 供本機;Vercel 專案設定要另外貼一份,`.env` 不會自動上傳)。

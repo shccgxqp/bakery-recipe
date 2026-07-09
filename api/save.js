@@ -1,9 +1,10 @@
-/* POST /api/save — 帶密碼的寫入:逐筆 upsert + 軟刪除
+/* POST /api/save — 帶密碼的寫入:逐筆 upsert + 軟刪除 + 復原
    (欄位不寫死,資料結構加新欄位不用改這支)
    body: {
      password,
      upserts: { ingredients: [完整文件], recipes: [完整文件] },
-     deletes: { ingredients: [_id], recipes: [_id] }
+     deletes: { ingredients: [_id], recipes: [_id] },
+     restores: { ingredients: [_id], recipes: [_id] }
    } */
 
 import { getDb, cors, checkPassword, readBody } from './_lib/mongo.js'
@@ -32,6 +33,13 @@ async function softDelete(col, ids, now) {
   return r.modifiedCount
 }
 
+async function restoreDocs(col, ids, now) {
+  const valid = (ids || []).filter(i => typeof i === 'string' && i)
+  if (!valid.length) return 0
+  const r = await col.updateMany({ _id: { $in: valid } }, { $set: { deletedAt: null, updatedAt: now } })
+  return r.modifiedCount
+}
+
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
@@ -49,6 +57,9 @@ export default async function handler(req, res) {
       deletedIngredients: await softDelete(db.collection('ingredients'), body.deletes?.ingredients, now),
       deletedRecipes: await softDelete(db.collection('recipes'), body.deletes?.recipes, now),
       deletedMolds: await softDelete(db.collection('molds'), body.deletes?.molds, now),
+      restoredIngredients: await restoreDocs(db.collection('ingredients'), body.restores?.ingredients, now),
+      restoredRecipes: await restoreDocs(db.collection('recipes'), body.restores?.recipes, now),
+      restoredMolds: await restoreDocs(db.collection('molds'), body.restores?.molds, now),
     })
   } catch (e) {
     /* E11000 = 名稱撞到存活文件的唯一索引 */

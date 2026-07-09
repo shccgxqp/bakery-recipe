@@ -31,17 +31,16 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
       <div className="flex flex-wrap items-baseline gap-3.5 border-b-[3px] border-ink pb-3">
         <h2 className="font-serif text-[28px] font-bold">模具庫</h2>
         <span className="text-[13px] text-ink-soft">共 {molds.length} 個</span>
-        {isEditor && (
-          <span className="ml-auto">
-            <button className="btn btn-sm btn-primary" onClick={onAdd}>＋ 新增模具</button>
-          </span>
-        )}
+        <span className="ml-auto flex gap-2 print:hidden">
+          <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印</button>
+          {isEditor && <button className="btn btn-sm btn-primary" onClick={onAdd}>＋ 新增模具</button>}
+        </span>
       </div>
-      <p className="mb-3 mt-3.5 max-w-2xl text-[13px] text-ink-soft">
+      <p className="mb-3 mt-3.5 max-w-2xl text-[13px] text-ink-soft print:hidden">
         模具以<b>幾何尺寸</b>登記(品牌獨立一欄,計算只看尺寸);同直徑不同高度(拉高版)請建成兩筆。
         食譜綁定模具後,就能用「⇄ 換算」把配方換算到別的模具。
       </p>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
+      <div className="mb-4 flex flex-wrap items-center gap-3 print:hidden">
         <input
           value={q} onChange={e => setQ(e.target.value)}
           placeholder="搜尋名稱/廠牌/備註…"
@@ -66,7 +65,7 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
             <thead>
               <tr>
                 <th>廠牌</th><th>名稱</th><th>尺寸</th><th className="num">容積 cc</th><th>備註</th>
-                {isEditor && <th>操作</th>}
+                {isEditor && <th className="print:hidden">操作</th>}
               </tr>
             </thead>
             <tbody>
@@ -91,7 +90,7 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
                       <td className="num">{fmt(moldVolume(m))}</td>
                       <td className="text-[12.5px] text-ink-soft">{m.note || '—'}</td>
                       {isEditor && (
-                        <td className="whitespace-nowrap">
+                        <td className="whitespace-nowrap print:hidden">
                           <button className="btn btn-sm" onClick={() => onEdit(m._id)}>編輯</button>
                           <button className="btn btn-sm btn-danger ml-1" onClick={() => onDelete(m._id)}>刪除</button>
                         </td>

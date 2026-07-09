@@ -15,11 +15,12 @@ export async function loadData() {
   return j
 }
 
-/* 逐筆 upsert + 軟刪除
-   upserts: { ingredients: [doc], recipes: [doc] }
-   deletes: { ingredients: [_id], recipes: [_id] } */
-export async function pushData(password, upserts, deletes) {
-  const j = await post('/api/save', { password, upserts, deletes })
+/* 逐筆 upsert + 軟刪除 + 復原
+   upserts:  { ingredients: [doc], recipes: [doc] }
+   deletes:  { ingredients: [_id], recipes: [_id] }
+   restores: { ingredients: [_id], recipes: [_id] } */
+export async function pushData(password, upserts, deletes, restores) {
+  const j = await post('/api/save', { password, upserts, deletes, restores })
   if (!j.ok) throw new Error(j.error || '寫入失敗')
   return j
 }
@@ -27,4 +28,11 @@ export async function pushData(password, upserts, deletes) {
 export async function verifyPassword(password) {
   const j = await post('/api/verify', { password })
   return !!j.ok
+}
+
+/* 回收桶:已軟刪除的文件,{ ingredients, recipes, molds } */
+export async function fetchDeleted(password) {
+  const j = await post('/api/deleted', { password })
+  if (!j.ok) throw new Error(j.error || '讀取失敗')
+  return j
 }

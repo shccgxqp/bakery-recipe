@@ -14,10 +14,10 @@ export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
   allergenList, excludeAllergens, setExcludeAllergens,
-  dataSource, ingsMode, moldsMode, isEditor,
+  dataSource, ingsMode, moldsMode, trashMode, isEditor,
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
-  onShopping, onExportJSON, onChangelog,
+  onShopping, onExportJSON, onChangelog, onTrash,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [allergyOpen, setAllergyOpen] = useState(false)
@@ -130,6 +130,9 @@ export default function Sidebar({
           <button className="btn btn-sm flex-1" onClick={onShopping}>🛒 採購清單</button>
           <button className="btn btn-sm flex-1" onClick={onExportJSON} title="下載全部資料的 JSON 備份">⬇ 備份</button>
         </div>
+        {isEditor && (
+          <button className={'btn btn-sm ' + (trashMode ? 'btn-active' : '')} onClick={onTrash}>🗑 回收桶</button>
+        )}
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
         </div>

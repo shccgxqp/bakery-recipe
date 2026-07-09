@@ -80,17 +80,18 @@ export default function ShoppingDialog({ ING, RCP, ingCatOrder, onClose }) {
           <button type="button" className="btn btn-primary" disabled={!text} onClick={copy}>
             {copied ? '✓ 已複製' : '📋 複製清單'}
           </button>
+          <button type="button" className="btn" disabled={!text} onClick={() => window.print()}>🖨 列印清單</button>
         </>
       }
     >
-      <p className="mb-2 text-[13px] text-ink-soft">勾選這次要做的甜點,同材料自動合併、依材料分類排好。</p>
-      <div className="flex flex-wrap gap-1.5">
+      <p className="mb-2 text-[13px] text-ink-soft print:hidden">勾選這次要做的甜點,同材料自動合併、依材料分類排好。</p>
+      <div className="flex flex-wrap gap-1.5 print:hidden">
         {RCP.map(r => (
           <Chip key={r._id} size="lg" active={sel.has(r._id)} onClick={() => toggle(r._id)}>{r.name}</Chip>
         ))}
       </div>
       {text && (
-        <pre className="mt-4 max-h-64 overflow-y-auto whitespace-pre-wrap rounded-md border border-line bg-white p-3 font-mono text-[12.5px] leading-relaxed">
+        <pre className="mt-4 max-h-64 overflow-y-auto whitespace-pre-wrap rounded-md border border-line bg-white p-3 font-mono text-[12.5px] leading-relaxed print:mt-0 print:max-h-none print:overflow-visible print:border-none print:p-0">
           {text}
         </pre>
       )}

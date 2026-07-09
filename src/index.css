@@ -111,4 +111,8 @@ kbd {
 @media print {
   body { background: #fff; font-size: 12pt; }
   .nlabel { break-inside: avoid; }
+  /* 對話框(採購清單、模具規格…)要能印:浮層改回文件流,捲動框展開顯示全部內容 */
+  .dlg-backdrop { position: static; background: none; padding: 0; animation: none; }
+  .dlg-panel { max-height: none; overflow: visible; border: none; animation: none; max-width: none; }
+  .dlg-body { overflow: visible; }
 }

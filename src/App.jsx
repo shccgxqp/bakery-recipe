@@ -8,6 +8,7 @@ import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
 import MoldsView from './components/MoldsView.jsx'
+import TrashView from './components/TrashView.jsx'
 import RecipeDialog from './components/RecipeDialog.jsx'
 import IngredientDialog from './components/IngredientDialog.jsx'
 import ShoppingDialog from './components/ShoppingDialog.jsx'
@@ -33,7 +34,7 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
   const [excludeAllergens, setExcludeAllergens] = useState(() => new Set())
-  const [view, setView] = useState('landing') // landing | recipe | ings | molds | changelog
+  const [view, setView] = useState('landing') // landing | recipe | ings | molds | trash | changelog
   const [selId, setSelId] = useState(null)
   const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale', ...}
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
@@ -114,10 +115,10 @@ export default function App() {
   const authRef = useRef(auth)
   useEffect(() => { authRef.current = auth }, [auth])
 
-  const write = useCallback(async ({ upserts, deletes }) => {
+  const write = useCallback(async ({ upserts, deletes, restores }) => {
     if (!authRef.current) throw new Error('尚未登入')
     try {
-      await pushData(authRef.current, upserts || {}, deletes || {})
+      await pushData(authRef.current, upserts || {}, deletes || {}, restores || {})
     } catch (err) {
       if (err.message === '密碼錯誤') {
         setAuth('')
@@ -168,6 +169,21 @@ export default function App() {
       if (selId === r._id) setSelId(null)
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
+  /* 複製食譜:立即存檔(不怕使用者取消編輯白做工),存完直接開編輯讓使用者改名/調整 */
+  const duplicateRecipe = async r => {
+    const existing = new Set(RCP.map(x => x.name))
+    let name = `${r.name}(複製)`
+    for (let n = 2; existing.has(name); n++) name = `${r.name}(複製${n})`
+    const _id = crypto.randomUUID()
+    const { _id: _old, createdAt, updatedAt, deletedAt, ...rest } = r
+    const dup = { ...rest, _id, name, sortOrder: (r.sortOrder || 0) + 1 }
+    try {
+      await write({ upserts: { recipes: [dup] } })
+      setSelId(_id)
+      setView('recipe')
+      setDlg({ type: 'recipe', recipe: dup })
+    } catch (err) { toast('複製失敗:' + err.message, { type: 'error' }) }
+  }
   const saveMold = async (orig, obj) => {
     const _id = orig?._id || crypto.randomUUID()
     await write({ upserts: { molds: [{ ...orig, ...obj, _id }] } })
@@ -197,6 +213,8 @@ export default function App() {
       await write({ deletes: { ingredients: [id] } })
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
+  /* type: 'ingredients'|'recipes'|'molds' */
+  const restoreItem = (type, id) => write({ restores: { [type]: [id] } })
 
   /* ---- 鍵盤:↑↓ 切換、/ 搜尋 ---- */
   const searchRef = useRef(null)
@@ -254,10 +272,14 @@ export default function App() {
             onShopping={() => setDlg({ type: 'shopping' })}
             onExportJSON={() => exportBackupJSON(base)}
             onChangelog={() => setView('changelog')}
+            onTrash={() => setView(view === 'trash' ? 'recipe' : 'trash')}
+            trashMode={view === 'trash'}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
             {view === 'changelog' ? (
               <ChangelogView />
+            ) : view === 'trash' ? (
+              <TrashView auth={auth} onRestore={restoreItem} />
             ) : view === 'molds' ? (
               <MoldsView molds={MOLDS} isEditor={isEditor}
                 onEdit={id => setDlg({ type: 'mold', id })}
@@ -273,6 +295,7 @@ export default function App() {
                 mold={MOLDS.find(m => m._id === selected.moldId) || null}
                 onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
                 onDelete={() => deleteRecipe(selected)}
+                onDuplicate={() => duplicateRecipe(selected)}
                 onScale={() => setDlg({ type: 'scale' })} />
             ) : (
               <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>

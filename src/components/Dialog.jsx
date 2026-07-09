@@ -44,8 +44,8 @@ export default function Dialog({ title, onClose, children, footer }) {
         <div className="border-b-[6px] border-ink px-4.5 pb-2.5 pt-3.5 font-serif text-[19px] font-bold tracking-[.1em]">
           {title}
         </div>
-        <div className="overflow-y-auto px-4.5 py-4">{children}</div>
-        <div className="flex justify-end gap-2 border-t-2 border-ink px-4.5 py-3">{footer}</div>
+        <div className="dlg-body overflow-y-auto px-4.5 py-4">{children}</div>
+        <div className="flex justify-end gap-2 border-t-2 border-ink px-4.5 py-3 print:hidden">{footer}</div>
       </div>
     </div>
   )

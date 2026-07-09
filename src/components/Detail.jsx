@@ -57,7 +57,7 @@ function Cell({ n, l, tone }) {
   )
 }
 
-export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelete, onScale }) {
+export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelete, onDuplicate, onScale }) {
   const c = calc(r, ING)
   const s = r.servings || 1
   const per = c.cost / s
@@ -116,6 +116,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
           {isEditor && (
             <>
               <button className="btn btn-sm" onClick={onEdit}>編輯</button>
+              <button className="btn btn-sm" onClick={onDuplicate}>📋 複製食譜</button>
               <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
             </>
           )}
