@@ -3,6 +3,7 @@ import { AUTH_KEY, LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_C
 import { calc, metrics, allergenSummary } from './lib/calc.js'
 import { loadData, pushData, verifyPassword } from './lib/api.js'
 import Sidebar from './components/Sidebar.jsx'
+import Landing from './components/Landing.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
@@ -28,7 +29,7 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
   const [excludeAllergens, setExcludeAllergens] = useState(() => new Set())
-  const [view, setView] = useState('recipe') // recipe | ings | molds | changelog
+  const [view, setView] = useState('landing') // landing | recipe | ings | molds | changelog
   const [selId, setSelId] = useState(null)
   const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale', ...}
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
@@ -141,6 +142,11 @@ export default function App() {
     setAuth('')
     localStorage.removeItem(AUTH_KEY)
   }, [])
+  /* 首頁「登入編輯」:登入成功後直接進站,不用登入完再按一次「進入瀏覽」 */
+  const loginFromLanding = useCallback(async () => {
+    await login()
+    if (localStorage.getItem(AUTH_KEY)) setView('recipe')
+  }, [login])
 
   /* ---- 資料操作(全部以 _id 為 key;新資料由前端產生 UUID) ----
      save 由對話框 await,失敗時對話框留在原地顯示錯誤 */
@@ -219,6 +225,14 @@ export default function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [dlg, flat, selected])
+
+  if (view === 'landing') {
+    return (
+      <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
+        onEnter={() => setView('recipe')}
+        onLogin={loginFromLanding} />
+    )
+  }
 
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
