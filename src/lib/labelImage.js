@@ -38,7 +38,12 @@ export function downloadNutritionLabel(r, c, al) {
   const noNutrLines = c.noNutr.length
     ? wrapText(ctx, `注意:${c.noNutr.join('、')}尚無營養資料,以 0 計算。`, W - PAD * 2)
     : []
-  const disclaimer = '本標示由「烘焙帳本」公開資料庫試算,僅供參考;販售用正式標示依法應以實際檢驗數據為準,使用前請自行核對。'
+  /* 免責聲明標準文字:與 docs/legal/compliance.md 第四節同步,只能加強不得刪弱 */
+  const disclaimer =
+    '本標示為「烘焙帳本」依材料資料理論加總之試算值,僅供研發與個人烘焙參考,不具法律效力。' +
+    '實際成品受製程、食材差異、水分蒸發影響,數值可能明顯誤差,本站不保證符合《食品安全衛生管理法》' +
+    '及相關遵行事項之抽驗標準。用於商業販售、包裝或廣告,一切法律責任(含標示不實之行政裁罰)' +
+    '由使用者自行承擔;正式量產應送 SGS、台美檢驗等公正單位實際化驗。'
   const discLines = wrapText(ctx, disclaimer, W - PAD * 2)
 
   const tableTop = 118
@@ -121,6 +126,17 @@ export function downloadNutritionLabel(r, c, al) {
   ctx.fillStyle = '#777'
   ctx.font = `11.5px ${FONT}`
   discLines.forEach((l, i) => ctx.fillText(l, PAD, discTop + i * 18 + 8))
+
+  /* 斜向浮水印:蓋在數值上方,想直接商用必須自行重打排版(善盡提醒義務之鐵證) */
+  ctx.save()
+  ctx.translate(W / 2, (tableTop + tableH) / 2 + 20)
+  ctx.rotate(-Math.PI / 9)
+  ctx.textAlign = 'center'
+  ctx.fillStyle = 'rgba(179, 84, 30, 0.14)'
+  ctx.font = `bold 30px ${FONT}`
+  ctx.fillText('僅供參考.不得直接用於商業包裝', 0, -34)
+  ctx.fillText('烘焙帳本試算.非檢驗數據', 0, 34)
+  ctx.restore()
 
   cv.toBlob(blob => {
     const a = document.createElement('a')
