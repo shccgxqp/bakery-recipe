@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { fmt } from '../lib/calc.js'
 import { exportIngredientsCSV } from '../lib/exportData.js'
+import { ingCategoryColor } from '../lib/ingCategoryColors.js'
 import PriceSim from './PriceSim.jsx'
 
 /* 材料主檔:搜尋(名稱/廠牌/規格/分類)+ 依分類區段顯示
@@ -92,11 +93,14 @@ export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdi
 }
 
 function SectionRows({ sec, cols, isEditor, onEdit, onDelete }) {
+  const color = ingCategoryColor(sec.cat)
   return (
     <>
-      <tr>
+      <tr style={{ borderLeft: `4px solid ${color}` }}>
         <td colSpan={cols}
-          className="border-b! border-ink! pb-1! pt-4! text-xs font-bold tracking-[.12em] text-yolk">
+          className="border-b! border-ink! pb-1! pt-4! pl-2! text-xs font-bold tracking-[.12em] text-ink">
+          <span aria-hidden className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full align-middle"
+            style={{ background: color }} />
           {sec.cat}<span className="ml-2 font-mono font-medium text-ink-soft">{sec.rows.length}</span>
         </td>
       </tr>

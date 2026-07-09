@@ -92,8 +92,8 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   _id: "uuid…",
   name: "6吋活動圓模",          // 不含廠牌(廠牌獨立欄,可搜尋)
   brand: "三能",                // 選填,'' = 無品牌
-  count: 1,                    // 連穴數;非連模固定 1。食譜一份對應「一整模」
-                               // (含全部穴數),故總容積 = 單穴容積 × count
+  count: 1,                    // 模具入數;非連模固定 1。食譜一份對應「一整模」
+                               // (含全部入數),故總容積 = 單顆容積 × count
   shape: "round",              // round|square|rect|tube|tart|log|other
   dims: {                      // 公分。大多數模具上大下小(錐形),容積用上下平均值
                                // 當柱體算(誤差 <1%,見圓塔模驗證);只給一組尺寸時上下視為相同

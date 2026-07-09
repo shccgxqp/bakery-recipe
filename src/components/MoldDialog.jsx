@@ -115,7 +115,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
             <input value={brand} onChange={e => setBrand(e.target.value)} placeholder="例:三能" />
           </div>
           <div className="field">
-            <label>連穴數(單模幾穴;非連模填1)</label>
+            <label>模具入數(連模幾入;單一模填1)</label>
             <input type="number" min="1" step="1" value={count} onChange={e => setCount(e.target.value)} />
           </div>
           <div className="field sm:col-span-2">

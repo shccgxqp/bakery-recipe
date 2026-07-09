@@ -82,5 +82,5 @@ export function moldDimsText(m) {
         return '手動容積'
     }
   })()
-  return m.count > 1 ? `${base} ×${m.count}穴` : base
+  return m.count > 1 ? `${base} ×${m.count}入` : base
 }
