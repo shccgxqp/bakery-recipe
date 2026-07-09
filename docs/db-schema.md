@@ -94,11 +94,18 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   brand: "三能",                // 選填,'' = 無品牌
   count: 1,                    // 連穴數;非連模固定 1。食譜一份對應「一整模」
                                // (含全部穴數),故總容積 = 單穴容積 × count
-  shape: "round",              // round|square|rect|tube|tart|other
-  dims: { d: 15.2, h: 7 },     // 公分;round/tart:{d,h} square:{w,h}
-                               // rect:{l,w,h} tube:{d,innerD,h} other:{}
-  volume: null,                // 只有 shape=other 手動填(cm³,裝水量測);
-                               // 其他形狀由 dims 即時計算(src/lib/molds.js)
+  shape: "round",              // round|square|rect|tube|tart|log|other
+  dims: {                      // 公分。大多數模具上大下小(錐形),容積用上下平均值
+                               // 當柱體算(誤差 <1%,見圓塔模驗證);只給一組尺寸時上下視為相同
+    topD: 15.2, bottomD: 14.7, h: 7,     // round/tart
+    // square: { topW, botW, h }
+    // rect:   { topL, topW, botL, botW, h }
+    // tube:   { topD, bottomD, innerD, h }(外壁);中柱比外壁高導致公式失真時用 volume 覆寫
+    // log:    { d, length }(臥式圓柱,吐司圓模/長條圓模)
+    // other:  {}
+  },
+  volume: null,                // 覆寫用;有值就直接採用(型錄實測容積、或 other 形狀手動填),
+                               // 沒填才用 dims 公式算(src/lib/molds.js)
   note: "",
   deletedAt: null, createdAt, updatedAt
 }
