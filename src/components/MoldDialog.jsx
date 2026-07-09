@@ -27,6 +27,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
   const [name, setName] = useState(mold?.name || '')
   const [brand, setBrand] = useState(mold?.brand || '')
   const [count, setCount] = useState(mold?.count ?? 1)
+  const [dataSource, setDataSource] = useState(mold?.dataSource || 'manual')
   const [shape, setShape] = useState(mold?.shape || 'round')
 
   /* round/tart/tube:上下開口徑(型錄常見上大下小的錐形,取平均當柱體算) */
@@ -69,7 +70,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
       : {}
     return {
       name: name.trim(), brand: brand.trim(), count: Math.max(1, parseInt(count, 10) || 1),
-      shape, dims, volume: v(vol), note: note.trim(),
+      shape, dims, volume: v(vol), note: note.trim(), dataSource,
     }
   }
 
@@ -117,6 +118,15 @@ export default function MoldDialog({ mold, onSave, onClose }) {
           <div className="field">
             <label>模具入數(連模幾入;單一模填1)</label>
             <input type="number" min="1" step="1" value={count} onChange={e => setCount(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>資料來源(信心度標記,不影響計算)</label>
+            <select value={dataSource} onChange={e => setDataSource(e.target.value)}
+              className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm">
+              <option value="catalog">廠商官方型錄</option>
+              <option value="web">網路搜尋整理</option>
+              <option value="manual">自己量測</option>
+            </select>
           </div>
           <div className="field sm:col-span-2">
             <label>形狀</label>

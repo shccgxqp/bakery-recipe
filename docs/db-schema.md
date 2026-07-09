@@ -106,6 +106,9 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   },
   volume: null,                // 覆寫用;有值就直接採用(型錄實測容積、或 other 形狀手動填),
                                // 沒填才用 dims 公式算(src/lib/molds.js)
+  dataSource: 'catalog',       // 'catalog'(廠商官方型錄實測,如三能)|'web'(網路搜尋整理,
+                               // 尺寸未經官方驗證,如 chefmade;多半只有外部最大尺寸,容積是粗估)|
+                               // 'manual'(使用者自己量的);不影響計算,只是信心度標記
   note: "",
   deletedAt: null, createdAt, updatedAt
 }

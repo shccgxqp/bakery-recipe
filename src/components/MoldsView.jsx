@@ -68,7 +68,13 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
                   {g.items.map(m => (
                     <tr key={m._id}>
                       <td className="text-[12.5px] text-ink-soft">{m.brand || '—'}</td>
-                      <td>{m.name}</td>
+                      <td>
+                        {m.name}
+                        {m.dataSource === 'web' && (
+                          <span title="網路搜尋整理,尺寸未經官方驗證,容積為粗估"
+                            className="ml-1.5 rounded border border-warn px-1 text-[10px] text-warn">網路</span>
+                        )}
+                      </td>
                       <td className="font-mono text-[12.5px]">{moldDimsText(m)}</td>
                       <td className="num">{fmt(moldVolume(m))}</td>
                       <td className="text-[12.5px] text-ink-soft">{m.note || '—'}</td>
