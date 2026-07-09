@@ -6,9 +6,12 @@ import Sidebar from './components/Sidebar.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
+import MoldsView from './components/MoldsView.jsx'
 import RecipeDialog from './components/RecipeDialog.jsx'
 import IngredientDialog from './components/IngredientDialog.jsx'
 import ShoppingDialog from './components/ShoppingDialog.jsx'
+import MoldDialog from './components/MoldDialog.jsx'
+import ScaleDialog from './components/ScaleDialog.jsx'
 import { exportBackupJSON } from './lib/exportData.js'
 
 function loadCache() {
@@ -16,7 +19,7 @@ function loadCache() {
     const c = JSON.parse(localStorage.getItem(LS_CACHE))
     if (Array.isArray(c?.ingredients) && Array.isArray(c?.recipes)) return c
   } catch { /* 快取壞掉就當沒有 */ }
-  return { ingredients: [], recipes: [], settings: null }
+  return { ingredients: [], recipes: [], molds: [], settings: null }
 }
 
 export default function App() {
@@ -24,9 +27,9 @@ export default function App() {
   const [dataSource, setDataSource] = useState('讀取中…')
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
-  const [view, setView] = useState('recipe') // recipe | ings | changelog
+  const [view, setView] = useState('recipe') // recipe | ings | molds | changelog
   const [selId, setSelId] = useState(null)
-  const [dlg, setDlg] = useState(null) // {type:'recipe',recipe|null} | {type:'ing',id|null} | {type:'shopping'}
+  const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale', ...}
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
 
@@ -40,6 +43,7 @@ export default function App() {
     return out
   }, [base])
   const RCP = base.recipes
+  const MOLDS = base.molds || []
 
   /* ---- 分類分組(含搜尋 + 排序) ----
      sortBy==='category': 依分類分組,組內照原順序(預設)
@@ -154,6 +158,23 @@ export default function App() {
       if (selId === r._id) setSelId(null)
     } catch (err) { alert('刪除失敗:' + err.message) }
   }
+  const saveMold = async (orig, obj) => {
+    const _id = orig?._id || crypto.randomUUID()
+    await write({ upserts: { molds: [{ ...orig, ...obj, _id }] } })
+    setDlg(null)
+  }
+  const deleteMold = async id => {
+    const mold = MOLDS.find(m => m._id === id)
+    if (!mold) return
+    const used = RCP.filter(r => r.moldId === id).map(r => r.name)
+    const msg = used.length
+      ? `「${mold.name}」被 ${used.length} 道食譜綁定(${used.slice(0, 5).join('、')}${used.length > 5 ? '…' : ''}),刪除後這些食譜要重新指定模具。確定刪除?`
+      : `刪除「${mold.name}」?`
+    if (!confirm(msg)) return
+    try {
+      await write({ deletes: { molds: [id] } })
+    } catch (err) { alert('刪除失敗:' + err.message) }
+  }
   const deleteIng = async id => {
     const ing = ING[id]
     if (!ing) return
@@ -205,6 +226,8 @@ export default function App() {
         onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
         onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
         ingsMode={view === 'ings'}
+        onToggleMolds={() => setView(view === 'molds' ? 'recipe' : 'molds')}
+        moldsMode={view === 'molds'}
         onShopping={() => setDlg({ type: 'shopping' })}
         onExportJSON={() => exportBackupJSON(base)}
         onChangelog={() => setView('changelog')}
@@ -212,6 +235,11 @@ export default function App() {
       <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
         {view === 'changelog' ? (
           <ChangelogView />
+        ) : view === 'molds' ? (
+          <MoldsView molds={MOLDS} RCP={RCP} isEditor={isEditor}
+            onEdit={id => setDlg({ type: 'mold', id })}
+            onAdd={() => setDlg({ type: 'mold', id: null })}
+            onDelete={deleteMold} />
         ) : view === 'ings' ? (
           <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
             onEdit={id => setDlg({ type: 'ing', id })}
@@ -219,8 +247,10 @@ export default function App() {
             onDelete={deleteIng} />
         ) : selected ? (
           <Detail recipe={selected} ING={ING} isEditor={isEditor}
+            mold={MOLDS.find(m => m._id === selected.moldId) || null}
             onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
-            onDelete={() => deleteRecipe(selected)} />
+            onDelete={() => deleteRecipe(selected)}
+            onScale={() => setDlg({ type: 'scale' })} />
         ) : (
           <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
         )}
@@ -230,7 +260,7 @@ export default function App() {
       </main>
 
       {dlg?.type === 'recipe' && (
-        <RecipeDialog recipe={dlg.recipe} ING={ING} RCP={RCP}
+        <RecipeDialog recipe={dlg.recipe} ING={ING} RCP={RCP} molds={MOLDS}
           onSave={saveRecipe} onClose={() => setDlg(null)} />
       )}
       {dlg?.type === 'ing' && (
@@ -240,6 +270,13 @@ export default function App() {
       )}
       {dlg?.type === 'shopping' && (
         <ShoppingDialog ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} onClose={() => setDlg(null)} />
+      )}
+      {dlg?.type === 'mold' && (
+        <MoldDialog mold={dlg.id ? MOLDS.find(m => m._id === dlg.id) : null}
+          onSave={saveMold} onClose={() => setDlg(null)} />
+      )}
+      {dlg?.type === 'scale' && selected && (
+        <ScaleDialog recipe={selected} ING={ING} molds={MOLDS} onClose={() => setDlg(null)} />
       )}
     </div>
   )

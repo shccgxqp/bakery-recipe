@@ -31,7 +31,7 @@ const outDir = new URL('../backup/', import.meta.url)
 mkdirSync(outDir, { recursive: true })
 
 try {
-  for (const name of ['ingredients', 'recipes', 'settings']) {
+  for (const name of ['ingredients', 'recipes', 'molds', 'settings']) {
     /* 依 _id 排序讓輸出穩定,git diff 才看得出真正的變化 */
     const docs = await db.collection(name).find().sort({ _id: 1 }).toArray()
     writeFileSync(new URL(`${name}.json`, outDir), JSON.stringify(docs, null, 2) + '\n')

@@ -83,6 +83,26 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 「內容物」= 材料依重量遞減排序,複合材料以 `subIngredients` 展開成
 「泡打粉(碳酸氫鈉、酸性焦磷酸鈉、玉米澱粉)」。材料改標註,所有食譜自動正確。
 
+### `molds`(模具,v3.3 新增)
+
+幾何制:換算倍率由容積決定,品牌只是名稱備註(設計討論見 roadmap 第 9 項)。
+
+```js
+{
+  _id: "uuid…",
+  name: "三能 6吋活動圓模",     // 品牌寫在名稱當識別,計算只看尺寸
+  shape: "round",              // round|square|rect|tube|tart|other
+  dims: { d: 15.2, h: 7 },     // 公分;round/tart:{d,h} square:{w,h}
+                               // rect:{l,w,h} tube:{d,innerD,h} other:{}
+  volume: null,                // 只有 shape=other 手動填(cm³,裝水量測);
+                               // 其他形狀由 dims 即時計算(src/lib/molds.js)
+  note: "",
+  deletedAt: null, createdAt, updatedAt
+}
+```
+
+食譜加選填 `moldId`(null = 未綁定;綁定後才開放「按模具換算」)。
+
 ### `settings`(單一文件)
 
 ```js

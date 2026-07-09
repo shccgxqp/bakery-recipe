@@ -56,7 +56,7 @@ function Cell({ n, l, tone }) {
   )
 }
 
-export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
+export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelete, onScale }) {
   const c = calc(r, ING)
   const s = r.servings || 1
   const per = c.cost / s
@@ -108,6 +108,7 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
         </span>
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
         <span className="ml-auto flex flex-wrap gap-2 print:hidden">
+          <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>
           <button className="btn btn-sm" onClick={copyList}>{copied ? '✓ 已複製' : '📋 複製購買清單'}</button>
           <button className="btn btn-sm" onClick={shareToLine}>💬 傳到 LINE</button>
           <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>
@@ -139,12 +140,22 @@ export default function Detail({ recipe: r, ING, isEditor, onEdit, onDelete }) {
         <Cell n={fmt(labelGrams / s)} l={hasFinished ? '每份 g(成品)' : '每份約 g(生料)'} />
       </div>
 
-      {(r.storage || r.shelfLifeDays > 0) && (
+      {(r.storage || r.shelfLifeDays > 0 || mold) && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-          <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
-          <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
-            🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
-          </span>
+          {mold && (
+            <>
+              <span className="text-xs font-bold tracking-[.08em] text-ink-soft">模具</span>
+              <span className="rounded-md border border-line bg-white px-2.5 py-0.5">🥮 {mold.name}</span>
+            </>
+          )}
+          {(r.storage || r.shelfLifeDays > 0) && (
+            <>
+              <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
+              <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
+                🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
+              </span>
+            </>
+          )}
         </div>
       )}
 

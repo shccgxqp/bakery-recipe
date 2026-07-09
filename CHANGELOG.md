@@ -13,6 +13,15 @@
 
 ---
 
+## 3.3.0 — 2026-07-09
+
+- 模具資料庫(`molds` collection,幾何制:round/square/rect/tube/tart/other,
+  容積由尺寸計算,other 手動填;`src/lib/molds.js`);獨立「模具庫」頁面
+- 配方換算 `ScaleDialog`:按份數(全食譜可用)/按模具(食譜綁 `moldId` 才開放,
+  倍率=容積比);結果唯讀+複製,固定附烤溫烤時警語
+- 食譜編輯表單加「模具」下拉;食譜頁顯示模具 chip、加「⇄ 換算」按鈕
+- API `data`/`save` 與每日備份納入 molds
+
 ## 3.2.1 — 2026-07-09
 
 - 法律合規強化(《食品安全衛生管理法》列為最高準則,見 docs/legal/):

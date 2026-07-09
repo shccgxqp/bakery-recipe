@@ -45,8 +45,10 @@ export default async function handler(req, res) {
       ok: true,
       ingredients: await upsertDocs(db.collection('ingredients'), body.upserts?.ingredients || [], now),
       recipes: await upsertDocs(db.collection('recipes'), body.upserts?.recipes || [], now),
+      molds: await upsertDocs(db.collection('molds'), body.upserts?.molds || [], now),
       deletedIngredients: await softDelete(db.collection('ingredients'), body.deletes?.ingredients, now),
       deletedRecipes: await softDelete(db.collection('recipes'), body.deletes?.recipes, now),
+      deletedMolds: await softDelete(db.collection('molds'), body.deletes?.molds, now),
     })
   } catch (e) {
     /* E11000 = 名稱撞到存活文件的唯一索引 */

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Dialog from './Dialog.jsx'
 
-export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
+export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClose }) {
   const [name, setName] = useState(r?.name || '')
   const [cat, setCat] = useState(r?.category || '')
   const [servings, setServings] = useState(r?.servings ?? 8)
@@ -19,6 +19,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
   const [finishedGrams, setFinishedGrams] = useState(r?.finishedGrams ?? '')
   const [shelfLifeDays, setShelfLifeDays] = useState(r?.shelfLifeDays ?? '')
   const [storage, setStorage] = useState(r?.storage || '')
+  const [moldId, setMoldId] = useState(r?.moldId || '')
   const [saving, setSaving] = useState(false)
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
@@ -72,6 +73,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
       finishedGrams: num(finishedGrams),
       shelfLifeDays: num(shelfLifeDays),
       storage: storage.trim(),
+      moldId: moldId || null,
     })
 
   return (
@@ -125,6 +127,14 @@ export default function RecipeDialog({ recipe: r, ING, RCP, onSave, onClose }) {
             <datalist id="storage-list">
               {['常溫', '冷藏', '冷凍', '常溫避光'].map(x => <option key={x} value={x} />)}
             </datalist>
+          </div>
+          <div className="field">
+            <label>模具(綁定後可用「⇄ 換算」換模具)</label>
+            <select value={moldId} onChange={e => setMoldId(e.target.value)}
+              className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm">
+              <option value="">未指定(到「模具庫」新增)</option>
+              {(molds || []).map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
+            </select>
           </div>
         </div>
 

@@ -12,9 +12,9 @@ const SORTS = [
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
-  dataSource, ingsMode, isEditor,
+  dataSource, ingsMode, moldsMode, isEditor,
   onLogin, onLogout,
-  onSelect, onNewRecipe, onToggleIngs,
+  onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
   onShopping, onExportJSON, onChangelog,
 }) {
   const [collapsed, setCollapsed] = useState(false)
@@ -105,9 +105,12 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line p-3.5">
+        {isEditor && (
+          <button className="btn btn-primary" onClick={onNewRecipe}>＋ 新增食譜</button>
+        )}
         <div className="flex gap-2">
-          {isEditor && <button className="btn btn-primary flex-1" onClick={onNewRecipe}>＋ 新增食譜</button>}
           <button className={'btn flex-1 ' + (ingsMode ? 'btn-active' : '')} onClick={onToggleIngs}>材料主檔</button>
+          <button className={'btn flex-1 ' + (moldsMode ? 'btn-active' : '')} onClick={onToggleMolds}>模具庫</button>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-sm flex-1" onClick={onShopping}>🛒 採購清單</button>
