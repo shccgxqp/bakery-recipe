@@ -18,8 +18,10 @@ import MoldDialog from './components/MoldDialog.jsx'
 import ScaleDialog from './components/ScaleDialog.jsx'
 import LoginDialog from './components/LoginDialog.jsx'
 import ToastHost from './components/ToastHost.jsx'
+import ConfirmHost from './components/ConfirmHost.jsx'
 import Skeleton from './components/Skeleton.jsx'
 import { toast } from './lib/toast.js'
+import { confirmDialog } from './lib/confirm.js'
 import { exportBackupJSON } from './lib/exportData.js'
 import { consumeTokenFromQuery, getGoogleUser, startGoogleLogin, googleLogout } from './lib/googleAuth.js'
 
@@ -185,7 +187,11 @@ export default function App() {
     setDlg(null)
   }
   const deleteRecipe = async r => {
-    if (!confirm(`刪除「${r.name}」?(軟刪除,可從資料庫救回)`)) return
+    const ok = await confirmDialog({
+      title: '刪除食譜', danger: true, confirmText: '刪除',
+      body: `刪除「${r.name}」?(軟刪除,可從資料庫救回)`,
+    })
+    if (!ok) return
     try {
       await write({ deletes: { recipes: [r._id] } })
       if (urlSelId === r._id) navigate('/r')
@@ -217,7 +223,8 @@ export default function App() {
     const msg = used.length
       ? `「${mold.name}」被 ${used.length} 道食譜綁定(${used.slice(0, 5).join('、')}${used.length > 5 ? '…' : ''}),刪除後這些食譜要重新指定模具。確定刪除?`
       : `刪除「${mold.name}」?`
-    if (!confirm(msg)) return
+    const ok = await confirmDialog({ title: '刪除模具', danger: true, confirmText: '刪除', body: msg })
+    if (!ok) return
     try {
       await write({ deletes: { molds: [id] } })
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
@@ -229,7 +236,8 @@ export default function App() {
     const msg = used.length
       ? `「${ing.name}」被 ${used.length} 道食譜使用(${used.slice(0, 5).join('、')}${used.length > 5 ? '…' : ''}),刪除後這些食譜會顯示缺料。確定刪除?`
       : `刪除「${ing.name}」?`
-    if (!confirm(msg)) return
+    const ok = await confirmDialog({ title: '刪除材料', danger: true, confirmText: '刪除', body: msg })
+    if (!ok) return
     try {
       await write({ deletes: { ingredients: [id] } })
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
@@ -361,6 +369,7 @@ export default function App() {
         />
       )}
       <ToastHost />
+      <ConfirmHost />
     </>
   )
 }

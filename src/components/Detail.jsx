@@ -3,6 +3,7 @@ import { calc, fmt, NUTR, DV_NOTE, groupByLayer, allergenSummary } from '../lib/
 import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 import { downloadNutritionLabel } from '../lib/labelImage.js'
 import { toast } from '../lib/toast.js'
+import { confirmDialog } from '../lib/confirm.js'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計 */
 function FragmentSection({ sec, hasLayers, subG, subC }) {
@@ -94,16 +95,18 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
   }
 
   /* 下載標示前的一次性同意(留存同意時間,善盡提醒義務;文字同 docs/legal/compliance.md) */
-  const downloadLabel = () => {
+  const downloadLabel = async () => {
     const TERMS_KEY = 'bakery-label-terms-v1'
     if (!localStorage.getItem(TERMS_KEY)) {
-      const ok = confirm(
-        '下載營養標示前請確認(僅需同意一次):\n\n' +
-        '1. 本數值為理論試算,僅供研發與個人參考,不具法律效力。\n' +
-        '2. 實際成品受製程、耗損、水分蒸發影響會有誤差,本站不保證符合法規抽驗標準。\n' +
-        '3. 直接用於商業販售之標示,一切法律責任(含《食品安全衛生管理法》標示不實 4 萬~400 萬元罰鍰)由使用者自行承擔;正式量產請送 SGS、台美檢驗等公正單位化驗。\n\n' +
-        '按「確定」表示已了解並同意。'
-      )
+      const ok = await confirmDialog({
+        title: '下載營養標示前請確認',
+        confirmText: '我已了解並同意',
+        body:
+          '僅需同意一次:\n' +
+          '1. 本數值為理論試算,僅供研發與個人參考,不具法律效力。\n' +
+          '2. 實際成品受製程、耗損、水分蒸發影響會有誤差,本站不保證符合法規抽驗標準。\n' +
+          '3. 直接用於商業販售之標示,一切法律責任(含《食品安全衛生管理法》標示不實 4 萬~400 萬元罰鍰)由使用者自行承擔;正式量產請送 SGS、台美檢驗等公正單位化驗。',
+      })
       if (!ok) return
       localStorage.setItem(TERMS_KEY, new Date().toISOString())
     }
