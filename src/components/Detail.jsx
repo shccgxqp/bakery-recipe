@@ -70,6 +70,16 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
   const labelGrams = hasFinished ? r.finishedGrams : c.grams
 
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 1800)
+    } catch {
+      toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
+    }
+  }
   const copyList = async () => {
     try {
       await navigator.clipboard.writeText(shoppingListText(r, ING))
@@ -110,6 +120,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
         <span className="ml-auto flex flex-wrap gap-2 print:hidden">
           <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>
+          <button className="btn btn-sm" onClick={copyLink}>{linkCopied ? '✓ 已複製' : '🔗 複製連結'}</button>
           <button className="btn btn-sm" onClick={copyList}>{copied ? '✓ 已複製' : '📋 複製購買清單'}</button>
           <button className="btn btn-sm" onClick={shareToLine}>💬 傳到 LINE</button>
           <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>

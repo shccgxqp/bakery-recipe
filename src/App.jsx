@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AUTH_KEY, LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_CAT_ORDER } from './config.js'
 import { calc, metrics, allergenSummary } from './lib/calc.js'
 import { loadData, pushData, verifyPassword } from './lib/api.js'
+import { recipePath } from './lib/slug.js'
 import Sidebar from './components/Sidebar.jsx'
 import Landing from './components/Landing.jsx'
 import Detail from './components/Detail.jsx'
@@ -34,9 +36,19 @@ export default function App() {
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
   const [excludeAllergens, setExcludeAllergens] = useState(() => new Set())
-  const [view, setView] = useState('landing') // landing | recipe | ings | molds | trash | changelog
-  const [selId, setSelId] = useState(null)
-  const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale', ...}
+  const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale'|'login', ...}
+
+  /* 網址是唯一真相來源(HashRouter,不用等 roadmap 第 6 項後補);
+     /r/:id/:name 的 id 才是定位依據,name 只是分享連結好看,讀取時不看它 */
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { view, urlSelId } = useMemo(() => {
+    const parts = location.pathname.split('/').filter(Boolean)
+    if (parts.length === 0) return { view: 'landing', urlSelId: null }
+    if (parts[0] === 'r') return { view: 'recipe', urlSelId: parts[1] ? decodeURIComponent(parts[1]) : null }
+    if (['ings', 'molds', 'trash', 'changelog'].includes(parts[0])) return { view: parts[0], urlSelId: null }
+    return { view: 'landing', urlSelId: null }
+  }, [location.pathname])
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
 
@@ -92,7 +104,7 @@ export default function App() {
   }, [RCP, ING, query, sortBy, catOrder, excludeAllergens])
 
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
-  const selected = RCP.find(r => r._id === selId) || RCP.find(r => r._id === flat[0]) || null
+  const selected = RCP.find(r => r._id === urlSelId) || RCP.find(r => r._id === flat[0]) || null
 
   /* ---- 開站讀 API(成功就更新離線快取) ---- */
   const refresh = useCallback(async () => {
@@ -153,8 +165,7 @@ export default function App() {
     const doc = { ...orig, ...obj, _id }
     if (doc.sortOrder == null) doc.sortOrder = Math.max(0, ...RCP.map(r => r.sortOrder || 0)) + 10
     await write({ upserts: { recipes: [doc] } })
-    setSelId(_id)
-    setView('recipe')
+    navigate(recipePath(doc))
     setDlg(null)
   }
   const saveIng = async (orig, obj) => {
@@ -166,7 +177,7 @@ export default function App() {
     if (!confirm(`刪除「${r.name}」?(軟刪除,可從資料庫救回)`)) return
     try {
       await write({ deletes: { recipes: [r._id] } })
-      if (selId === r._id) setSelId(null)
+      if (urlSelId === r._id) navigate('/r')
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   /* 複製食譜:立即存檔(不怕使用者取消編輯白做工),存完直接開編輯讓使用者改名/調整 */
@@ -179,8 +190,7 @@ export default function App() {
     const dup = { ...rest, _id, name, sortOrder: (r.sortOrder || 0) + 1 }
     try {
       await write({ upserts: { recipes: [dup] } })
-      setSelId(_id)
-      setView('recipe')
+      navigate(recipePath(dup))
       setDlg({ type: 'recipe', recipe: dup })
     } catch (err) { toast('複製失敗:' + err.message, { type: 'error' }) }
   }
@@ -233,13 +243,13 @@ export default function App() {
       const next = e.key === 'ArrowDown'
         ? flat[Math.min(pos + 1, flat.length - 1)]
         : flat[Math.max(pos - 1, 0)]
-      setSelId(next)
-      setView('recipe')
+      const nextRecipe = RCP.find(r => r._id === next)
+      if (nextRecipe) navigate(recipePath(nextRecipe))
       document.getElementById('ri-' + next)?.scrollIntoView({ block: 'nearest' })
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [dlg, flat, selected])
+  }, [dlg, flat, selected, RCP, navigate])
 
   /* 冷啟動(無快取)資料還在讀時秀骨架屏;有快取則沿用現行「先顯示快取,背景刷新」 */
   const coldLoading = view !== 'landing' && dataSource === '讀取中…' && RCP.length === 0
@@ -248,7 +258,7 @@ export default function App() {
     <>
       {view === 'landing' ? (
         <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
-          onEnter={() => setView('recipe')}
+          onEnter={() => navigate('/r')}
           onLogin={() => openLogin(true)} />
       ) : coldLoading ? (
         <Skeleton />
@@ -263,16 +273,16 @@ export default function App() {
             excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
             dataSource={dataSource} isEditor={isEditor}
             onLogin={() => openLogin(false)} onLogout={logout}
-            onSelect={id => { setSelId(id); setView('recipe') }}
+            onSelect={id => { const r = RCP.find(x => x._id === id); if (r) navigate(recipePath(r)) }}
             onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
-            onToggleIngs={() => setView(view === 'ings' ? 'recipe' : 'ings')}
+            onToggleIngs={() => navigate(view === 'ings' ? '/r' : '/ings')}
             ingsMode={view === 'ings'}
-            onToggleMolds={() => setView(view === 'molds' ? 'recipe' : 'molds')}
+            onToggleMolds={() => navigate(view === 'molds' ? '/r' : '/molds')}
             moldsMode={view === 'molds'}
             onShopping={() => setDlg({ type: 'shopping' })}
             onExportJSON={() => exportBackupJSON(base)}
-            onChangelog={() => setView('changelog')}
-            onTrash={() => setView(view === 'trash' ? 'recipe' : 'trash')}
+            onChangelog={() => navigate('/changelog')}
+            onTrash={() => navigate(view === 'trash' ? '/r' : '/trash')}
             trashMode={view === 'trash'}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
@@ -332,7 +342,7 @@ export default function App() {
           onClose={() => setDlg(null)}
           onSubmit={async pw => {
             const ok = await doLogin(pw)
-            if (ok) { setDlg(null); if (dlg.enterAfter) setView('recipe') }
+            if (ok) { setDlg(null); if (dlg.enterAfter) navigate('/r') }
             return ok
           }}
         />
