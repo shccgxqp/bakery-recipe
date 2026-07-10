@@ -57,11 +57,17 @@ Google OAuth 登入;使用者可投稿個人食譜,選擇公開或私人。
 **這是整個平台化的分水嶺**,動到資料架構(所有資料加 `ownerId`)、
 API 權限模型(從單一密碼變成 per-user 授權)、UI(個人頁)。
 
-- **技術方向定案:Auth.js**(`@auth/core`,不是 `next-auth`——本站是 Vite+React
-  SPA 不是 Next.js,要自己寫一支 Vercel serverless function 轉接 req/res)。
-  JWT session、不接 MongoDB Adapter(不落地 users 表,身份就是 Google `sub`,
-  跟現有「無 ORM/無使用者表」的極簡風格一致)。現有的單一編輯密碼制在帳號系統
-  上線後轉為「站長權限」,與 per-user session 雙軌並存。
+- **技術方向定案(2026-07-10 二次修正):手刻 OAuth,不裝 `@auth/core`**。
+  原訂 Auth.js,但發現本站前端(GitHub Pages)跟 API(Vercel)是**兩個不同網域**,
+  cookie-based session 會被當第三方 cookie(Safari/Firefox 預設擋、Chrome 也在收緊),
+  改成 **token 帶在網址、前端存 localStorage、之後 API 呼叫帶
+  `Authorization: Bearer <token>`** 這種不依賴 cookie 的做法。既然不用 Auth.js
+  的 cookie session 機制,`@auth/core` 的價值所剩不多,改手刻:
+  `/api/auth/google/start`(組 Google 授權網址導過去)→
+  `/api/auth/google/callback`(收 `code`→跟 Google 換 id_token→驗證→自己簽一組
+  JWT,`AUTH_SECRET` 簽章)→導回前端網址帶 `#token=...`,前端讀取存
+  localStorage、清網址。跟現有密碼驗證(SHA-256 比對)手刻風格一致,不加依賴。
+  現有的單一編輯密碼制在帳號系統上線後轉為「站長權限」,與 per-user token 雙軌並存。
 - **schema 已預留**:公開參考資料與私人營運資料欄位已分離(見 db-schema.md),
   屆時私人欄位拆出去加 `ownerId` 即可。
 - **拍板結果**:
