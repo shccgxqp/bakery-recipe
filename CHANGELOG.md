@@ -13,6 +13,16 @@
 
 ---
 
+## 3.10.0 — 2026-07-10
+
+- 帳號系統加信箱+密碼註冊/登入(roadmap 第 2 項):新增 `users` collection,
+  密碼用 Node 內建 `crypto.scrypt` 雜湊(不裝套件),連續登入失敗 5 次鎖 15 分鐘。
+  Google 登入跟信箱密碼登入用同一個 email 判斷是不是同一人(帳號整合),
+  `api/auth/google/callback.js` 跟著改成查/建 `users` 文件。這次不寄驗證信
+  (SendGrid 免費方案已取消,Resend 免費層需要驗證過的網域才能寄給任意收件者,
+  網域還沒買),`emailVerified` 欄位先留著。側欄加陽春的信箱密碼測試表單,
+  樣式等大改版一起做。
+
 ## 3.9.0 — 2026-07-10
 
 - 帳號系統第一階段(roadmap 第 2 項):Google 登入接通測試。手刻 OAuth

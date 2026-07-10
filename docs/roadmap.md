@@ -82,26 +82,29 @@ API 權限模型(從單一密碼變成 per-user 授權)、UI(個人頁)。
     第二階段實作時再定(傾向全部先設公開)。
   - 私人食譜存量限制?→ **待拍板,不擋第一階段**(先不設硬限制,正式開放
     註冊前再評估用量抓門檻)。
-- **實作分三階段**:
-  1. ✅ **v3.9.0 已上線,已實測成功**:接通 Google 登入,不動資料模型。
-     `api/auth/google/start.js` + `callback.js`,側欄「🧪 Google 登入測試」按鈕。
-     Google Cloud OAuth 用戶端已建立(專案 `bakejojo`),Client ID/Secret 已設進
-     Vercel production 環境變數。**2026-07-10 追加**:現有 20 道食譜已用
+- **實作進度**:
+  1. ✅ **v3.9.0**:接通 Google 登入,不動資料模型。`api/auth/google/start.js` +
+     `callback.js`。Google Cloud OAuth 用戶端已建立(專案 `bakejojo`),
+     Client ID/Secret 已設進 Vercel production 環境變數。現有 20 道食譜已用
      `scripts/backfill-recipe-owner.mjs` 標上 `recipes.ownerId = "shccgxqp@gmail.com"`,
-     先用 email 當識別值(暫時性,之後要不要換成 Google `sub` 待評估——`sub`
-     更穩定但目前不影響任何讀寫邏輯,換值成本低,重跑腳本即可)。
-  2. `ownerId` 加到 recipes(不加 ingredients/molds)、食譜編輯頁加公開/私人切換、
-     API 權限模型雙軌化
-  3. 個人頁、私人食譜存量提示
+     先用 email 當識別值(之後要不要換成 Google `sub` 待評估,換值成本低)。
+  2. ✅ **v3.10.0**:信箱+密碼註冊/登入補上,`users` collection 正式建立
+     (見 db-schema.md)——跟原本規劃的「phase 2 才建 users 表」提前了,因為
+     密碼雜湊需要地方存,而且 Google 帳號跟信箱密碼帳號用同一個 email 該是
+     同一人,兩件事都需要真正的使用者表。`emailVerified` 欄位留著但不強制
+     (驗證信需要驗證過的網域,`bakejojo.com` 還沒買)。側欄陽春信箱密碼測試
+     表單,樣式等大改版。
+  3. 還沒做:`ownerId` 加到 recipes 的公開/私人切換、API 權限模型雙軌化
+     (單一站長密碼 → per-user 授權)、個人頁、私人食譜存量提示。
 - **2026-07-10 補充,待詳細討論(不現在做)**:
   - **公開顯示名稱(暱稱)**:食譜掛作者時不能直接顯示 Google email 或真名——
-    需要一個「網頁暱稱」欄位,使用者自己取,清楚標註「這是公開顯示給大家看的
-    名稱」,登入後引導設定(還沒設定前用什麼預設值顯示待定)。
-  - **`users` collection 要補完整**:目前完全沒有使用者資料表(第一階段刻意
-    不建,只把 email 貼在食譜上)。要正式做的話至少要有:暱稱(上面那項)、
-    工作室名稱(選填)、個人網頁/社群連結(選填)、大頭貼(可沿用 Google 的
-    或自己換)、加入時間。這些欄位定義跟「要不要開放使用者自己編輯 vs 純顯示」
-    需要再詳細討論一輪,不是這次就拍板。
+    `users.displayName` 欄位已經開了,但還沒有「首次登入引導設定暱稱」的 UI,
+    還沒設定前用什麼預設值顯示待定。
+  - **`users` collection 欄位還要補完整**:目前只有 email/密碼/`googleSub`/
+    `displayName`/`role`/防爆力鎖定用的欄位。要正式做的話還要:工作室名稱
+    (選填)、個人網頁/社群連結(選填)、大頭貼(可沿用 Google 的或自己換)。
+    這些欄位定義跟「要不要開放使用者自己編輯 vs 純顯示」需要再詳細討論一輪,
+    不是這次就拍板。
 - item 5(食譜編輯 UI 重造)與食譜照片欄位,依你的要求併入 item 4
   (平台化大改造)一起想,不併進帳號系統這條線。
 - **2026-07-09 補充,帳號上線時一併處理**(先記錄,不動現有 schema):

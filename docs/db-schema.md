@@ -123,6 +123,41 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 
 食譜加選填 `moldId`(null = 未綁定;綁定後才開放「按模具換算」)。
 
+### `users`(帳號系統,2026-07-10 新增)
+
+跨網域(前端 GitHub Pages、API Vercel)不能用 cookie session,登入身份用
+`api/_lib/authToken.js` 手刻的簽章 token,存前端 localStorage,打 API 帶
+`Authorization: Bearer <token>`(這階段還沒有任何 API 真的檢查這個 header,
+純粹先把登入路徑接通)。
+
+```js
+{
+  _id: "uuid…",                 // 後端產生,不用 Google sub(信箱密碼帳號沒有 sub)
+  email: "user@example.com",    // 統一小寫,唯一索引——帳號整合的關鍵:
+                                 // Google 登入與信箱密碼登入,email 一樣就是同一人
+  passwordHash: "a1b2…:c3d4…" ,  // "<salt hex>:<hash hex>",scrypt(見 api/_lib/password.js);
+                                 // null = 純 Google 帳號,沒設過密碼
+  googleSub: "1234567890" ,     // null = 純信箱密碼帳號,沒連過 Google
+  emailVerified: false,         // 目前沒有寄驗證信的能力(SendGrid 已取消免費方案,
+                                 // Resend 免費層要驗證過的網域才能寄給任意收件者,
+                                 // bakejojo.com 還沒買)——欄位先留著,不強制、不擋註冊
+  displayName: "",              // 公開暱稱(食譜作者顯示用,不能直接曝光 email/真名);
+                                 // 目前沒有 UI 引導設定,大改版時一併做
+  role: "user",                 // "user" | "owner";站長權限判斷邏輯留到帳號系統
+                                 // 第二階段(取代現有 EDIT_PASSWORD_SHA256),這次不動
+  failedAttempts: 0,            // 信箱密碼登入失敗次數,達 5 次鎖 15 分鐘(見 api/auth/login.js)
+  lockedUntil: null,
+  createdAt, updatedAt
+}
+db.users.createIndex({ email: 1 }, { unique: true })
+```
+
+- `POST /api/auth/register`、`POST /api/auth/login`:信箱+密碼註冊/登入。
+- `GET /api/auth/google/start` → `GET /api/auth/google/callback`:Google 登入,
+  callback 裡用 email 查/建 `users` 文件,跟信箱密碼是同一張表(帳號整合)。
+- 三條路簽出來的 token payload 格式一致:`{ sub, email, displayName, role }`
+  (Google 登入另外多帶 `picture`)。
+
 ### `settings`(單一文件)
 
 ```js

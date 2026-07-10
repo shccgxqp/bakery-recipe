@@ -53,12 +53,13 @@ export default function App() {
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
 
-  /* Google 登入測試(帳號系統第一階段,見 docs/roadmap.md 第 2 項)——
+  /* 帳號系統測試(Google + 信箱密碼,見 docs/roadmap.md 第 2 項)——
      只驗證登入這條路通不通,跟上面的站長密碼制無關,不影響任何權限 */
   const [googleUser, setGoogleUser] = useState(null)
+  const refreshAuthUser = () => setGoogleUser(getGoogleUser())
   useEffect(() => {
     consumeTokenFromQuery()
-    setGoogleUser(getGoogleUser())
+    refreshAuthUser()
   }, [])
   const logoutGoogle = () => { googleLogout(); setGoogleUser(null) }
 
@@ -295,6 +296,7 @@ export default function App() {
             onTrash={() => navigate(view === 'trash' ? '/r' : '/trash')}
             trashMode={view === 'trash'}
             googleUser={googleUser} onGoogleLogin={startGoogleLogin} onGoogleLogout={logoutGoogle}
+            onAuthChange={refreshAuthUser}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
             {view === 'changelog' ? (

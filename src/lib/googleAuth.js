@@ -1,12 +1,32 @@
-/* 帳號系統第一階段(Google 登入測試,見 docs/roadmap.md 第 2 項):
+/* 帳號系統(見 docs/roadmap.md 第 2 項):Google 登入 + 信箱密碼登入,
+   兩條路簽出來的 token 格式一致(見 api/_lib/authToken.js)。
    跨網域(前端 GitHub Pages、API Vercel)不能用 cookie session,
-   token 用網址 query string 帶回來(不是 #,# 是 HashRouter 的路由),
-   前端存 localStorage,之後打 API 要帶身份就用 Authorization: Bearer <token>。
-   這階段只驗證登入這條路通不通,不牽動任何權限/資料歸屬。 */
+   token 存 localStorage,之後打 API 要帶身份就用 Authorization: Bearer <token>。
+   這階段只驗證登入這條路通不通,不牽動任何權限/資料歸屬。
+   檔名沿用 googleAuth.js(先求快,不折騰檔名),但現在管兩種登入方式。 */
 
 import { API_BASE } from '../config.js'
 
 const KEY = 'bakery-google-auth'
+
+async function postAuth(path, body) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  const json = await res.json()
+  if (!json.ok) throw new Error(json.error || '請求失敗')
+  localStorage.setItem(KEY, json.token)
+  return json
+}
+
+/* 信箱+密碼:同一個 email 之前只用過 Google 登入的話,這裡會幫它補設密碼 */
+export const registerWithPassword = (email, password, displayName = '') =>
+  postAuth('/api/auth/register', { email, password, displayName })
+
+export const loginWithPassword = (email, password) =>
+  postAuth('/api/auth/login', { email, password })
 
 export function startGoogleLogin() {
   const returnTo = window.location.origin + window.location.pathname

@@ -1,7 +1,45 @@
 import { useState } from 'react'
 import { calc, metrics, fmt } from '../lib/calc.js'
 import { APP_VERSION } from '../config.js'
+import { registerWithPassword, loginWithPassword } from '../lib/googleAuth.js'
+import { toast } from '../lib/toast.js'
 import Chip from './Chip.jsx'
+
+/* 🧪 帳號系統測試用,陽春表單,樣式等大改版一起做 */
+function PasswordAuthTest({ onAuthChange }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  const run = async (fn) => {
+    if (!email || !password) return
+    setBusy(true)
+    try {
+      await fn(email, password)
+      toast('登入成功', { type: 'success' })
+      onAuthChange()
+    } catch (err) {
+      toast(err.message, { type: 'error' })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="mt-1.5 flex flex-col gap-1">
+      <input type="email" placeholder="測試信箱" value={email} onChange={e => setEmail(e.target.value)}
+        className="rounded border border-line bg-white px-2 py-1 text-[11px]" />
+      <input type="password" placeholder="密碼(至少8碼)" value={password} onChange={e => setPassword(e.target.value)}
+        className="rounded border border-line bg-white px-2 py-1 text-[11px]" />
+      <div className="flex gap-1">
+        <button disabled={busy} onClick={() => run(registerWithPassword)}
+          className="flex-1 rounded border border-line py-1 text-[10.5px] hover:border-yolk">註冊</button>
+        <button disabled={busy} onClick={() => run(loginWithPassword)}
+          className="flex-1 rounded border border-line py-1 text-[10.5px] hover:border-yolk">登入</button>
+      </div>
+    </div>
+  )
+}
 
 const SORTS = [
   ['category', '分類'],
@@ -18,7 +56,7 @@ export default function Sidebar({
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
   onShopping, onExportJSON, onChangelog, onTrash,
-  googleUser, onGoogleLogin, onGoogleLogout,
+  googleUser, onGoogleLogin, onGoogleLogout, onAuthChange,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [allergyOpen, setAllergyOpen] = useState(false)
@@ -154,12 +192,15 @@ export default function Sidebar({
           {googleUser ? (
             <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogout}
               title={googleUser.email}>
-              🧪 Google 測試登入中:{googleUser.name || googleUser.email}(點此登出)
+              🧪 測試登入中:{googleUser.displayName || googleUser.name || googleUser.email}(點此登出)
             </button>
           ) : (
-            <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogin}>
-              🧪 Google 登入測試(帳號系統開發中)
-            </button>
+            <>
+              <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogin}>
+                🧪 Google 登入測試(帳號系統開發中)
+              </button>
+              <PasswordAuthTest onAuthChange={onAuthChange} />
+            </>
           )}
         </div>
       </div>
