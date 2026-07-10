@@ -82,9 +82,11 @@ API 權限模型(從單一密碼變成 per-user 授權)、UI(個人頁)。
     第二階段實作時再定(傾向全部先設公開)。
   - 私人食譜存量限制?→ **待拍板,不擋第一階段**(先不設硬限制,正式開放
     註冊前再評估用量抓門檻)。
-- **實作分三階段**(第一階段進行中,見下):
-  1. 只接通 Google 登入,不動資料模型——先確認 OAuth 這條路走得通
-     (卡在需要你先去 Google Cloud Console 建 OAuth 憑證,給我 Client ID/Secret)
+- **實作分三階段**:
+  1. ✅ **v3.9.0 已上線,待你實測**:只接通 Google 登入,不動資料模型。
+     `api/auth/google/start.js` + `callback.js`,側欄「🧪 Google 登入測試」按鈕。
+     Google Cloud OAuth 用戶端已建立(專案 `bakejojo`),Client ID/Secret 已設進
+     Vercel production 環境變數。
   2. `ownerId` 加到 recipes(不加 ingredients/molds)、食譜編輯頁加公開/私人切換、
      API 權限模型雙軌化
   3. 個人頁、私人食譜存量提示

@@ -13,6 +13,14 @@
 
 ---
 
+## 3.9.0 — 2026-07-10
+
+- 帳號系統第一階段(roadmap 第 2 項):Google 登入接通測試。手刻 OAuth
+  (`api/auth/google/start.js`/`callback.js`,不裝 `@auth/core`)——前端跟 API
+  是不同網域,cookie session 會被第三方 cookie 擋掉,改成 token 帶在網址
+  query string、前端存 localStorage。側欄加「🧪 Google 登入測試」按鈕,
+  純驗證登入這條路通不通,**不影響任何現有權限/資料**,站長密碼制原封不動並行。
+
 ## 3.8.0 — 2026-07-10
 
 - 網址路由(roadmap 第 6 項):`react-router-dom`(Hash 路由,GitHub Pages 純靜態站

@@ -18,6 +18,7 @@ export default function Sidebar({
   onLogin, onLogout,
   onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
   onShopping, onExportJSON, onChangelog, onTrash,
+  googleUser, onGoogleLogin, onGoogleLogout,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [allergyOpen, setAllergyOpen] = useState(false)
@@ -149,6 +150,18 @@ export default function Sidebar({
             🔑 我是主人,登入編輯
           </button>
         )}
+        <div className="border-t border-dashed border-line pt-2 text-center">
+          {googleUser ? (
+            <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogout}
+              title={googleUser.email}>
+              🧪 Google 測試登入中:{googleUser.name || googleUser.email}(點此登出)
+            </button>
+          ) : (
+            <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogin}>
+              🧪 Google 登入測試(帳號系統開發中)
+            </button>
+          )}
+        </div>
       </div>
       </div>
     </aside>

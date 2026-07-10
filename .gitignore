@@ -8,3 +8,5 @@
 scripts/import-legacy.mjs
 node_modules/
 dist/
+.vercel
+.env*

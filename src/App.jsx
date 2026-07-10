@@ -21,6 +21,7 @@ import ToastHost from './components/ToastHost.jsx'
 import Skeleton from './components/Skeleton.jsx'
 import { toast } from './lib/toast.js'
 import { exportBackupJSON } from './lib/exportData.js'
+import { consumeTokenFromQuery, getGoogleUser, startGoogleLogin, googleLogout } from './lib/googleAuth.js'
 
 function loadCache() {
   try {
@@ -51,6 +52,15 @@ export default function App() {
   }, [location.pathname])
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
   const isEditor = !!auth
+
+  /* Google 登入測試(帳號系統第一階段,見 docs/roadmap.md 第 2 項)——
+     只驗證登入這條路通不通,跟上面的站長密碼制無關,不影響任何權限 */
+  const [googleUser, setGoogleUser] = useState(null)
+  useEffect(() => {
+    consumeTokenFromQuery()
+    setGoogleUser(getGoogleUser())
+  }, [])
+  const logoutGoogle = () => { googleLogout(); setGoogleUser(null) }
 
   const catOrder = base.settings?.catOrder || DEFAULT_CAT_ORDER
   const allergenList = base.settings?.allergenList || DEFAULT_ALLERGENS
@@ -284,6 +294,7 @@ export default function App() {
             onChangelog={() => navigate('/changelog')}
             onTrash={() => navigate(view === 'trash' ? '/r' : '/trash')}
             trashMode={view === 'trash'}
+            googleUser={googleUser} onGoogleLogin={startGoogleLogin} onGoogleLogout={logoutGoogle}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
             {view === 'changelog' ? (
