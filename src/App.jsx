@@ -119,9 +119,15 @@ export default function App() {
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
   const selected = RCP.find(r => r._id === urlSelId) || RCP.find(r => r._id === flat[0]) || null
 
-  /* ---- 開站讀 API(成功就更新離線快取) ---- */
-  const refresh = useCallback(async () => {
-    const d = await loadData()
+  /* ---- 寫入/讀取共用的目前密碼 ref(登入才有值,私人食譜靠它決定要不要一起回) ---- */
+  const authRef = useRef(auth)
+  useEffect(() => { authRef.current = auth }, [auth])
+
+  /* ---- 開站讀 API(成功就更新離線快取)。pwOverride 用在登入/登出當下——
+     這時 authRef 還沒同步到最新值(setAuth 是非同步的),直接傳新值比較保險 ---- */
+  const refresh = useCallback(async (pwOverride) => {
+    const pw = pwOverride !== undefined ? pwOverride : authRef.current
+    const d = await loadData(pw)
     setBase(d)
     localStorage.setItem(LS_CACHE, JSON.stringify(d))
     setDataSource('雲端 ✓')
@@ -135,10 +141,6 @@ export default function App() {
       setDataSource(loadCache().ingredients.length ? '離線快取(唯讀)' : '無資料(離線)')
     })
   }, [refresh])
-
-  /* ---- 寫入:按儲存直接寫資料庫,成功後以伺服器回讀為準 ---- */
-  const authRef = useRef(auth)
-  useEffect(() => { authRef.current = auth }, [auth])
 
   const write = useCallback(async ({ upserts, deletes, restores }) => {
     if (!authRef.current) throw new Error('尚未登入')
@@ -155,19 +157,22 @@ export default function App() {
     await refresh()
   }, [refresh])
 
-  /* ---- 登入 / 登出:LoginDialog 送出密碼 → doLogin 驗證,錯誤顯示在對話框內(不用 alert) ---- */
+  /* ---- 登入 / 登出:LoginDialog 送出密碼 → doLogin 驗證,錯誤顯示在對話框內(不用 alert)。
+     兩邊都要 refresh(),不然私人食譜要重新整理頁面才會出現/消失。 ---- */
   const doLogin = useCallback(async pw => {
     const ok = await verifyPassword(pw)
     if (ok) {
       setAuth(pw)
       localStorage.setItem(AUTH_KEY, pw)
+      await refresh(pw)
     }
     return ok
-  }, [])
+  }, [refresh])
   const logout = useCallback(() => {
     setAuth('')
     localStorage.removeItem(AUTH_KEY)
-  }, [])
+    refresh('').catch(err => toast('重新讀取失敗:' + err.message, { type: 'error' }))
+  }, [refresh])
   /* enterAfter:首頁「登入編輯」登入成功後直接進站,不用登入完再按一次「進入瀏覽」 */
   const openLogin = (enterAfter = false) => setDlg({ type: 'login', enterAfter })
 

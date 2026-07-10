@@ -139,6 +139,7 @@ export default function Sidebar({
                 >
                   <span className="flex min-w-0 items-center gap-1.5">
                     <span className="truncate">{r.name}</span>
+                    {r.public === false && <span title="私人食譜,只有登入編輯時看得到">🔒</span>}
                     {groups.flat && (
                       <span className="shrink-0 whitespace-nowrap rounded-full bg-yolk-soft px-1.5 py-px text-[10px] font-normal text-ink-soft">
                         {r.category || '未分類'}

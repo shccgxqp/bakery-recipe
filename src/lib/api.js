@@ -7,9 +7,12 @@ async function post(path, body) {
   return res.json()
 }
 
-/* 全部資料:{ ingredients, recipes, settings },已過濾軟刪除 */
-export async function loadData() {
-  const res = await fetch(API_BASE + '/api/data')
+/* 全部資料:{ ingredients, recipes, settings },已過濾軟刪除。
+   password 有值(已登入編輯)時帶 X-Edit-Password header,伺服器才會連私人食譜一起回。 */
+export async function loadData(password) {
+  const res = await fetch(API_BASE + '/api/data', {
+    headers: password ? { 'X-Edit-Password': password } : {},
+  })
   const j = await res.json()
   if (!j.ok) throw new Error(j.error || '讀取失敗')
   return j

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Dialog from './Dialog.jsx'
 import { toast } from '../lib/toast.js'
+import Chip from './Chip.jsx'
 
 export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClose }) {
   const [name, setName] = useState(r?.name || '')
@@ -22,6 +23,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
   const [shelfLifeDays, setShelfLifeDays] = useState(r?.shelfLifeDays ?? '')
   const [storage, setStorage] = useState(r?.storage || '')
   const [moldId, setMoldId] = useState(r?.moldId || '')
+  const [isPublic, setIsPublic] = useState(r?.public !== false)
   const [saving, setSaving] = useState(false)
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
@@ -83,6 +85,7 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
       shelfLifeDays: num(shelfLifeDays),
       storage: storage.trim(),
       moldId: moldId || null,
+      public: isPublic,
     })
 
   return (
@@ -144,6 +147,13 @@ export default function RecipeDialog({ recipe: r, ING, RCP, molds, onSave, onClo
               <option value="">未指定(到「模具庫」新增)</option>
               {(molds || []).map(m => <option key={m._id} value={m._id}>{m.name}</option>)}
             </select>
+          </div>
+          <div className="field">
+            <label>公開狀態</label>
+            <div className="flex gap-1.5">
+              <Chip active={isPublic} onClick={() => setIsPublic(true)}>公開</Chip>
+              <Chip active={!isPublic} tone="warn" onClick={() => setIsPublic(false)}>🔒 私人</Chip>
+            </div>
           </div>
         </div>
 

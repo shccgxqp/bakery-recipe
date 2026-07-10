@@ -120,6 +120,11 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
         <span className="whitespace-nowrap rounded-full bg-yolk-soft px-3 py-0.5 text-xs font-bold tracking-[.08em] text-yolk">
           {r.category || '未分類'}
         </span>
+        {r.public === false && (
+          <span className="whitespace-nowrap rounded-full border border-warn px-3 py-0.5 text-xs font-bold tracking-[.08em] text-warn">
+            🔒 私人
+          </span>
+        )}
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
         <span className="ml-auto flex flex-wrap gap-2 print:hidden">
           <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>

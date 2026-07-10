@@ -78,8 +78,12 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   sortOrder: 10,                // 分類內顯示順序(間隔 10 編號,插入取中間值)
   ownerId: "shccgxqp@gmail.com", // 帳號系統第一階段(2026-07-10)加的,暫時存
                                 //  Google 登入的 email(之後可能換成穩定的 sub)。
-                                //  現階段只是標記,不影響任何讀寫權限或可見度——
-                                //  公開/私人切換、per-owner API 權限是第二階段的事
+                                //  目前不影響任何讀寫權限(per-owner API 權限還沒做,
+                                //  誰能編輯還是看站長密碼),只有掛著標記用
+  public: true,                 // 帳號系統 phase 2(縮小範圍版,2026-07-10)加的;
+                                //  false = 私人,GET /api/data 沒帶對站長密碼
+                                //  (header X-Edit-Password)時會被濾掉,訪客看不到、
+                                //  網址也連不到。欄位不存在 = 當 true(舊資料不用遷移)
   deletedAt: null,
   createdAt: "…", updatedAt: "…"
 }
@@ -193,6 +197,8 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 ## 三、API(Vercel Serverless Functions,`api/` 目錄)
 
 - `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, molds, settings }`(已過濾軟刪除)。
+  帶對站長密碼(header `X-Edit-Password`)時 `recipes` 額外回私人的;沒帶或密碼錯,
+  只回 `public !== false` 的。
 - `POST /api/save` — 帶密碼;逐筆 upsert + 軟刪除 + 復原
   (`{ password, upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
   時間戳由伺服器管;名稱撞唯一索引回 409。
