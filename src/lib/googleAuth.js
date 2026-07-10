@@ -65,3 +65,8 @@ function Buffer_atob(b64url) {
 export function googleLogout() {
   localStorage.removeItem(KEY)
 }
+
+/* 目前登入使用者的 token,寫入 API 要帶 Authorization: Bearer 時用這個 */
+export function getAuthToken() {
+  return localStorage.getItem(KEY)
+}

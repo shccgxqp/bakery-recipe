@@ -11,11 +11,11 @@ export function getDb() {
   return clientPromise.then(c => c.db(process.env.MONGODB_DB))
 }
 
-/* 前端在 GitHub Pages(跨網域),讀取公開、寫入靠密碼,故 Origin 開放 */
+/* 前端在 GitHub Pages(跨網域),讀取公開、寫入靠密碼或使用者 token,故 Origin 開放 */
 export function cors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Edit-Password')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Edit-Password, Authorization')
 }
 
 export function checkPassword(pw) {

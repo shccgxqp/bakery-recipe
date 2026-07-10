@@ -23,7 +23,7 @@ import Skeleton from './components/Skeleton.jsx'
 import { toast } from './lib/toast.js'
 import { confirmDialog } from './lib/confirm.js'
 import { exportBackupJSON } from './lib/exportData.js'
-import { consumeTokenFromQuery, getGoogleUser, startGoogleLogin, googleLogout } from './lib/googleAuth.js'
+import { consumeTokenFromQuery, getGoogleUser, startGoogleLogin, googleLogout, getAuthToken } from './lib/googleAuth.js'
 
 function loadCache() {
   try {
@@ -53,10 +53,11 @@ export default function App() {
     return { view: 'landing', urlSelId: null }
   }, [location.pathname])
   const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
-  const isEditor = !!auth
 
-  /* 帳號系統測試(Google + 信箱密碼,見 docs/roadmap.md 第 2 項)——
-     只驗證登入這條路通不通,跟上面的站長密碼制無關,不影響任何權限 */
+  /* 帳號系統(Google + 信箱密碼,見 docs/roadmap.md 第 2 項 phase 4)——
+     登入的一般使用者現在真的能寫自己的食譜/材料/模具了(API 逐筆檢查擁有權)。
+     isEditor 這次刻意不分身份細顯示:登入者(站長密碼或一般使用者)都看得到
+     編輯按鈕,沒有權限的操作交給 API 擋 + toast 顯示錯誤。 */
   const [googleUser, setGoogleUser] = useState(null)
   const refreshAuthUser = () => setGoogleUser(getGoogleUser())
   useEffect(() => {
@@ -64,6 +65,7 @@ export default function App() {
     refreshAuthUser()
   }, [])
   const logoutGoogle = () => { googleLogout(); setGoogleUser(null) }
+  const isEditor = !!auth || !!googleUser
 
   const catOrder = base.settings?.catOrder || DEFAULT_CAT_ORDER
   const allergenList = base.settings?.allergenList || DEFAULT_ALLERGENS
@@ -143,9 +145,10 @@ export default function App() {
   }, [refresh])
 
   const write = useCallback(async ({ upserts, deletes, restores }) => {
-    if (!authRef.current) throw new Error('尚未登入')
+    const auth = authRef.current ? { password: authRef.current } : googleUser ? { token: getAuthToken() } : null
+    if (!auth) throw new Error('尚未登入')
     try {
-      await pushData(authRef.current, upserts || {}, deletes || {}, restores || {})
+      await pushData(auth, upserts || {}, deletes || {}, restores || {})
     } catch (err) {
       if (err.message === '密碼錯誤') {
         setAuth('')
@@ -155,7 +158,7 @@ export default function App() {
       throw err
     }
     await refresh()
-  }, [refresh])
+  }, [refresh, googleUser])
 
   /* ---- 登入 / 登出:LoginDialog 送出密碼 → doLogin 驗證,錯誤顯示在對話框內(不用 alert)。
      兩邊都要 refresh(),不然私人食譜要重新整理頁面才會出現/消失。 ---- */

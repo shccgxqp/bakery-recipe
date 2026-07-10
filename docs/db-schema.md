@@ -48,6 +48,13 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
                                 //  廠商改配方 → 直接更新資料+更新此欄;歷史靠每日 git 備份
   note: "",                     // 備註(購買通路…),選填
 
+  createdBy: "shccgxqp@gmail.com", // 帳號系統 phase 4(2026-07-10)加的;伺服器蓋章,
+                                //  不信任 client。建立者本人或站長(role:"owner")才能改/刪
+                                //  這筆;舊資料沒有這欄 = 只有站長能動(見 api/_lib/auth.js
+                                //  canWriteShared)
+  lastEditedBy: null,           // 站長修正別人建立的資料時蓋章(材料/模具是公開資料庫,
+  lastEditedAt: null,           //  站長能改;跟建立者不同時才有值,讓建立者事後看得到)
+
   deletedAt: null,              // 軟刪除:null=存活,日期=已刪(API 預設過濾)
   createdAt: ISODate, updatedAt: ISODate
 }
@@ -76,10 +83,12 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   shelfLifeDays: null,          // 保存期限(天)
   storage: "",                  // 保存條件(如「冷藏」)
   sortOrder: 10,                // 分類內顯示順序(間隔 10 編號,插入取中間值)
-  ownerId: "shccgxqp@gmail.com", // 帳號系統第一階段(2026-07-10)加的,暫時存
-                                //  Google 登入的 email(之後可能換成穩定的 sub)。
-                                //  目前不影響任何讀寫權限(per-owner API 權限還沒做,
-                                //  誰能編輯還是看站長密碼),只有掛著標記用
+  ownerId: "shccgxqp@gmail.com", // 帳號系統第一階段(2026-07-10)加的,存建立者
+                                //  email。phase 4(2026-07-10)起這是真正的權限判斷
+                                //  依據:只有 ownerId 相符的本人能改/刪這道食譜,
+                                //  站長(role:"owner")不例外,連站長密碼也一樣受這條
+                                //  規則約束(見 api/_lib/auth.js canWriteRecipe)。
+                                //  伺服器蓋章,不信任 client payload
   public: true,                 // 帳號系統 phase 2(縮小範圍版,2026-07-10)加的;
                                 //  false = 私人,GET /api/data 沒帶對站長密碼
                                 //  (header X-Edit-Password)時會被濾掉,訪客看不到、
@@ -121,6 +130,8 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
                                // 尺寸未經官方驗證,如 chefmade;多半只有外部最大尺寸,容積是粗估)|
                                // 'manual'(使用者自己量的);不影響計算,只是信心度標記
   note: "",
+  createdBy: null,             // 帳號系統 phase 4(2026-07-10)加的,同 ingredients.createdBy
+  lastEditedBy: null, lastEditedAt: null,
   deletedAt: null, createdAt, updatedAt
 }
 ```
@@ -131,8 +142,12 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 
 跨網域(前端 GitHub Pages、API Vercel)不能用 cookie session,登入身份用
 `api/_lib/authToken.js` 手刻的簽章 token,存前端 localStorage,打 API 帶
-`Authorization: Bearer <token>`(這階段還沒有任何 API 真的檢查這個 header,
-純粹先把登入路徑接通)。
+`Authorization: Bearer <token>`。**帳號系統 phase 4(2026-07-10)起 `POST /api/save`
+真的會檢查這個 header**——一般登入使用者可以用它建立/編輯/刪除自己的食譜、
+材料、模具了(見 `api/_lib/auth.js` `resolveCaller`)。站長密碼登入時,伺服器
+把身份收斂成固定的 `role:"owner"` + `id:"shccgxqp@gmail.com"`(跟現有 20 道
+食譜的 `ownerId` 是同一個值,目前資料庫還沒有真的 `role:"owner"` 的 `users`
+文件,這個值先寫死在 `api/_lib/auth.js`)。
 
 ```js
 {
@@ -147,8 +162,12 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
                                  // bakejojo.com 還沒買)——欄位先留著,不強制、不擋註冊
   displayName: "",              // 公開暱稱(食譜作者顯示用,不能直接曝光 email/真名);
                                  // 目前沒有 UI 引導設定,大改版時一併做
-  role: "user",                 // "user" | "owner";站長權限判斷邏輯留到帳號系統
-                                 // 第二階段(取代現有 EDIT_PASSWORD_SHA256),這次不動
+  role: "user",                 // "user" | "owner";owner 對材料/模具有站長權限
+                                 // (能改/刪任何人建立的),但對食譜沒有站長豁免——
+                                 // 只有 ownerId 相符的本人能動自己的食譜(見 phase 4
+                                 // 權限模型,`api/_lib/auth.js`)。目前資料庫還沒有
+                                 // 真的 role:"owner" 使用者文件,站長是靠密碼登入
+                                 // (`api/_lib/auth.js` 收斂成固定身份),不是靠這個欄位
   failedAttempts: 0,            // 信箱密碼登入失敗次數,達 5 次鎖 15 分鐘(見 api/auth/login.js)
   lockedUntil: null,
   createdAt, updatedAt
@@ -199,9 +218,13 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 - `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, molds, settings }`(已過濾軟刪除)。
   帶對站長密碼(header `X-Edit-Password`)時 `recipes` 額外回私人的;沒帶或密碼錯,
   只回 `public !== false` 的。
-- `POST /api/save` — 帶密碼;逐筆 upsert + 軟刪除 + 復原
+- `POST /api/save` — 帶站長密碼(body `password`)或使用者 token
+  (header `Authorization: Bearer <token>`);逐筆 upsert + 軟刪除 + 復原
   (`{ password, upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
-  時間戳由伺服器管;名稱撞唯一索引回 409。
+  時間戳由伺服器管;名稱撞唯一索引回 409。**phase 4(2026-07-10)起逐筆檢查擁有權**:
+  食譜只有 `ownerId` 相符本人能寫(站長不例外);材料/模具本人或站長皆可,站長編輯
+  蓋 `lastEditedBy`/`lastEditedAt`。整批 payload 有任何一筆沒過權限檢查就整批 403、
+  不寫入任何東西(見 `api/_lib/auth.js`)。
 - `POST /api/verify` — 密碼驗證(SHA-256 比對環境變數 `EDIT_PASSWORD_SHA256`)。
 - `POST /api/deleted` — 帶密碼;回收桶用,回傳三個 collection 裡 `deletedAt` 不是
   `null` 的文件。跟編輯同一信任等級(已刪除資料不公開)。

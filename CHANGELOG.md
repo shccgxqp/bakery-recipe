@@ -13,6 +13,19 @@
 
 ---
 
+## 3.13.0 — 2026-07-10
+
+- 帳號系統 phase 4 slice 1(roadmap 第 2 項):**接通一般登入使用者的真實寫入權限**。
+  新增 `api/_lib/auth.js`,`POST /api/save` 現在會逐筆檢查擁有權——食譜只有
+  `ownerId` 相符的本人能寫/刪/復原,站長密碼登入也一樣受這條規則約束(不能碰
+  別人的食譜內容);材料/模具則是建立者本人或站長皆可(公開資料庫,站長要能
+  修正錯誤資料),站長編輯時蓋 `lastEditedBy`/`lastEditedAt`。新文件的
+  `ownerId`/`createdBy` 一律伺服器蓋章,不信任 client payload。前端
+  `pushData`/`write()` 改成站長密碼或使用者 token(`Authorization: Bearer`)
+  皆可寫入,`isEditor` 兩種登入身份都算(按鈕先照樣顯示,無權限的寫入由 API
+  擋下+toast 顯示)。這次只做權限管線,材料頁 UI 精簡、查重、審核機制留到
+  之後的 slice。
+
 ## 3.12.0 — 2026-07-10
 
 - 帳號系統 phase 2(縮小範圍版,roadmap 第 2 項):食譜可以切公開/私人。
