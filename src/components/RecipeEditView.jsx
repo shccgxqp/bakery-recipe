@@ -34,7 +34,9 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const [items, setItems] = useState(r
     ? r.items.map(it => ({ ingredientId: it.ingredientId, g: it.grams, layer: it.layer || '', qty: '' }))
     : [{ ingredientId: null, g: '', layer: '', qty: '' }, { ingredientId: null, g: '', layer: '', qty: '' }])
-  const [steps, setSteps] = useState(r?.steps?.join('\n') || '')
+  /* 步驟:一步一格編輯(資料層本來就是一步一筆的陣列),使用者清楚看到
+     第幾步是什麼文字;空格存檔時自動剔除 */
+  const [steps, setSteps] = useState(r?.steps?.length ? [...r.steps] : [''])
   const [bakes, setBakes] = useState(r?.bakes?.join('\n') || '')
   const [links, setLinks] = useState(
     r?.links?.map(l => (l.title === l.url ? l.url : `${l.title} | ${l.url}`)).join('\n') || ''
@@ -47,6 +49,10 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const [saving, setSaving] = useState(false)
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
+
+  const setStep = (i, v) => setSteps(prev => prev.map((s, j) => (j === i ? v : s)))
+  const delStep = i => setSteps(prev => (prev.length > 1 ? prev.filter((_, j) => j !== i) : ['']))
+  const addStepAfter = i => setSteps(prev => [...prev.slice(0, i + 1), '', ...prev.slice(i + 1)])
 
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
   const setQty = (i, qty) => setItems(prev => prev.map((it, j) => {
@@ -78,7 +84,7 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
         category: cat.trim() || '未分類',
         price: String(price).trim() === '' ? null : parseFloat(price),
         note: note.trim(),
-        steps: lines(steps),
+        steps: steps.map(s => s.trim()).filter(Boolean),
         bakes: lines(bakes),
         links: lines(links).map(s => {
           const i = s.lastIndexOf('|')
@@ -199,10 +205,32 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
           ＋ 加一項材料
         </button>
 
-        <SectionTitle id="sec-steps">作法步驟(一行一步,可空)</SectionTitle>
-        <textarea rows={5} value={steps} onChange={e => setSteps(e.target.value)}
-          placeholder={'奶油乳酪回溫,與糖攪拌至滑順\n分次加入全蛋拌勻\n…'}
-          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+        <SectionTitle id="sec-steps">作法步驟(一步一格,可空;空格存檔時自動略過)</SectionTitle>
+        <div className="flex flex-col gap-2">
+          {steps.map((st, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <span className="mt-1.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
+                {i + 1}
+              </span>
+              <textarea rows={2} value={st}
+                onChange={e => setStep(i, e.target.value)}
+                placeholder={i === 0 ? '例:奶油乳酪回溫,與糖攪拌至滑順' : `第 ${i + 1} 步…`}
+                className="min-w-0 flex-1 rounded-md border border-line bg-white px-2.5 py-1.5 text-sm leading-relaxed" />
+              <div className="flex shrink-0 flex-col gap-1">
+                <button type="button" title="在這步下面插入一步"
+                  className="rounded-md border border-line px-2 py-0.5 text-[13px] hover:border-yolk"
+                  onClick={() => addStepAfter(i)}>＋</button>
+                <button type="button" title="刪除這一步"
+                  className="rounded-md border border-line px-2 py-0.5 text-[13px] font-bold text-warn hover:border-warn"
+                  onClick={() => delStep(i)}>×</button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button type="button" className="btn btn-sm mt-2"
+          onClick={() => setSteps(p => [...p, ''])}>
+          ＋ 加一步
+        </button>
 
         <div className="mb-2.5 mt-4 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
           烘烤(一行一段,分段烤就多行)
