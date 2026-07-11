@@ -12,6 +12,9 @@ const SECTIONS = [
   ['sec-label', '標示與狀態'],
 ]
 
+const emptyBake = () => ({ temp: '', time: '', note: '' })
+const emptyLink = () => ({ title: '', url: '' })
+
 function SectionTitle({ id, children }) {
   return (
     <div id={id} className="mb-2.5 mt-6 scroll-mt-16 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
@@ -20,10 +23,34 @@ function SectionTitle({ id, children }) {
   )
 }
 
+/* 一步/一段/一筆共用的「編號徽章 + 內容 + 增刪按鈕」列。content 是那一列
+   的實際欄位(可以是單一 textarea,也可以是好幾個 input 並排)。 */
+function NumberedRow({ n, onAdd, onDel, children }) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <span className="mt-1.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
+        {n}
+      </span>
+      <div className="min-w-0 flex-1">{children}</div>
+      <div className="flex shrink-0 flex-col gap-1">
+        <button type="button" title="在這則下面插入一則"
+          className="rounded-md border border-line px-2 py-0.5 text-[13px] hover:border-yolk"
+          onClick={onAdd}>＋</button>
+        <button type="button" title="刪除這一則"
+          className="rounded-md border border-line px-2 py-0.5 text-[13px] font-bold text-warn hover:border-warn"
+          onClick={onDel}>×</button>
+      </div>
+    </div>
+  )
+}
+
 /* 食譜新增/編輯整頁(/r/new、/r/:id/edit),取代 RecipeDialog。
    單頁分段落+頂部錨點導覽(2026-07-11 拍板,不做 wizard);
    配方改搜尋式下拉(IngredientPicker),items 直接存 ingredientId,
-   不再有「存檔才發現材料找不到」的問題。克為唯一真相,qty 只是輸入輔助。 */
+   不再有「存檔才發現材料找不到」的問題。克為唯一真相——材料的單位換算
+   (顆/大匙…)功能已在 v4.2.0 移除:59 筆材料從沒人設過,水果/蔬菜這類
+   單顆重量本來就不固定,這個換算對食譜配方沒有意義。
+   步驟/烘烤/參考連結三處都是「一筆一列」的結構化編輯,不用分隔符號。 */
 export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQuickAddIngredient, ingCatOrder }) {
   const navigate = useNavigate()
   const [name, setName] = useState(r?.name || '')
@@ -32,15 +59,13 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const [price, setPrice] = useState(r?.price ?? '')
   const [note, setNote] = useState(r?.note || '')
   const [items, setItems] = useState(r
-    ? r.items.map(it => ({ ingredientId: it.ingredientId, g: it.grams, layer: it.layer || '', qty: '' }))
-    : [{ ingredientId: null, g: '', layer: '', qty: '' }, { ingredientId: null, g: '', layer: '', qty: '' }])
-  /* 步驟:一步一格編輯(資料層本來就是一步一筆的陣列),使用者清楚看到
-     第幾步是什麼文字;空格存檔時自動剔除 */
+    ? r.items.map(it => ({ ingredientId: it.ingredientId, g: it.grams, section: it.layer || '' }))
+    : [{ ingredientId: null, g: '', section: '' }, { ingredientId: null, g: '', section: '' }])
+  /* 步驟/烘烤/連結都是「一筆一列」的陣列編輯,使用者清楚看到每一則的內容,
+     不用自己記分隔符號;空白列存檔時自動剔除 */
   const [steps, setSteps] = useState(r?.steps?.length ? [...r.steps] : [''])
-  const [bakes, setBakes] = useState(r?.bakes?.join('\n') || '')
-  const [links, setLinks] = useState(
-    r?.links?.map(l => (l.title === l.url ? l.url : `${l.title} | ${l.url}`)).join('\n') || ''
-  )
+  const [bakes, setBakes] = useState(r?.bakes?.length ? r.bakes.map(b => ({ ...b })) : [emptyBake()])
+  const [links, setLinks] = useState(r?.links?.length ? r.links.map(l => ({ ...l })) : [emptyLink()])
   const [finishedGrams, setFinishedGrams] = useState(r?.finishedGrams ?? '')
   const [shelfLifeDays, setShelfLifeDays] = useState(r?.shelfLifeDays ?? '')
   const [storage, setStorage] = useState(r?.storage || '')
@@ -50,17 +75,17 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
 
   const cats = [...new Set(RCP.map(x => x.category).filter(Boolean))]
 
-  const setStep = (i, v) => setSteps(prev => prev.map((s, j) => (j === i ? v : s)))
-  const delStep = i => setSteps(prev => (prev.length > 1 ? prev.filter((_, j) => j !== i) : ['']))
-  const addStepAfter = i => setSteps(prev => [...prev.slice(0, i + 1), '', ...prev.slice(i + 1)])
+  /* 一組「陣列 state 的增刪改」共用邏輯,steps/bakes/links 都是這個形狀 */
+  const makeListOps = (list, setList, makeEmpty) => ({
+    set: (i, patch) => setList(prev => prev.map((x, j) => (j === i ? (typeof patch === 'function' ? patch(x) : { ...x, ...patch }) : x))),
+    del: i => setList(prev => (prev.length > 1 ? prev.filter((_, j) => j !== i) : [makeEmpty()])),
+    addAfter: i => setList(prev => [...prev.slice(0, i + 1), makeEmpty(), ...prev.slice(i + 1)]),
+  })
+  const stepOps = makeListOps(steps, setSteps, () => '')
+  const bakeOps = makeListOps(bakes, setBakes, emptyBake)
+  const linkOps = makeListOps(links, setLinks, emptyLink)
 
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
-  const setQty = (i, qty) => setItems(prev => prev.map((it, j) => {
-    if (j !== i) return it
-    const ing = ING[it.ingredientId]
-    const g = ing?.unitGrams > 0 && qty !== '' ? +(parseFloat(qty) * ing.unitGrams).toFixed(1) : it.g
-    return { ...it, qty, g }
-  }))
   const delItem = i => setItems(prev => prev.filter((_, j) => j !== i))
 
   const cancel = () => navigate(r ? recipePath(r) : '/r')
@@ -71,10 +96,9 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
     const nm = name.trim()
     if (!nm) return
     const rows = items
-      .map(it => ({ ingredientId: it.ingredientId, grams: parseFloat(it.g), layer: (it.layer || '').trim() }))
+      .map(it => ({ ingredientId: it.ingredientId, grams: parseFloat(it.g), layer: (it.section || '').trim() }))
       .filter(it => it.ingredientId && it.grams > 0)
     if (!rows.length) { toast('至少填一項材料與用量。', { type: 'error' }); jump('sec-items'); return }
-    const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean)
     const num = v => { const f = parseFloat(v); return Number.isFinite(f) && f > 0 ? f : null }
     setSaving(true)
     try {
@@ -85,13 +109,12 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
         price: String(price).trim() === '' ? null : parseFloat(price),
         note: note.trim(),
         steps: steps.map(s => s.trim()).filter(Boolean),
-        bakes: lines(bakes),
-        links: lines(links).map(s => {
-          const i = s.lastIndexOf('|')
-          return i > 0
-            ? { title: s.slice(0, i).trim(), url: s.slice(i + 1).trim() }
-            : { title: s, url: s }
-        }).filter(l => /^https?:\/\//.test(l.url)),
+        bakes: bakes
+          .map(b => ({ temp: b.temp.trim(), time: b.time.trim(), note: b.note.trim() }))
+          .filter(b => b.temp || b.time || b.note),
+        links: links
+          .map(l => ({ title: l.title.trim() || l.url.trim(), url: l.url.trim() }))
+          .filter(l => /^https?:\/\//.test(l.url)),
         items: rows,
         finishedGrams: num(finishedGrams),
         shelfLifeDays: num(shelfLifeDays),
@@ -158,93 +181,110 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
           </div>
         </div>
 
-        <SectionTitle id="sec-items">配方(材料 + 用量g + 層,層可空;例:餅乾層、奶油層、塔皮、內餡)</SectionTitle>
+        <SectionTitle id="sec-items">配方</SectionTitle>
         <p className="mb-2 text-[12px] text-ink-soft">
-          用量一律以<b>克</b>儲存與顯示;材料有設「單位換算」(如全蛋=顆)時,「數量」欄填「3」自動算成克數。
-          搜尋不到材料?打完名稱會出現「＋ 快速新增」。
+          用量一律以<b>克</b>輸入;搜尋不到材料?打完名稱會出現「＋ 快速新增」。
         </p>
-        <datalist id="layer-list">
-          {[...new Set([...items.map(it => it.layer).filter(Boolean), '餅乾層', '奶油層', '塔皮', '內餡', '蛋糕體', '淋面'])]
-            .map(l => <option key={l} value={l} />)}
+        <datalist id="section-list">
+          {[...new Set([...items.map(it => it.section).filter(Boolean), '餅乾層', '奶油層', '塔皮', '內餡', '蛋糕體', '淋面'])]
+            .map(s => <option key={s} value={s} />)}
         </datalist>
-        {items.map((it, i) => {
-          const ing = ING[it.ingredientId]
-          const hasUnit = ing?.unitName && ing?.unitGrams > 0
-          return (
-            <div key={i} className="mb-2 grid grid-cols-[1fr_64px_76px_76px_32px] gap-2">
+        <div className="flex flex-col gap-2">
+          {items.map((it, i) => (
+            <div key={i} className="grid grid-cols-[1fr_92px_120px_32px] gap-2">
               <IngredientPicker ING={ING} value={it.ingredientId} ingCatOrder={ingCatOrder}
                 onPick={id => setItem(i, 'ingredientId', id)}
                 onQuickAdd={async (nm, category) => {
                   const newId = await onQuickAddIngredient(nm, category)
                   setItem(i, 'ingredientId', newId)
                 }} />
-              <input
-                className="rounded-md border border-line bg-white px-2.5 py-1.5 text-right font-mono text-sm disabled:bg-paper-deep disabled:text-ink-soft"
-                type="number" min="0" step="0.1" placeholder={hasUnit ? ing.unitName : '—'} value={it.qty}
-                disabled={!hasUnit} title={hasUnit ? `1 ${ing.unitName} ≈ ${ing.unitGrams} g` : '這個材料沒設單位換算'}
-                onChange={e => setQty(i, e.target.value)}
-              />
-              <input
-                className="rounded-md border border-line bg-white px-2.5 py-1.5 text-right font-mono text-sm"
-                type="number" min="0" step="0.1" placeholder="g" value={it.g}
-                onChange={e => setItem(i, 'g', e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  className="w-full rounded-md border border-line bg-white py-1.5 pl-2.5 pr-6 text-right font-mono text-sm"
+                  type="number" min="0" step="0.1" value={it.g}
+                  onChange={e => setItem(i, 'g', e.target.value)}
+                />
+                <span aria-hidden className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[12px] text-ink-soft">g</span>
+              </div>
               <input
                 className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm"
-                list="layer-list" placeholder="層" value={it.layer}
-                onChange={e => setItem(i, 'layer', e.target.value)}
+                list="section-list" placeholder="所屬部分(可空)" value={it.section}
+                onChange={e => setItem(i, 'section', e.target.value)}
               />
               <button type="button" title="移除"
                 className="rounded-md border border-line font-bold text-warn hover:border-warn"
                 onClick={() => delItem(i)}>×</button>
             </div>
-          )
-        })}
-        <button type="button" className="btn btn-sm"
-          onClick={() => setItems(p => [...p, { ingredientId: null, g: '', layer: p[p.length - 1]?.layer || '', qty: '' }])}>
+          ))}
+        </div>
+        <p className="mt-1.5 text-[11.5px] text-ink-soft">
+          「所屬部分」是這項材料屬於食譜的哪個組成(例:餅乾層、奶油層、內餡)——
+          同名的部分會自動歸在同一段顯示;單層食譜留空即可。
+        </p>
+        <button type="button" className="btn btn-sm mt-2"
+          onClick={() => setItems(p => [...p, { ingredientId: null, g: '', section: p[p.length - 1]?.section || '' }])}>
           ＋ 加一項材料
         </button>
 
         <SectionTitle id="sec-steps">作法步驟(一步一格,可空;空格存檔時自動略過)</SectionTitle>
         <div className="flex flex-col gap-2">
           {steps.map((st, i) => (
-            <div key={i} className="flex items-start gap-2.5">
-              <span className="mt-1.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
-                {i + 1}
-              </span>
+            <NumberedRow key={i} n={i + 1} onAdd={() => stepOps.addAfter(i)} onDel={() => stepOps.del(i)}>
               <textarea rows={2} value={st}
-                onChange={e => setStep(i, e.target.value)}
+                onChange={e => stepOps.set(i, () => e.target.value)}
                 placeholder={i === 0 ? '例:奶油乳酪回溫,與糖攪拌至滑順' : `第 ${i + 1} 步…`}
-                className="min-w-0 flex-1 rounded-md border border-line bg-white px-2.5 py-1.5 text-sm leading-relaxed" />
-              <div className="flex shrink-0 flex-col gap-1">
-                <button type="button" title="在這步下面插入一步"
-                  className="rounded-md border border-line px-2 py-0.5 text-[13px] hover:border-yolk"
-                  onClick={() => addStepAfter(i)}>＋</button>
-                <button type="button" title="刪除這一步"
-                  className="rounded-md border border-line px-2 py-0.5 text-[13px] font-bold text-warn hover:border-warn"
-                  onClick={() => delStep(i)}>×</button>
-              </div>
-            </div>
+                className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm leading-relaxed" />
+            </NumberedRow>
           ))}
         </div>
-        <button type="button" className="btn btn-sm mt-2"
-          onClick={() => setSteps(p => [...p, ''])}>
+        <button type="button" className="btn btn-sm mt-2" onClick={() => setSteps(p => [...p, ''])}>
           ＋ 加一步
         </button>
 
         <div className="mb-2.5 mt-4 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
-          烘烤(一行一段,分段烤就多行)
+          烘烤(一段一筆,可空;例:溫度「160/150°C」、時間「13分鐘」、備註「中層」)
         </div>
-        <textarea rows={2} value={bakes} onChange={e => setBakes(e.target.value)}
-          placeholder={'70°C 20分鐘結皮\n150-160°C 16分鐘'}
-          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 font-mono text-sm" />
+        <div className="flex flex-col gap-2">
+          {bakes.map((b, i) => (
+            <NumberedRow key={i} n={i + 1} onAdd={() => bakeOps.addAfter(i)} onDel={() => bakeOps.del(i)}>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1fr_1.4fr]">
+                <input value={b.temp} onChange={e => bakeOps.set(i, { temp: e.target.value })}
+                  placeholder="溫度,例:160/150°C"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 font-mono text-sm" />
+                <input value={b.time} onChange={e => bakeOps.set(i, { time: e.target.value })}
+                  placeholder="時間,例:13分鐘"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 font-mono text-sm" />
+                <input value={b.note} onChange={e => bakeOps.set(i, { note: e.target.value })}
+                  placeholder="備註(可空,例:中層、結皮)"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+              </div>
+            </NumberedRow>
+          ))}
+        </div>
+        <button type="button" className="btn btn-sm mt-2" onClick={() => setBakes(p => [...p, emptyBake()])}>
+          ＋ 加一段烘烤
+        </button>
 
         <div className="mb-2.5 mt-4 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
-          參考食譜連結(一行一個,格式:標題 | 網址)
+          參考食譜連結(一筆一則,可空)
         </div>
-        <textarea rows={2} value={links} onChange={e => setLinks(e.target.value)}
-          placeholder={'食不相瞞提拉米蘇 | https://www.youtube.com/watch?v=…'}
-          className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+        <div className="flex flex-col gap-2">
+          {links.map((l, i) => (
+            <NumberedRow key={i} n={i + 1} onAdd={() => linkOps.addAfter(i)} onDel={() => linkOps.del(i)}>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1.6fr]">
+                <input value={l.title} onChange={e => linkOps.set(i, { title: e.target.value })}
+                  placeholder="標題,例:食不相瞞提拉米蘇"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+                <input value={l.url} onChange={e => linkOps.set(i, { url: e.target.value })}
+                  placeholder="網址,https:// 開頭"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+              </div>
+            </NumberedRow>
+          ))}
+        </div>
+        <button type="button" className="btn btn-sm mt-2" onClick={() => setLinks(p => [...p, emptyLink()])}>
+          ＋ 加一個連結
+        </button>
 
         <SectionTitle id="sec-label">標示與狀態</SectionTitle>
         <div className="grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">

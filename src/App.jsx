@@ -208,7 +208,7 @@ export default function App() {
       upserts: {
         ingredients: [{
           _id, name, category, brand: '', spec: '', packPrice: 0, packGrams: 0.1,
-          unitName: '', unitGrams: null, per100g: null, allergens: [], mayContain: [],
+          per100g: null, allergens: [], mayContain: [],
           subIngredients: '', labelDate: null, note: '',
         }],
       },

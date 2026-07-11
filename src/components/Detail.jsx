@@ -312,7 +312,10 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
             {r.bakes.map((b, i) => (
               <span key={i} className="flex items-center gap-2">
                 {i > 0 && <span className="text-ink-soft">→</span>}
-                <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">🔥 {b}</span>
+                <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">
+                  🔥 {[b.temp, b.time].filter(Boolean).join(' ')}
+                  {b.note && <span className="ml-1 font-sans text-ink-soft">({b.note})</span>}
+                </span>
               </span>
             ))}
           </div>

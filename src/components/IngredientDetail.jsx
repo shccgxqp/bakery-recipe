@@ -64,9 +64,6 @@ export default function IngredientDetail({ ing, RCP, googleUser, onEdit, onDelet
               <tr><td>採購價</td><td className="num">{ing.packPrice != null ? `$${fmt(ing.packPrice)}` : '—'}</td></tr>
               <tr><td>採購量</td><td className="num">{ing.packGrams != null ? `${fmt(ing.packGrams)} g` : '—'}</td></tr>
               <tr><td>每 100g 成本</td><td className="num">{per100Price != null ? `$${fmt(per100Price, 1)}` : '—'}</td></tr>
-              {ing.unitName && (
-                <tr><td>單位換算</td><td className="num">1 {ing.unitName} ≈ {fmt(ing.unitGrams)} g</td></tr>
-              )}
             </tbody>
           </table>
         </section>

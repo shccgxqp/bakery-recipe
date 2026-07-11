@@ -28,9 +28,6 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   /* -- 私人營運資料 -- */
   packPrice: 285,               // 採購價 NT$
   packGrams: 500,               // 採購重量 g(成本 = 用量 × packPrice / packGrams)
-  unitName: "顆",                // 選填,單位換算用(顆/大匙/片…);'' 或 null = 不提供單位輸入
-  unitGrams: 55,                 // 1 個 unitName 是幾克(如全蛋 1 顆≈55g);
-                                //  食譜輸入配方時可直接填「3 顆」自動換算成克數
 
   /* -- 公開參考資料(材料資料庫的主力內容)-- */
   category: "乳製品",            // 分類,值取自 settings.ingCatOrder(台灣烘焙材料行通用分類)
@@ -70,8 +67,11 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   category: "餅乾常溫",
   price: 80,                    // 每份售價;null = 未定價(利潤率排序沉底)
   note: "方形模21.5cm",
-  steps: ["步驟一…", "步驟二…"], // 可為空陣列
-  bakes: ["餅乾層 180°C 23分"],  // 烘烤設定,可為空陣列
+  steps: ["步驟一…", "步驟二…"], // 一步一筆字串,可為空陣列
+  bakes: [                      // 一段一筆物件(v4.2.0 起,舊格式是純字串陣列,
+                                //  已遷移現有 6 筆);note 是位置/備註,可空
+    { temp: "160/150°C", time: "13分鐘", note: "中層" },
+  ],
   links: [{ title: "…(YouTube)", url: "https://…" }],
   items: [                      // 配方明細,順序即顯示順序
     { ingredientId: "8b1f4c2e-…", grams: 160, layer: "餅乾層" },
