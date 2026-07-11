@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     const r = await db.collection('recipes').findOne({ _id: id, deletedAt: null })
     if (!r) return res.status(404).json({ ok: false, error: '找不到這道食譜' })
 
-    const ids = [...new Set((r.items || []).map(it => it.ingredientId))]
+    r.items = r.items || [] // 防呆:items 缺欄位時 calc() 會炸(正常資料都有,但 API 不能假設)
+    const ids = [...new Set(r.items.map(it => it.ingredientId))]
     const ings = await db.collection('ingredients')
       .find({ _id: { $in: ids } })
       .project({ name: 1, per100g: 1, allergens: 1, mayContain: 1, subIngredients: 1, packPrice: 1, packGrams: 1 })
@@ -35,7 +36,7 @@ export default async function handler(req, res) {
     /* 內容物:同材料跨層先合併克數,再依重量遞減排列(法規慣例),
        複合材料以包裝成分欄原文展開 */
     const gramsById = {}
-    for (const it of r.items || []) {
+    for (const it of r.items) {
       if (ING[it.ingredientId]) gramsById[it.ingredientId] = (gramsById[it.ingredientId] || 0) + it.grams
     }
     const contents = Object.entries(gramsById)
