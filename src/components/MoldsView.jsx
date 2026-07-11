@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { fmt } from '../lib/calc.js'
 import { MOLD_SHAPES, shapeName, moldVolume, moldDimsText } from '../lib/molds.js'
 import { LENGTH_UNITS, loadUnitPref, saveUnitPref } from '../lib/units.js'
+import { moldPath } from '../lib/slug.js'
 import Chip from './Chip.jsx'
 
 /* 模具庫:幾何制模具主檔(配方換算的基礎)
    分類:依形狀分組(圓模/方模/…),組內容積由小到大排列;搜尋比對名稱/廠牌/備註。 */
 export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) {
+  const navigate = useNavigate()
   const [q, setQ] = useState('')
   const [unit, setUnit] = useState(loadUnitPref)
   const changeUnit = u => { setUnit(u); saveUnitPref(u) }
@@ -80,7 +83,10 @@ export default function MoldsView({ molds, isEditor, onEdit, onAdd, onDelete }) 
                     <tr key={m._id}>
                       <td className="text-[12.5px] text-ink-soft">{m.brand || '—'}</td>
                       <td>
-                        {m.name}
+                        <button className="text-left underline decoration-line underline-offset-2 hover:text-yolk"
+                          onClick={() => navigate(moldPath(m))} title="看完整資料">
+                          {m.name}
+                        </button>
                         {m.dataSource === 'web' && (
                           <span title="網路搜尋整理,尺寸未經官方驗證,容積為粗估"
                             className="ml-1.5 rounded border border-warn px-1 text-[10px] text-warn">網路</span>

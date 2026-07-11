@@ -1,45 +1,7 @@
 import { useState } from 'react'
 import { calc, metrics, fmt } from '../lib/calc.js'
 import { APP_VERSION } from '../config.js'
-import { registerWithPassword, loginWithPassword } from '../lib/googleAuth.js'
-import { toast } from '../lib/toast.js'
 import Chip from './Chip.jsx'
-
-/* 🧪 帳號系統測試用,陽春表單,樣式等大改版一起做 */
-function PasswordAuthTest({ onAuthChange }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [busy, setBusy] = useState(false)
-
-  const run = async (fn) => {
-    if (!email || !password) return
-    setBusy(true)
-    try {
-      await fn(email, password)
-      toast('登入成功', { type: 'success' })
-      onAuthChange()
-    } catch (err) {
-      toast(err.message, { type: 'error' })
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  return (
-    <div className="mt-1.5 flex flex-col gap-1">
-      <input type="email" placeholder="測試信箱" value={email} onChange={e => setEmail(e.target.value)}
-        className="rounded border border-line bg-white px-2 py-1 text-[11px]" />
-      <input type="password" placeholder="密碼(至少8碼)" value={password} onChange={e => setPassword(e.target.value)}
-        className="rounded border border-line bg-white px-2 py-1 text-[11px]" />
-      <div className="flex gap-1">
-        <button disabled={busy} onClick={() => run(registerWithPassword)}
-          className="flex-1 rounded border border-line py-1 text-[10.5px] hover:border-yolk">註冊</button>
-        <button disabled={busy} onClick={() => run(loginWithPassword)}
-          className="flex-1 rounded border border-line py-1 text-[10.5px] hover:border-yolk">登入</button>
-      </div>
-    </div>
-  )
-}
 
 const SORTS = [
   ['category', '分類'],
@@ -53,10 +15,10 @@ export default function Sidebar({
   sortBy, setSortBy,
   allergenList, excludeAllergens, setExcludeAllergens,
   dataSource, ingsMode, moldsMode, trashMode, isEditor,
-  onLogin, onLogout,
+  onLogin, onLogout, onMe, onAdmin,
   onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
   onShopping, onExportJSON, onChangelog, onTrash,
-  googleUser, onGoogleLogin, onGoogleLogout, onAuthChange,
+  googleUser,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [allergyOpen, setAllergyOpen] = useState(false)
@@ -173,6 +135,9 @@ export default function Sidebar({
         {isEditor && (
           <button className={'btn btn-sm ' + (trashMode ? 'btn-active' : '')} onClick={onTrash}>🗑 回收桶</button>
         )}
+        {googleUser?.role === 'owner' && (
+          <button className="btn btn-sm" onClick={onAdmin}>👥 使用者管理</button>
+        )}
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
         </div>
@@ -181,29 +146,20 @@ export default function Sidebar({
           v{APP_VERSION} · 更新紀錄
         </button>
         {isEditor ? (
-          <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>
-            登出編輯模式
-          </button>
+          <>
+            <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onMe}
+              title={googleUser?.email}>
+              👤 {googleUser?.displayName || '未命名烘焙師'} 的個人頁
+            </button>
+            <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>
+              登出
+            </button>
+          </>
         ) : (
           <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogin}>
-            🔑 我是主人,登入編輯
+            🔑 登入編輯
           </button>
         )}
-        <div className="border-t border-dashed border-line pt-2 text-center">
-          {googleUser ? (
-            <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogout}
-              title={googleUser.email}>
-              🧪 測試登入中:{googleUser.displayName || googleUser.name || googleUser.email}(點此登出)
-            </button>
-          ) : (
-            <>
-              <button className="text-[10.5px] text-ink-soft/70 underline hover:text-ink" onClick={onGoogleLogin}>
-                🧪 Google 登入測試(帳號系統開發中)
-              </button>
-              <PasswordAuthTest onAuthChange={onAuthChange} />
-            </>
-          )}
-        </div>
       </div>
       </div>
     </aside>

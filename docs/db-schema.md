@@ -89,10 +89,10 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
                                 //  站長(role:"owner")不例外,連站長密碼也一樣受這條
                                 //  規則約束(見 api/_lib/auth.js canWriteRecipe)。
                                 //  伺服器蓋章,不信任 client payload
-  public: true,                 // 帳號系統 phase 2(縮小範圍版,2026-07-10)加的;
-                                //  false = 私人,GET /api/data 沒帶對站長密碼
-                                //  (header X-Edit-Password)時會被濾掉,訪客看不到、
-                                //  網址也連不到。欄位不存在 = 當 true(舊資料不用遷移)
+  public: true,                 // false = 私人:GET /api/data 只回給 ownerId 本人
+                                //  (帶自己的登入 token 才看得到,站長也沒有例外,
+                                //  v4.0.0 收斂);欄位不存在 = 當 true(舊資料不用遷移)。
+                                //  注意 /api/label 不受此限(標示卡靠不可猜 UUID 分享)
   deletedAt: null,
   createdAt: "…", updatedAt: "…"
 }
@@ -142,12 +142,11 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 
 跨網域(前端 GitHub Pages、API Vercel)不能用 cookie session,登入身份用
 `api/_lib/authToken.js` 手刻的簽章 token,存前端 localStorage,打 API 帶
-`Authorization: Bearer <token>`。**帳號系統 phase 4(2026-07-10)起 `POST /api/save`
-真的會檢查這個 header**——一般登入使用者可以用它建立/編輯/刪除自己的食譜、
-材料、模具了(見 `api/_lib/auth.js` `resolveCaller`)。站長密碼登入時,伺服器
-把身份收斂成固定的 `role:"owner"` + `id:"shccgxqp@gmail.com"`(跟現有 20 道
-食譜的 `ownerId` 是同一個值,目前資料庫還沒有真的 `role:"owner"` 的 `users`
-文件,這個值先寫死在 `api/_lib/auth.js`)。
+`Authorization: Bearer <token>`。**v4.0.0 起 token 是唯一身份**——站長密碼
+機制已整個移除(`EDIT_PASSWORD_SHA256`/`api/verify.js` 已刪),站長 =
+`role:"owner"` 的帳號(`scripts/promote-owner.mjs` 一次性標記)。
+寫入端點用 `resolveCallerChecked`(`api/_lib/auth.js`):token 驗完再查一次
+users 表——停用帳號即刻生效、role 以資料庫為準(升降權不用重新登入)。
 
 ```js
 {
@@ -157,28 +156,36 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   passwordHash: "a1b2…:c3d4…" ,  // "<salt hex>:<hash hex>",scrypt(見 api/_lib/password.js);
                                  // null = 純 Google 帳號,沒設過密碼
   googleSub: "1234567890" ,     // null = 純信箱密碼帳號,沒連過 Google
-  emailVerified: false,         // 目前沒有寄驗證信的能力(SendGrid 已取消免費方案,
-                                 // Resend 免費層要驗證過的網域才能寄給任意收件者,
-                                 // bakejojo.com 還沒買)——欄位先留著,不強制、不擋註冊
-  displayName: "",              // 公開暱稱(食譜作者顯示用,不能直接曝光 email/真名);
-                                 // 目前沒有 UI 引導設定,大改版時一併做
-  role: "user",                 // "user" | "owner";owner 對材料/模具有站長權限
+  emailVerified: false,         // 目前沒有寄驗證信的能力(網域還沒買)——欄位留著,不強制
+  displayName: "",              // 公開暱稱(真名/email 永不公開)。Google 建帳號刻意不抄
+                                 // Google 名字(多半是真名),留空由首次登入引導自取(/me)
+  studioName: "",               // 工作室名稱(選填,v4.0.0 /me 個人頁)
+  website: "",                  // 個人網頁/社群連結(選填,需 http(s):// 開頭)
+  role: "user",                 // "user" | "trusted" | "owner";owner 對材料/模具有站長權限
                                  // (能改/刪任何人建立的),但對食譜沒有站長豁免——
-                                 // 只有 ownerId 相符的本人能動自己的食譜(見 phase 4
-                                 // 權限模型,`api/_lib/auth.js`)。目前資料庫還沒有
-                                 // 真的 role:"owner" 使用者文件,站長是靠密碼登入
-                                 // (`api/_lib/auth.js` 收斂成固定身份),不是靠這個欄位
+                                 // 只有 ownerId 相符的本人能動自己的食譜。trusted 是
+                                 // 之後審核機制的預留分級,目前權限同 user
+  suspended: false,             // 停用(站長在 /admin/users 操作);寫入路徑查 DB 即刻生效,
+                                 // 登入也擋;內容保留原樣不刪
   failedAttempts: 0,            // 信箱密碼登入失敗次數,達 5 次鎖 15 分鐘(見 api/auth/login.js)
   lockedUntil: null,
+  tosAcceptedAt: null,          // 註冊時勾選服務條款的時間(合規鐵證,見 compliance.md)
+  labelTermsAcceptedAt: null,   // 第一次取得標示卡連結時同意免責的時間(同上)
   createdAt, updatedAt
 }
 db.users.createIndex({ email: 1 }, { unique: true })
 ```
 
-- `POST /api/auth/register`、`POST /api/auth/login`:信箱+密碼註冊/登入。
+- `POST /api/auth/register`、`POST /api/auth/login`:信箱+密碼註冊/登入
+  (註冊必帶 `tosAccepted: true`)。
 - `GET /api/auth/google/start` → `GET /api/auth/google/callback`:Google 登入,
   callback 裡用 email 查/建 `users` 文件,跟信箱密碼是同一張表(帳號整合)。
-- 三條路簽出來的 token payload 格式一致:`{ sub, email, displayName, role }`
+- `GET/POST /api/auth/me`:讀取/更新自己的公開個人資料(暱稱/工作室/網頁),
+  POST 成功回重簽 token(role 從資料庫重讀)。
+- `POST /api/auth/terms`:記錄同意條款時間(`kind:'label'` → `labelTermsAcceptedAt`)。
+- `GET/POST /api/admin/users`:站長管理使用者(清單+內容數統計/改角色/停用),
+  防呆不能改自己。
+- 各登入路簽出來的 token payload 格式一致:`{ sub, email, displayName, role }`
   (Google 登入另外多帶 `picture`)。
 
 ### `settings`(單一文件)
@@ -213,24 +220,28 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 不再是危險操作。client 在 upsert 裡夾帶的 `deletedAt` 會被伺服器剝除,
 不能用寫入偽造刪除狀態。
 
-## 三、API(Vercel Serverless Functions,`api/` 目錄)
+## 三、API(Vercel Serverless Functions,`api/` 目錄;v4.0.0 全面 token 制)
 
 - `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, molds, settings }`(已過濾軟刪除)。
-  帶對站長密碼(header `X-Edit-Password`)時 `recipes` 額外回私人的;沒帶或密碼錯,
-  只回 `public !== false` 的。
-- `POST /api/save` — 帶站長密碼(body `password`)或使用者 token
-  (header `Authorization: Bearer <token>`);逐筆 upsert + 軟刪除 + 復原
-  (`{ password, upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
-  時間戳由伺服器管;名稱撞唯一索引回 409。**phase 4(2026-07-10)起逐筆檢查擁有權**:
+  帶合法登入 token(header `Authorization: Bearer`)時 `recipes` 額外回**自己的**
+  私人食譜;沒帶或無效只回 `public !== false` 的。沒有「站長看全部」的特例。
+- `POST /api/save` — 帶登入 token;逐筆 upsert + 軟刪除 + 復原
+  (`{ upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
+  時間戳與擁有權欄位由伺服器管;名稱撞唯一索引回 409。**逐筆檢查擁有權**:
   食譜只有 `ownerId` 相符本人能寫(站長不例外);材料/模具本人或站長皆可,站長編輯
   蓋 `lastEditedBy`/`lastEditedAt`。整批 payload 有任何一筆沒過權限檢查就整批 403、
-  不寫入任何東西(見 `api/_lib/auth.js`)。
-- `POST /api/verify` — 密碼驗證(SHA-256 比對環境變數 `EDIT_PASSWORD_SHA256`)。
-- `POST /api/deleted` — 帶密碼;回收桶用,回傳三個 collection 裡 `deletedAt` 不是
-  `null` 的文件。跟編輯同一信任等級(已刪除資料不公開)。
+  不寫入任何東西。寫入用 `resolveCallerChecked`(查 DB:停用擋下、role 即時)。
+- `GET  /api/label?id=` — 對外標示卡專屬端點:任何人可讀、不受公開/私人影響
+  (id 是不可猜 UUID);後端算好只回標示欄位(營養 8 項/過敏原/內容物重量遞減/
+  保存),**成本/售價/配方克數不出後端**。
+- `POST /api/deleted` — 帶登入 token;回收桶,範圍比照寫入權限(食譜只看自己的;
+  材料/模具站長看全部、一般使用者看自己建立的)。
+- `api/auth/*`、`api/admin/users` — 見上方 `users` 段落。
+- ~~`POST /api/verify`~~ — v4.0.0 已移除(站長密碼制退場)。
 
-環境變數:`MONGODB_URI`、`MONGODB_DB`、`EDIT_PASSWORD_SHA256`
-(`.env` 供本機;Vercel 專案設定要另外貼一份,`.env` 不會自動上傳)。
+環境變數:`MONGODB_URI`、`MONGODB_DB`、`AUTH_SECRET`、`GOOGLE_CLIENT_ID`、
+`GOOGLE_CLIENT_SECRET`(`.env` 供本機;Vercel 專案設定要另外貼一份)。
+~~`EDIT_PASSWORD_SHA256`~~ 已不再使用,可從 Vercel 刪除。
 
 ## 四、每日自動備份(單向,純備份)
 

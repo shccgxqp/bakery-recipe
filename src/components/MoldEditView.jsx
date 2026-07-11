@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import Dialog from './Dialog.jsx'
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { fmt } from '../lib/calc.js'
 import { MOLD_SHAPES, moldVolume } from '../lib/molds.js'
+import { moldPath } from '../lib/slug.js'
 import { toast } from '../lib/toast.js'
+import { findSimilar } from '../lib/dedup.js'
 
 /* 直徑類欄位支援 吋/cm 輸入(存檔一律換算成 cm;1吋=2.54cm) */
 function DiaInput({ label, value, unit, setValue, setUnit, required = true }) {
@@ -23,7 +25,11 @@ function DiaInput({ label, value, unit, setValue, setUnit, required = true }) {
   )
 }
 
-export default function MoldDialog({ mold, onSave, onClose }) {
+/* 模具新增/編輯整頁(/mold/new、/mold/:id/edit),取代 MoldDialog。
+   欄位跟原對話框一致;新增模式加查重提示(平台化大改造第 4 項)。 */
+export default function MoldEditView({ mold, molds, onSave }) {
+  const navigate = useNavigate()
+  const isNew = !mold
   const d0 = mold?.dims || {}
   const [name, setName] = useState(mold?.name || '')
   const [brand, setBrand] = useState(mold?.brand || '')
@@ -57,6 +63,11 @@ export default function MoldDialog({ mold, onSave, onClose }) {
   const [note, setNote] = useState(mold?.note || '')
   const [saving, setSaving] = useState(false)
 
+  const similar = useMemo(
+    () => (isNew ? findSimilar(name, molds, null) : []),
+    [isNew, name, molds],
+  )
+
   const v = x => { const f = parseFloat(x); return Number.isFinite(f) && f > 0 ? f : 0 }
   const toCm = (x, unit) => v(x) * (unit === 'in' ? 2.54 : 1)
 
@@ -76,6 +87,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
   }
 
   const preview = moldVolume(buildDoc())
+  const cancel = () => navigate(mold ? moldPath(mold) : '/molds')
 
   const submit = async e => {
     e.preventDefault()
@@ -93,25 +105,36 @@ export default function MoldDialog({ mold, onSave, onClose }) {
   }
 
   return (
-    <Dialog
-      title={mold ? `編輯:${mold.name}` : '新增模具'}
-      onClose={onClose}
-      footer={
-        <>
-          <button type="button" className="btn" onClick={onClose} disabled={saving}>取消</button>
-          <button type="submit" form="mold-form" className="btn btn-primary" disabled={saving}>
-            {saving ? '儲存中…' : '儲存'}
-          </button>
-        </>
-      }
-    >
-      <form id="mold-form" onSubmit={submit}>
+    <div className="max-w-3xl">
+      <div className="flex flex-wrap items-baseline gap-3.5 border-b-[3px] border-ink pb-3">
+        <button className="btn btn-sm" onClick={cancel}>← 取消</button>
+        <h2 className="font-serif text-[28px] font-bold">{mold ? `編輯:${mold.name}` : '新增模具'}</h2>
+      </div>
+
+      <form onSubmit={submit} className="mt-5">
         <div className="grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">
           <div className="field sm:col-span-2">
             <label>模具名稱(不含廠牌,廠牌另外填)</label>
             <input value={name} onChange={e => setName(e.target.value)} required autoFocus
               placeholder="例:6吋活動圓模" />
           </div>
+
+          {similar.length > 0 && (
+            <div className="sm:col-span-2 rounded-[--radius-sm] border border-warn/40 bg-warn/5 px-3 py-2 text-[13px]">
+              <span className="font-bold text-warn">已有相似模具:</span>
+              {similar.map((s, i) => (
+                <span key={s._id}>
+                  {i > 0 && '、'}
+                  <button type="button" className="underline underline-offset-2 hover:text-yolk"
+                    onClick={() => navigate(moldPath(s))}>
+                    {s.name}{s.brand ? `(${s.brand})` : ''}
+                  </button>
+                </span>
+              ))}
+              <span className="text-ink-soft"> ——先看看是不是同一個(注意廠牌/高度),確定不同再繼續新增。</span>
+            </div>
+          )}
+
           <div className="field">
             <label>廠牌(可空)</label>
             <input value={brand} onChange={e => setBrand(e.target.value)} placeholder="例:三能" />
@@ -129,7 +152,7 @@ export default function MoldDialog({ mold, onSave, onClose }) {
               <option value="manual">自己量測</option>
             </select>
           </div>
-          <div className="field sm:col-span-2">
+          <div className="field">
             <label>形狀</label>
             <select value={shape} onChange={e => setShape(e.target.value)}
               className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm">
@@ -213,7 +236,14 @@ export default function MoldDialog({ mold, onSave, onClose }) {
           容積試算:<b className="font-mono text-ink">{preview > 0 ? `${fmt(preview)} cc` : '—'}</b>
           (換算倍率 = 目標模具容積 ÷ 原模具容積)
         </p>
+
+        <div className="mt-6 flex justify-end gap-2 border-t-2 border-ink pt-3">
+          <button type="button" className="btn" onClick={cancel} disabled={saving}>取消</button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? '儲存中…' : '儲存'}
+          </button>
+        </div>
       </form>
-    </Dialog>
+    </div>
   )
 }

@@ -22,6 +22,7 @@ export default async function handler(req, res) {
 
   if (!EMAIL_RE.test(email)) return res.status(400).json({ ok: false, error: '信箱格式不對' })
   if (password.length < 8) return res.status(400).json({ ok: false, error: '密碼至少要 8 碼' })
+  if (!body.tosAccepted) return res.status(400).json({ ok: false, error: '請先閱讀並同意服務條款' })
 
   try {
     const db = await getDb()
@@ -34,7 +35,7 @@ export default async function handler(req, res) {
         return res.status(409).json({ ok: false, error: '這個信箱已經註冊過了,請直接登入。' })
       }
       const passwordHash = await hashPassword(password)
-      await col.updateOne({ _id: existing._id }, { $set: { passwordHash, updatedAt: now } })
+      await col.updateOne({ _id: existing._id }, { $set: { passwordHash, tosAcceptedAt: now, updatedAt: now } })
       const token = signToken(
         { sub: existing._id, email, displayName: existing.displayName || '', role: existing.role || 'user' },
         process.env.AUTH_SECRET,
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
     await col.insertOne({
       _id, email, passwordHash, googleSub: null, emailVerified: false,
       displayName, role: 'user', failedAttempts: 0, lockedUntil: null,
-      createdAt: now, updatedAt: now,
+      tosAcceptedAt: now, createdAt: now, updatedAt: now,
     })
     const token = signToken({ sub: _id, email, displayName, role: 'user' }, process.env.AUTH_SECRET)
     res.status(200).json({ ok: true, token })

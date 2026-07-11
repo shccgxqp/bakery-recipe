@@ -7,7 +7,6 @@ export const APP_VERSION = pkg.version
 /* 後端 API(Vercel Serverless Functions)網址,結尾不要斜線 */
 export const API_BASE = 'https://bakery-recipe-two.vercel.app'
 
-export const AUTH_KEY = 'bakery-auth'
 export const LS_CACHE = 'bakery-cache-v1' // 最近一次成功讀取的資料快取(離線備援)
 
 /* settings 讀不到時的預設值(正式值存在資料庫 settings 文件) */

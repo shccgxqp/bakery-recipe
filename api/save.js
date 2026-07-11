@@ -1,7 +1,7 @@
-/* POST /api/save — 帶密碼或使用者 token 的寫入:逐筆 upsert + 軟刪除 + 復原
+/* POST /api/save — 帶使用者 token 的寫入:逐筆 upsert + 軟刪除 + 復原
    (欄位不寫死,資料結構加新欄位不用改這支)
+   header: Authorization: Bearer <token>
    body: {
-     password,                  // 或改帶 header Authorization: Bearer <token>
      upserts: { ingredients: [完整文件], recipes: [完整文件], molds: [完整文件] },
      deletes: { ingredients: [_id], recipes: [_id], molds: [_id] },
      restores: { ingredients: [_id], recipes: [_id], molds: [_id] }
@@ -14,7 +14,7 @@
    - 整個 payload 逐筆授權檢查為 pre-pass,任何一筆沒過就整批 403、不寫入任何東西。 */
 
 import { getDb, cors, readBody } from './_lib/mongo.js'
-import { resolveCaller, canWriteRecipe, canWriteShared } from './_lib/auth.js'
+import { resolveCallerChecked, canWriteRecipe, canWriteShared } from './_lib/auth.js'
 
 const STRIP_FIELDS = ['_id', 'createdAt', 'updatedAt', 'deletedAt', 'ownerId', 'createdBy', 'lastEditedBy', 'lastEditedAt']
 
@@ -71,10 +71,10 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end()
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'method not allowed' })
   const body = readBody(req)
-  const caller = resolveCaller(req, body)
-  if (!caller) return res.status(401).json({ ok: false, error: '尚未登入' })
   try {
     const db = await getDb()
+    const caller = await resolveCallerChecked(req, db)
+    if (!caller) return res.status(401).json({ ok: false, error: '尚未登入' })
     const now = new Date()
     const cols = {
       ingredients: db.collection('ingredients'),

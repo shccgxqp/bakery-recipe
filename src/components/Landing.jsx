@@ -50,7 +50,7 @@ export default function Landing({ RCP, ING, MOLDS, onEnter, onLogin }) {
           <span className="border-l border-line pl-2.5 text-[12px] text-ink-soft">烘焙帳本 · 配方成本營養工具</span>
         </div>
         <button onClick={onLogin} className="text-[13.5px] text-ink-soft underline decoration-line underline-offset-2 hover:text-ink">
-          🔑 我是主人,登入編輯
+          🔑 登入編輯
         </button>
       </header>
 
@@ -195,7 +195,7 @@ export default function Landing({ RCP, ING, MOLDS, onEnter, onLogin }) {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
             <button onClick={onEnter} className="btn btn-primary">進入瀏覽 →</button>
             <button onClick={onLogin} className="text-[14px] text-ink-soft underline decoration-dashed decoration-line underline-offset-4 hover:text-ink">
-              🔑 我是主人,登入編輯
+              🔑 登入編輯
             </button>
           </div>
         </div>

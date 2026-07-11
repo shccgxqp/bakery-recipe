@@ -48,16 +48,19 @@ export default async function handler(req, res) {
     const now = new Date().toISOString()
     let user = await col.findOne({ email })
 
+    /* 暱稱刻意不抄 Google 的名字(那多半是真名)——政策:真名/email 永不
+       當公開顯示名稱,新帳號 displayName 留空,首次登入引導使用者自取
+       (見 docs/design-guide.md「首次登入」動向)。 */
     if (user) {
+      if (user.suspended) throw new Error('這個帳號已被停用')
       const patch = { googleSub: claims.sub, updatedAt: now }
-      if (!user.displayName && claims.name) patch.displayName = claims.name
       await col.updateOne({ _id: user._id }, { $set: patch })
       user = { ...user, ...patch }
     } else {
       user = {
         _id: randomUUID(), email, passwordHash: null, googleSub: claims.sub,
         emailVerified: claims.email_verified === 'true' || claims.email_verified === true,
-        displayName: claims.name || '', role: 'user', failedAttempts: 0, lockedUntil: null,
+        displayName: '', role: 'user', failedAttempts: 0, lockedUntil: null,
         createdAt: now, updatedAt: now,
       }
       await col.insertOne(user)

@@ -15,6 +15,17 @@
   --font-mono: "IBM Plex Mono", monospace;
 }
 
+/* 圓角尺度(平台化大改造 item 1,見 docs/design-guide.md)——刻意不放進上面
+   @theme(那會覆寫 Tailwind 內建 rounded-* 全站語意,影響到全站既有 45 處
+   rounded-* 用法)。這組只給「新頁面明確想套用」的地方用 var(--radius-*)
+   或 rounded-[--radius-*] 語法,不是全站自動套用。 */
+:root {
+  --radius-sm: 6px;    /* 小型元件:Chip 外的一般輸入框/小按鈕,已用在 .btn/.field/kbd */
+  --radius-md: 10px;   /* 卡片/新頁面內容區塊 */
+  --radius-lg: 16px;   /* 大型視覺區塊(landing 圖片卡等) */
+  --radius-pill: 999px; /* 標籤/狀態徽章,語意對齊 Chip.jsx 現有的 rounded-full */
+}
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);
@@ -34,7 +45,7 @@ button:focus-visible, input:focus-visible {
 .btn {
   background: #fff;
   border: 1px solid var(--color-line);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 8px 12px;
   font-size: 13.5px;
   font-weight: 500;
@@ -76,7 +87,7 @@ button:focus-visible, input:focus-visible {
   color: var(--color-ink-soft); margin-bottom: 3px;
 }
 .field input {
-  width: 100%; border: 1px solid var(--color-line); border-radius: 6px;
+  width: 100%; border: 1px solid var(--color-line); border-radius: var(--radius-sm);
   background: #fff; padding: 7px 10px; font-size: 14px;
 }
 .field input[type="number"] { font-family: var(--font-mono); }

@@ -26,6 +26,7 @@ export default async function handler(req, res) {
     if (!user || !user.passwordHash) {
       return res.status(401).json({ ok: false, error: '信箱或密碼錯誤' })
     }
+    if (user.suspended) return res.status(403).json({ ok: false, error: '這個帳號已被停用' })
 
     const now = new Date()
     if (user.lockedUntil && new Date(user.lockedUntil) > now) {

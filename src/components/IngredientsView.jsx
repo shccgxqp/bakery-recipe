@@ -1,11 +1,14 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { fmt } from '../lib/calc.js'
 import { exportIngredientsCSV } from '../lib/exportData.js'
 import { ingCategoryColor } from '../lib/ingCategoryColors.js'
+import { ingPath } from '../lib/slug.js'
 import PriceSim from './PriceSim.jsx'
 
 /* 材料主檔:搜尋(名稱/廠牌/規格/分類)+ 依分類區段顯示
-   資料量小(全載入),搜尋與分組都在前端即時完成 */
+   資料量小(全載入),搜尋與分組都在前端即時完成。
+   列表只留核心欄位(平台化大改造第 2 項),完整營養/成分/溯源點進詳細頁看。 */
 export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdit, onAdd, onDelete }) {
   const [q, setQ] = useState('')
   const [simOpen, setSimOpen] = useState(false)
@@ -36,7 +39,7 @@ export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdi
     }
   }, [ING, ingCatOrder, q])
 
-  const cols = 14 + (isEditor ? 1 : 0)
+  const cols = 8 + (isEditor ? 1 : 0)
 
   return (
     <>
@@ -72,10 +75,8 @@ export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdi
             <thead>
               <tr>
                 <th>材料</th><th>廠牌</th><th className="num">採購價</th><th className="num">採購量 g</th>
-                <th className="num">$/100g</th><th className="num">大卡/100g</th><th className="num">蛋白質</th>
-                <th className="num">脂肪</th><th className="num">飽和脂肪</th><th className="num">反式脂肪</th>
-                <th className="num">碳水</th><th className="num">糖</th><th className="num">鈉 mg</th>
-                <th>過敏原</th>
+                <th className="num">$/100g</th><th className="num">大卡/100g</th>
+                <th>過敏原</th><th>營養資料</th>
                 {isEditor && <th>操作</th>}
               </tr>
             </thead>
@@ -93,6 +94,7 @@ export default function IngredientsView({ ING, RCP, ingCatOrder, isEditor, onEdi
 }
 
 function SectionRows({ sec, cols, isEditor, onEdit, onDelete }) {
+  const navigate = useNavigate()
   const color = ingCategoryColor(sec.cat)
   return (
     <>
@@ -109,30 +111,23 @@ function SectionRows({ sec, cols, isEditor, onEdit, onDelete }) {
         return (
           <tr key={i._id}>
             <td>
-              {i.name}
+              <button className="text-left underline decoration-line underline-offset-2 hover:text-yolk"
+                onClick={() => navigate(ingPath(i))} title="看完整資料">
+                {i.name}
+              </button>
               {i.spec && <span className="ml-1 text-[11px] text-ink-soft">{i.spec}</span>}
             </td>
             <td className="text-[12.5px] text-ink-soft">{i.brand || '—'}</td>
             <td className="num">${fmt(i.packPrice)}</td>
             <td className="num">{fmt(i.packGrams)}</td>
             <td className="num">${fmt((i.packPrice * 100) / (i.packGrams || 1), 1)}</td>
-            {p ? (
-              <>
-                <td className="num">{fmt(p.kcal)}</td>
-                <td className="num">{fmt(p.protein, 1)}</td>
-                <td className="num">{fmt(p.fat, 1)}</td>
-                <td className="num">{fmt(p.satFat || 0, 1)}</td>
-                <td className="num">{fmt(p.transFat || 0, 2)}</td>
-                <td className="num">{fmt(p.carbs, 1)}</td>
-                <td className="num">{fmt(p.sugar, 1)}</td>
-                <td className="num">{fmt(p.sodium || 0)}</td>
-              </>
-            ) : (
-              <td colSpan={8} className="text-center text-[12px] text-warn">無資料</td>
-            )}
+            <td className="num">{p ? fmt(p.kcal) : '—'}</td>
             <td className="whitespace-nowrap text-[11.5px] text-ink-soft">
               {(i.allergens || []).join('、') || '—'}
               {i.mayContain?.length > 0 && <span title="可能含有">(可:{i.mayContain.join('、')})</span>}
+            </td>
+            <td className="text-[12px]">
+              {p ? <span className="text-ok">✓</span> : <span className="text-warn">無資料</span>}
             </td>
             {isEditor && (
               <td className="whitespace-nowrap">

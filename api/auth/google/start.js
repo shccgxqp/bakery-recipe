@@ -5,14 +5,17 @@
 import { cors } from '../../_lib/mongo.js'
 import { signToken } from '../../_lib/authToken.js'
 
-const ALLOWED_ORIGINS = ['https://shccgxqp.github.io', 'http://localhost:5173']
+const ALLOWED_ORIGINS = ['https://shccgxqp.github.io']
+/* 本機開發:vite 端口被佔用時會自動遞增(5173→5174→…),所以 localhost 不限定端口 */
+const LOCALHOST_RE = /^http:\/\/localhost:\d+\//
 
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
 
   const returnTo = typeof req.query.return_to === 'string' ? req.query.return_to : ''
-  if (!returnTo || !ALLOWED_ORIGINS.some(o => returnTo.startsWith(o))) {
+  const allowed = ALLOWED_ORIGINS.some(o => returnTo.startsWith(o)) || LOCALHOST_RE.test(returnTo)
+  if (!returnTo || !allowed) {
     return res.status(400).json({ ok: false, error: '無效的 return_to' })
   }
 

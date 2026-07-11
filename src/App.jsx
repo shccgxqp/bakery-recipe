@@ -1,29 +1,36 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { AUTH_KEY, LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_CAT_ORDER } from './config.js'
+import { LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_CAT_ORDER } from './config.js'
 import { calc, metrics, allergenSummary } from './lib/calc.js'
-import { loadData, pushData, verifyPassword } from './lib/api.js'
-import { recipePath } from './lib/slug.js'
+import { loadData, pushData } from './lib/api.js'
+import { recipePath, ingPath, moldPath } from './lib/slug.js'
 import Sidebar from './components/Sidebar.jsx'
 import Landing from './components/Landing.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
+import IngredientDetail from './components/IngredientDetail.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
 import MoldsView from './components/MoldsView.jsx'
 import TrashView from './components/TrashView.jsx'
-import RecipeDialog from './components/RecipeDialog.jsx'
-import IngredientDialog from './components/IngredientDialog.jsx'
+import RecipeEditView from './components/RecipeEditView.jsx'
+import IngredientEditView from './components/IngredientEditView.jsx'
 import ShoppingDialog from './components/ShoppingDialog.jsx'
-import MoldDialog from './components/MoldDialog.jsx'
+import MoldDetail from './components/MoldDetail.jsx'
+import MoldEditView from './components/MoldEditView.jsx'
 import ScaleDialog from './components/ScaleDialog.jsx'
-import LoginDialog from './components/LoginDialog.jsx'
+import LoginView from './components/LoginView.jsx'
+import RegisterView from './components/RegisterView.jsx'
+import MeView from './components/MeView.jsx'
+import AdminUsersView from './components/AdminUsersView.jsx'
+import LabelView from './components/LabelView.jsx'
 import ToastHost from './components/ToastHost.jsx'
 import ConfirmHost from './components/ConfirmHost.jsx'
 import Skeleton from './components/Skeleton.jsx'
 import { toast } from './lib/toast.js'
 import { confirmDialog } from './lib/confirm.js'
 import { exportBackupJSON } from './lib/exportData.js'
-import { consumeTokenFromQuery, getGoogleUser, startGoogleLogin, googleLogout, getAuthToken } from './lib/googleAuth.js'
+import { consumeTokenFromQuery, getGoogleUser, googleLogout, getAuthToken } from './lib/googleAuth.js'
+import { canEditRecipe } from './lib/permissions.js'
 
 function loadCache() {
   try {
@@ -48,24 +55,40 @@ export default function App() {
   const { view, urlSelId } = useMemo(() => {
     const parts = location.pathname.split('/').filter(Boolean)
     if (parts.length === 0) return { view: 'landing', urlSelId: null }
-    if (parts[0] === 'r') return { view: 'recipe', urlSelId: parts[1] ? decodeURIComponent(parts[1]) : null }
-    if (['ings', 'molds', 'trash', 'changelog'].includes(parts[0])) return { view: parts[0], urlSelId: null }
+    if (parts[0] === 'r') {
+      if (parts[1] === 'new') return { view: 'recipe-new', urlSelId: null }
+      if (parts[1] && parts[2] === 'edit') return { view: 'recipe-edit', urlSelId: decodeURIComponent(parts[1]) }
+      return { view: 'recipe', urlSelId: parts[1] ? decodeURIComponent(parts[1]) : null }
+    }
+    if (parts[0] === 'ing' && parts[1]) {
+      if (parts[1] === 'new') return { view: 'ing-new', urlSelId: null }
+      if (parts[2] === 'edit') return { view: 'ing-edit', urlSelId: decodeURIComponent(parts[1]) }
+      return { view: 'ing-detail', urlSelId: decodeURIComponent(parts[1]) }
+    }
+    if (parts[0] === 'mold' && parts[1]) {
+      if (parts[1] === 'new') return { view: 'mold-new', urlSelId: null }
+      if (parts[2] === 'edit') return { view: 'mold-edit', urlSelId: decodeURIComponent(parts[1]) }
+      return { view: 'mold-detail', urlSelId: decodeURIComponent(parts[1]) }
+    }
+    if (parts[0] === 'label' && parts[1]) return { view: 'label', urlSelId: decodeURIComponent(parts[1]) }
+    if (parts[0] === 'admin' && parts[1] === 'users') return { view: 'admin-users', urlSelId: null }
+    if (['ings', 'molds', 'trash', 'changelog', 'login', 'register', 'me'].includes(parts[0])) return { view: parts[0], urlSelId: null }
     return { view: 'landing', urlSelId: null }
   }, [location.pathname])
-  const [auth, setAuth] = useState(() => localStorage.getItem(AUTH_KEY) || '')
 
-  /* 帳號系統(Google + 信箱密碼,見 docs/roadmap.md 第 2 項 phase 4)——
-     登入的一般使用者現在真的能寫自己的食譜/材料/模具了(API 逐筆檢查擁有權)。
-     isEditor 這次刻意不分身份細顯示:登入者(站長密碼或一般使用者)都看得到
-     編輯按鈕,沒有權限的操作交給 API 擋 + toast 顯示錯誤。 */
+  /* 帳號系統(見 docs/roadmap.md 第 2 項 phase 4)——沒有站長密碼了,身份完全
+     來自登入 token(Google 或信箱密碼),role:"owner" 判斷交給後端 users 表。
+     isEditor 這次刻意不分身份細顯示:登入者都看得到編輯按鈕,沒有權限的
+     操作交給 API 擋 + toast 顯示錯誤(見 src/lib/permissions.js 的逐項判斷)。 */
   const [googleUser, setGoogleUser] = useState(null)
   const refreshAuthUser = () => setGoogleUser(getGoogleUser())
   useEffect(() => {
-    consumeTokenFromQuery()
+    const justLoggedIn = consumeTokenFromQuery()
     refreshAuthUser()
-  }, [])
-  const logoutGoogle = () => { googleLogout(); setGoogleUser(null) }
-  const isEditor = !!auth || !!googleUser
+    /* Google 登入剛導回來且還沒設暱稱 → 引導去個人頁取暱稱(政策:真名/email 永不公開) */
+    if (justLoggedIn && !getGoogleUser()?.displayName) navigate('/me')
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const isEditor = !!googleUser
 
   const catOrder = base.settings?.catOrder || DEFAULT_CAT_ORDER
   const allergenList = base.settings?.allergenList || DEFAULT_ALLERGENS
@@ -121,15 +144,10 @@ export default function App() {
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
   const selected = RCP.find(r => r._id === urlSelId) || RCP.find(r => r._id === flat[0]) || null
 
-  /* ---- 寫入/讀取共用的目前密碼 ref(登入才有值,私人食譜靠它決定要不要一起回) ---- */
-  const authRef = useRef(auth)
-  useEffect(() => { authRef.current = auth }, [auth])
-
-  /* ---- 開站讀 API(成功就更新離線快取)。pwOverride 用在登入/登出當下——
-     這時 authRef 還沒同步到最新值(setAuth 是非同步的),直接傳新值比較保險 ---- */
-  const refresh = useCallback(async (pwOverride) => {
-    const pw = pwOverride !== undefined ? pwOverride : authRef.current
-    const d = await loadData(pw)
+  /* ---- 開站讀 API(成功就更新離線快取)。token 直接從 localStorage 讀
+     (getAuthToken() 每次呼叫都拿最新值,不會有 React state 非同步的落後問題)---- */
+  const refresh = useCallback(async () => {
+    const d = await loadData(getAuthToken())
     setBase(d)
     localStorage.setItem(LS_CACHE, JSON.stringify(d))
     setDataSource('雲端 ✓')
@@ -145,39 +163,33 @@ export default function App() {
   }, [refresh])
 
   const write = useCallback(async ({ upserts, deletes, restores }) => {
-    const auth = authRef.current ? { password: authRef.current } : googleUser ? { token: getAuthToken() } : null
-    if (!auth) throw new Error('尚未登入')
+    const token = getAuthToken()
+    if (!token) throw new Error('尚未登入')
     try {
-      await pushData(auth, upserts || {}, deletes || {}, restores || {})
+      await pushData(token, upserts || {}, deletes || {}, restores || {})
     } catch (err) {
-      if (err.message === '密碼錯誤') {
-        setAuth('')
-        localStorage.removeItem(AUTH_KEY)
-        throw new Error('密碼失效,請重新登入')
+      if (err.message === '尚未登入') {
+        googleLogout()
+        setGoogleUser(null)
+        throw new Error('登入已失效,請重新登入')
       }
       throw err
     }
     await refresh()
-  }, [refresh, googleUser])
+  }, [refresh])
 
-  /* ---- 登入 / 登出:LoginDialog 送出密碼 → doLogin 驗證,錯誤顯示在對話框內(不用 alert)。
-     兩邊都要 refresh(),不然私人食譜要重新整理頁面才會出現/消失。 ---- */
-  const doLogin = useCallback(async pw => {
-    const ok = await verifyPassword(pw)
-    if (ok) {
-      setAuth(pw)
-      localStorage.setItem(AUTH_KEY, pw)
-      await refresh(pw)
-    }
-    return ok
+  /* ---- 登入 / 登出:LoginView/RegisterView 內自己呼叫 postAuth 存 token,
+     成功後呼叫這個 onAuthChange 讓 App 重新讀 googleUser + 重新拉資料
+     (私人食譜要跟著新身份一起出現/消失)。 ---- */
+  const onAuthChange = useCallback(() => {
+    refreshAuthUser()
+    refresh().catch(err => toast('重新讀取失敗:' + err.message, { type: 'error' }))
   }, [refresh])
   const logout = useCallback(() => {
-    setAuth('')
-    localStorage.removeItem(AUTH_KEY)
-    refresh('').catch(err => toast('重新讀取失敗:' + err.message, { type: 'error' }))
+    googleLogout()
+    setGoogleUser(null)
+    refresh().catch(err => toast('重新讀取失敗:' + err.message, { type: 'error' }))
   }, [refresh])
-  /* enterAfter:首頁「登入編輯」登入成功後直接進站,不用登入完再按一次「進入瀏覽」 */
-  const openLogin = (enterAfter = false) => setDlg({ type: 'login', enterAfter })
 
   /* ---- 資料操作(全部以 _id 為 key;新資料由前端產生 UUID) ----
      save 由對話框 await,失敗時對話框留在原地顯示錯誤 */
@@ -187,12 +199,28 @@ export default function App() {
     if (doc.sortOrder == null) doc.sortOrder = Math.max(0, ...RCP.map(r => r.sortOrder || 0)) + 10
     await write({ upserts: { recipes: [doc] } })
     navigate(recipePath(doc))
-    setDlg(null)
   }
+  /* 食譜編輯頁的「快速新增材料」:最小欄位建檔(名稱+分類),其餘留待材料頁補;
+     write() 會 refresh,新材料馬上出現在 ING 供 picker 顯示 */
+  const quickAddIngredient = async (name, category) => {
+    const _id = crypto.randomUUID()
+    await write({
+      upserts: {
+        ingredients: [{
+          _id, name, category, brand: '', spec: '', packPrice: 0, packGrams: 0.1,
+          unitName: '', unitGrams: null, per100g: null, allergens: [], mayContain: [],
+          subIngredients: '', labelDate: null, note: '',
+        }],
+      },
+    })
+    return _id
+  }
+  /* 材料存檔(整頁編輯器):存完導到該材料的詳細頁 */
   const saveIng = async (orig, obj) => {
     const _id = orig?._id || crypto.randomUUID()
-    await write({ upserts: { ingredients: [{ ...orig, ...obj, _id }] } })
-    setDlg(null)
+    const doc = { ...orig, ...obj, _id }
+    await write({ upserts: { ingredients: [doc] } })
+    navigate(ingPath(doc))
   }
   const deleteRecipe = async r => {
     const ok = await confirmDialog({
@@ -215,14 +243,15 @@ export default function App() {
     const dup = { ...rest, _id, name, sortOrder: (r.sortOrder || 0) + 1 }
     try {
       await write({ upserts: { recipes: [dup] } })
-      navigate(recipePath(dup))
-      setDlg({ type: 'recipe', recipe: dup })
+      navigate(`/r/${dup._id}/edit`)
     } catch (err) { toast('複製失敗:' + err.message, { type: 'error' }) }
   }
+  /* 模具存檔(整頁編輯器):存完導到該模具的詳細頁 */
   const saveMold = async (orig, obj) => {
     const _id = orig?._id || crypto.randomUUID()
-    await write({ upserts: { molds: [{ ...orig, ...obj, _id }] } })
-    setDlg(null)
+    const doc = { ...orig, ...obj, _id }
+    await write({ upserts: { molds: [doc] } })
+    navigate(moldPath(doc))
   }
   const deleteMold = async id => {
     const mold = MOLDS.find(m => m._id === id)
@@ -235,6 +264,7 @@ export default function App() {
     if (!ok) return
     try {
       await write({ deletes: { molds: [id] } })
+      if (view === 'mold-detail') navigate('/molds')
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   const deleteIng = async id => {
@@ -248,16 +278,19 @@ export default function App() {
     if (!ok) return
     try {
       await write({ deletes: { ingredients: [id] } })
+      if (view === 'ing-detail') navigate('/ings')
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   /* type: 'ingredients'|'recipes'|'molds' */
   const restoreItem = (type, id) => write({ restores: { [type]: [id] } })
 
-  /* ---- 鍵盤:↑↓ 切換、/ 搜尋 ---- */
+  /* ---- 鍵盤:↑↓ 切換、/ 搜尋(對話框開著或在編輯/新增頁時停用,
+     不然在編輯頁按 ↑↓ 會切走頁面丟失未存檔內容)---- */
   const searchRef = useRef(null)
+  const editingView = view.endsWith('-new') || view.endsWith('-edit')
   useEffect(() => {
     const onKey = e => {
-      if (dlg) return
+      if (dlg || editingView) return
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
         if (e.key === 'Escape') { setQuery(''); e.target.blur() }
         return
@@ -276,7 +309,7 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [dlg, flat, selected, RCP, navigate])
+  }, [dlg, editingView, flat, selected, RCP, navigate])
 
   /* 冷啟動(無快取)資料還在讀時秀骨架屏;有快取則沿用現行「先顯示快取,背景刷新」 */
   const coldLoading = view !== 'landing' && dataSource === '讀取中…' && RCP.length === 0
@@ -286,7 +319,13 @@ export default function App() {
       {view === 'landing' ? (
         <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
           onEnter={() => navigate('/r')}
-          onLogin={() => openLogin(true)} />
+          onLogin={() => navigate('/login')} />
+      ) : view === 'login' ? (
+        <LoginView onAuthChange={onAuthChange} />
+      ) : view === 'register' ? (
+        <RegisterView onAuthChange={onAuthChange} />
+      ) : view === 'label' ? (
+        <LabelView id={urlSelId} />
       ) : coldLoading ? (
         <Skeleton />
       ) : (
@@ -299,9 +338,10 @@ export default function App() {
             allergenList={allergenList}
             excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
             dataSource={dataSource} isEditor={isEditor}
-            onLogin={() => openLogin(false)} onLogout={logout}
+            onLogin={() => navigate('/login')} onLogout={logout} onMe={() => navigate('/me')}
+            onAdmin={() => navigate('/admin/users')}
             onSelect={id => { const r = RCP.find(x => x._id === id); if (r) navigate(recipePath(r)) }}
-            onNewRecipe={() => setDlg({ type: 'recipe', recipe: null })}
+            onNewRecipe={() => navigate('/r/new')}
             onToggleIngs={() => navigate(view === 'ings' ? '/r' : '/ings')}
             ingsMode={view === 'ings'}
             onToggleMolds={() => navigate(view === 'molds' ? '/r' : '/molds')}
@@ -311,28 +351,93 @@ export default function App() {
             onChangelog={() => navigate('/changelog')}
             onTrash={() => navigate(view === 'trash' ? '/r' : '/trash')}
             trashMode={view === 'trash'}
-            googleUser={googleUser} onGoogleLogin={startGoogleLogin} onGoogleLogout={logoutGoogle}
-            onAuthChange={refreshAuthUser}
+            googleUser={googleUser}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
             {view === 'changelog' ? (
               <ChangelogView />
+            ) : view === 'me' ? (
+              <MeView googleUser={googleUser} RCP={RCP} ING={ING} MOLDS={MOLDS}
+                onAuthChange={refreshAuthUser} />
+            ) : view === 'admin-users' ? (
+              <AdminUsersView googleUser={googleUser} />
+            ) : view === 'recipe-new' ? (
+              isEditor ? (
+                <RecipeEditView recipe={null} ING={ING} RCP={RCP} molds={MOLDS}
+                  ingCatOrder={ingCatOrder} onSave={saveRecipe} onQuickAddIngredient={quickAddIngredient} />
+              ) : (
+                <p className="mt-10 text-sm text-ink-soft">
+                  要登入才能新增食譜。
+                  <button className="ml-2 underline hover:text-ink" onClick={() => navigate('/login')}>去登入</button>
+                </p>
+              )
+            ) : view === 'recipe-edit' ? (
+              !RCP.find(x => x._id === urlSelId) ? (
+                <p className="mt-10 text-sm text-ink-soft">找不到這道食譜,可能已被刪除或網址有誤。</p>
+              ) : !canEditRecipe(RCP.find(x => x._id === urlSelId), googleUser) ? (
+                <p className="mt-10 text-sm text-ink-soft">只有作者本人能編輯這道食譜。</p>
+              ) : (
+                <RecipeEditView key={urlSelId} recipe={RCP.find(x => x._id === urlSelId)}
+                  ING={ING} RCP={RCP} molds={MOLDS}
+                  ingCatOrder={ingCatOrder} onSave={saveRecipe} onQuickAddIngredient={quickAddIngredient} />
+              )
             ) : view === 'trash' ? (
-              <TrashView auth={auth} onRestore={restoreItem} />
+              <TrashView onRestore={restoreItem} />
+            ) : view === 'mold-new' ? (
+              isEditor ? (
+                <MoldEditView mold={null} molds={MOLDS} onSave={saveMold} />
+              ) : (
+                <p className="mt-10 text-sm text-ink-soft">
+                  要登入才能新增模具。
+                  <button className="ml-2 underline hover:text-ink" onClick={() => navigate('/login')}>去登入</button>
+                </p>
+              )
+            ) : view === 'mold-edit' ? (
+              MOLDS.find(m => m._id === urlSelId) ? (
+                <MoldEditView key={urlSelId} mold={MOLDS.find(m => m._id === urlSelId)}
+                  molds={MOLDS} onSave={saveMold} />
+              ) : (
+                <p className="mt-10 text-sm text-ink-soft">找不到這個模具,可能已被刪除或網址有誤。</p>
+              )
+            ) : view === 'mold-detail' ? (
+              <MoldDetail mold={MOLDS.find(m => m._id === urlSelId) || null} RCP={RCP} googleUser={googleUser}
+                onEdit={id => navigate(`/mold/${id}/edit`)}
+                onDelete={deleteMold} />
             ) : view === 'molds' ? (
               <MoldsView molds={MOLDS} isEditor={isEditor}
-                onEdit={id => setDlg({ type: 'mold', id })}
-                onAdd={() => setDlg({ type: 'mold', id: null })}
+                onEdit={id => navigate(`/mold/${id}/edit`)}
+                onAdd={() => navigate('/mold/new')}
                 onDelete={deleteMold} />
+            ) : view === 'ing-new' ? (
+              isEditor ? (
+                <IngredientEditView ing={null} ING={ING}
+                  allergenList={allergenList} ingCatOrder={ingCatOrder} onSave={saveIng} />
+              ) : (
+                <p className="mt-10 text-sm text-ink-soft">
+                  要登入才能新增材料。
+                  <button className="ml-2 underline hover:text-ink" onClick={() => navigate('/login')}>去登入</button>
+                </p>
+              )
+            ) : view === 'ing-edit' ? (
+              ING[urlSelId] ? (
+                <IngredientEditView key={urlSelId} ing={ING[urlSelId]} ING={ING}
+                  allergenList={allergenList} ingCatOrder={ingCatOrder} onSave={saveIng} />
+              ) : (
+                <p className="mt-10 text-sm text-ink-soft">找不到這筆材料,可能已被刪除或網址有誤。</p>
+              )
+            ) : view === 'ing-detail' ? (
+              <IngredientDetail ing={ING[urlSelId] || null} RCP={RCP} googleUser={googleUser}
+                onEdit={id => navigate(`/ing/${id}/edit`)}
+                onDelete={deleteIng} />
             ) : view === 'ings' ? (
               <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
-                onEdit={id => setDlg({ type: 'ing', id })}
-                onAdd={() => setDlg({ type: 'ing', id: null })}
+                onEdit={id => navigate(`/ing/${id}/edit`)}
+                onAdd={() => navigate('/ing/new')}
                 onDelete={deleteIng} />
             ) : selected ? (
-              <Detail recipe={selected} ING={ING} isEditor={isEditor}
+              <Detail recipe={selected} ING={ING} isEditor={isEditor} googleUser={googleUser}
                 mold={MOLDS.find(m => m._id === selected.moldId) || null}
-                onEdit={() => setDlg({ type: 'recipe', recipe: selected })}
+                onEdit={() => navigate(`/r/${selected._id}/edit`)}
                 onDelete={() => deleteRecipe(selected)}
                 onDuplicate={() => duplicateRecipe(selected)}
                 onScale={() => setDlg({ type: 'scale' })} />
@@ -344,21 +449,8 @@ export default function App() {
             </p>
           </main>
 
-          {dlg?.type === 'recipe' && (
-            <RecipeDialog recipe={dlg.recipe} ING={ING} RCP={RCP} molds={MOLDS}
-              onSave={saveRecipe} onClose={() => setDlg(null)} />
-          )}
-          {dlg?.type === 'ing' && (
-            <IngredientDialog ing={dlg.id ? ING[dlg.id] : null}
-              allergenList={allergenList} ingCatOrder={ingCatOrder}
-              onSave={saveIng} onClose={() => setDlg(null)} />
-          )}
           {dlg?.type === 'shopping' && (
             <ShoppingDialog ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} onClose={() => setDlg(null)} />
-          )}
-          {dlg?.type === 'mold' && (
-            <MoldDialog mold={dlg.id ? MOLDS.find(m => m._id === dlg.id) : null}
-              onSave={saveMold} onClose={() => setDlg(null)} />
           )}
           {dlg?.type === 'scale' && selected && (
             <ScaleDialog recipe={selected} ING={ING} molds={MOLDS} onClose={() => setDlg(null)} />
@@ -366,16 +458,6 @@ export default function App() {
         </div>
       )}
 
-      {dlg?.type === 'login' && (
-        <LoginDialog
-          onClose={() => setDlg(null)}
-          onSubmit={async pw => {
-            const ok = await doLogin(pw)
-            if (ok) { setDlg(null); if (dlg.enterAfter) navigate('/r') }
-            return ok
-          }}
-        />
-      )}
       <ToastHost />
       <ConfirmHost />
     </>

@@ -7,31 +7,44 @@
 
 React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript)。
 
-- **前端**:GitHub Pages 靜態站(`npm run build` → `dist/`)。
+- **前端**:GitHub Pages 靜態站(`npm run build` → `dist/`),HashRouter 路由。
 - **資料庫**:MongoDB Atlas M0 免費叢集,資料庫名 `bakery-recipe-mongoDB`,
-  三個 collection:`ingredients`(59)/ `recipes`(20)/ `settings`。
+  collection:`ingredients` / `recipes` / `molds` / `users` / `settings`。
   完整 schema 見 `docs/db-schema.md`。
 - **API**:Vercel Serverless Functions(`api/` 目錄,push 自動部署):
-  - `GET /api/data` 公開讀取(過濾軟刪除)
-  - `POST /api/save` 帶密碼寫入:逐筆 upsert + 軟刪除,欄位不寫死
-  - `POST /api/verify` 密碼驗證(SHA-256 比對環境變數)
-  - 共用連線在 `api/_lib/mongo.js`(底線目錄不成為路由)
-- **環境變數**(`.env` 本機、Vercel 專案設定各一份):
-  `MONGODB_URI`、`MONGODB_DB`、`EDIT_PASSWORD_SHA256`。
-- **每日備份**:`.github/workflows/backup.yml` 每天台灣時間 04:00 把三個 collection
+  - `GET /api/data` 公開讀取(過濾軟刪除;帶登入 token 額外回自己的私人食譜)
+  - `POST /api/save` 帶登入 token 寫入(`Authorization: Bearer`):逐筆 upsert +
+    軟刪除 + 復原,**逐筆檢查擁有權**(食譜只有本人能寫、站長不例外;材料/模具
+    本人或站長皆可,站長修正蓋 `lastEditedBy`)
+  - `GET /api/label?id=` 對外標示卡專屬端點(成本/配方克數不出後端)
+  - `api/auth/*` 登入註冊(Google OAuth 手刻 + 信箱密碼 scrypt)、個人資料、條款
+  - `api/admin/users` 站長使用者管理(改角色/停用,`resolveCallerChecked`
+    寫入時查 DB → 停用/降權即時生效)
+  - 共用連線在 `api/_lib/mongo.js`,權限判斷在 `api/_lib/auth.js`
+    (底線目錄不成為路由)
+- **身份(v4.0.0 起,無站長密碼)**:登入 token(HMAC 簽章,localStorage)是
+  唯一身份;站長 = `users.role:"owner"`(你的帳號已標記)。舊的
+  `EDIT_PASSWORD_SHA256` 密碼制已整個移除。
+- **環境變數**(`.env` 本機、Vercel 專案設定各一份):`MONGODB_URI`、
+  `MONGODB_DB`、`AUTH_SECRET`、`GOOGLE_CLIENT_ID`、`GOOGLE_CLIENT_SECRET`。
+- **每日備份**:`.github/workflows/backup.yml` 每天台灣時間 04:00 把 collection
   匯出成 `backup/*.json` commit 進 repo。單向純備份,網站不讀這些檔案。
   需要 GitHub Secrets 的 `MONGODB_URI`。
 
-## 前端資料流(直寫模式,2026-07-08 起)
+## 前端資料流(直寫模式,2026-07-08 起;v4.0.0 全面整頁化)
 
 1. 開站 `GET /api/data` → 成功就存 localStorage 快取(`bakery-cache-v1`);
    失敗 fallback 到上次快取(離線唯讀)。
-2. **按「儲存」直接寫資料庫**(對話框 await,失敗留在原地顯示錯誤、儲存中鎖按鈕),
-   成功後整份重新讀取。沒有本機暫存層、沒有防抖同步(舊的 `bakery-edits-v*` 已廢棄,
-   開站會清掉)。
-3. 新資料的 `_id` 由前端 `crypto.randomUUID()` 產生。
+2. **按「儲存」直接寫資料庫**(整頁編輯器 await,失敗留在原地顯示錯誤、儲存中鎖
+   按鈕),成功後整份重新讀取。新增/編輯是獨立路由整頁
+   (`/r/new`、`/ing/:id/edit`…),不再是彈出對話框。
+3. 新資料的 `_id` 由前端 `crypto.randomUUID()` 產生;`ownerId`/`createdBy` 等
+   擁有權欄位一律伺服器蓋章,不信任 client。
 4. 材料頁:前端即時搜尋(名稱/廠牌/規格/分類子字串)+ 依 `settings.ingCatOrder`
    分類區段顯示;資料量小,搜尋排序都在前端做,不動後端。
+5. 前端顯示層權限判斷在 `src/lib/permissions.js`(`canEditRecipe`/
+   `canEditShared`/`isOwner`),跟 `api/_lib/auth.js` 是鏡像——真正的授權
+   邊界永遠在 API。
 
 ## 核心資料結構(詳見 docs/db-schema.md)
 
@@ -77,6 +90,10 @@ React 19 + Vite 6 + Tailwind CSS 4,純 JavaScript(無 TypeScript)。
 拍照 OCR 填營養標示、Google 登入帳號系統、平台化(公開投稿+防亂標警告系統)、
 食譜編輯 UI 重造、每頁專屬網址(react-router,SEO 屆時搬 Vercel 預渲染)、
 使用者版更新紀錄頁、付費功能(最後)。
+
+**平台化大改造的頁面清單/使用者動向/視覺設計指南見 `docs/design-guide.md`**
+(2026-07-10 定案:資訊架構+字體/配色/圓角/響應式策略+AI slop 避雷清單,
+還沒排實作時程)。
 
 - **公開的材料營養/過敏原資料庫是未來主力功能**:廠牌+規格+標示日期的市售品項資料,
   是衛福部通用資料查不到的價值。

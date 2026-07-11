@@ -1,24 +1,32 @@
 /* 寫入權限判斷(見 docs/roadmap.md 第 2 項 phase 4):
-   身份可以來自站長密碼,或使用者登入 token(Authorization: Bearer)。
-   密碼收斂成跟 role:"owner" token 同一種身份,不是獨立的無限後門——
-   套用同一條「站長不能碰別人食譜內容」規則。 */
+   身份完全來自使用者登入 token(Authorization: Bearer)——沒有站長密碼後門,
+   role:"owner" 純粹是 users 表上的欄位(見 scripts/promote-owner.mjs)。 */
 
-import { checkPassword } from './mongo.js'
 import { verifyToken } from './authToken.js'
 
-/* 站長帳號的識別值,跟 scripts/backfill-recipe-owner.mjs 標記你 20 道現有食譜
-   用的 OWNER_ID 是同一個值——站長密碼登入時沒有 users 表身份可查(目前資料庫
-   還沒有 role:"owner" 的使用者文件),用這個常數當站長的 ownerId/createdBy 值。 */
-const OWNER_ID = 'shccgxqp@gmail.com'
-
-export function resolveCaller(req, body) {
-  if (checkPassword(body?.password)) return { kind: 'owner', id: OWNER_ID }
+export function resolveCaller(req) {
   const authz = req.headers['authorization'] || ''
   const token = authz.startsWith('Bearer ') ? authz.slice(7) : null
   if (!token) return null
   const payload = verifyToken(token, process.env.AUTH_SECRET)
   if (!payload) return null
   return payload.role === 'owner' ? { kind: 'owner', id: payload.email } : { kind: 'user', id: payload.email }
+}
+
+/* 寫入路徑用的加強版:token 驗過之後再查一次 users 表——
+   1. 停用帳號(suspended)即刻擋下,不用等 30 天 token 過期
+   2. role 以資料庫為準(升權/降權即時生效,不看 token 裡的舊值)
+   讀取端點(GET /api/data)維持無狀態 resolveCaller,省一次查詢。 */
+export async function resolveCallerChecked(req, db) {
+  const authz = req.headers['authorization'] || ''
+  const token = authz.startsWith('Bearer ') ? authz.slice(7) : null
+  if (!token) return null
+  const payload = verifyToken(token, process.env.AUTH_SECRET)
+  if (!payload?.email) return null
+  const user = await db.collection('users').findOne({ email: payload.email })
+  if (!user || user.suspended) return null
+  const role = user.role || 'user'
+  return role === 'owner' ? { kind: 'owner', id: user.email } : { kind: 'user', id: user.email }
 }
 
 /* 食譜:只有本人可寫(不論身份是站長還是一般使用者)——站長編輯自己的

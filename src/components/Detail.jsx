@@ -4,14 +4,19 @@ import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 import { downloadNutritionLabel } from '../lib/labelImage.js'
 import { toast } from '../lib/toast.js'
 import { confirmDialog } from '../lib/confirm.js'
+import { canEditRecipe, isOwner } from '../lib/permissions.js'
+import { acceptTerms } from '../lib/googleAuth.js'
+import Tabs from './Tabs.jsx'
 
-/* 一個「層」段落:段標題列 + 材料列 + 層小計 */
-function FragmentSection({ sec, hasLayers, subG, subC }) {
+/* 一個「層」段落:段標題列 + 材料列 + 層小計
+   showCost:成本欄只給本人/站長看(成本毛利歸在自己的分頁籤,配方表跟著收斂) */
+function FragmentSection({ sec, hasLayers, subG, subC, showCost }) {
+  const cols = showCost ? 4 : 3
   return (
     <>
       {hasLayers && (
         <tr>
-          <td colSpan={4} className="border-b! border-ink! pb-1! pt-3.5! text-xs font-bold tracking-[.12em] text-yolk">
+          <td colSpan={cols} className="border-b! border-ink! pb-1! pt-3.5! text-xs font-bold tracking-[.12em] text-yolk">
             {sec.layer || '未分層'}
           </td>
         </tr>
@@ -20,13 +25,15 @@ function FragmentSection({ sec, hasLayers, subG, subC }) {
         row.missing ? (
           <tr key={i}>
             <td className="font-bold text-warn">{row.name}(材料主檔找不到)</td>
-            <td className="num">{fmt(row.g)}</td><td className="num">—</td><td className="num">—</td>
+            <td className="num">{fmt(row.g)}</td>
+            {showCost && <td className="num">—</td>}
+            <td className="num">—</td>
           </tr>
         ) : (
           <tr key={i}>
             <td>{row.name}</td>
             <td className="num">{fmt(row.g)}</td>
-            <td className="num">${fmt(row.cost, 1)}</td>
+            {showCost && <td className="num">${fmt(row.cost, 1)}</td>}
             <td className="num">{fmt(row.n.kcal)}</td>
           </tr>
         ))}
@@ -34,7 +41,7 @@ function FragmentSection({ sec, hasLayers, subG, subC }) {
         <tr>
           <td className="py-1! text-xs text-ink-soft">小計</td>
           <td className="num py-1! text-xs text-ink-soft">{fmt(subG)}</td>
-          <td className="num py-1! text-xs text-ink-soft">${fmt(subC, 1)}</td>
+          {showCost && <td className="num py-1! text-xs text-ink-soft">${fmt(subC, 1)}</td>}
           <td></td>
         </tr>
       )}
@@ -58,7 +65,7 @@ function Cell({ n, l, tone }) {
   )
 }
 
-export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelete, onDuplicate, onScale }) {
+export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onEdit, onDelete, onDuplicate, onScale }) {
   const c = calc(r, ING)
   const s = r.servings || 1
   const per = c.cost / s
@@ -69,6 +76,13 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
   /* 標籤的「每份重量」「每100公克」以成品重(出爐實秤)為準;沒填就退回生料總重 */
   const hasFinished = r.finishedGrams > 0
   const labelGrams = hasFinished ? r.finishedGrams : c.grams
+
+  /* 成本/毛利是店主的營運數字,只有本人(或站長)看得到;
+     編輯/刪除逐項判斷(canEditRecipe),複製食譜任何登入者都可以
+     (複製出來的是自己的,伺服器蓋自己的 ownerId) */
+  const mine = canEditRecipe(r, googleUser)
+  const canCost = mine || isOwner(googleUser)
+  const [tab, setTab] = useState('items')
 
   const [copied, setCopied] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
@@ -92,6 +106,38 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
   }
   const shareToLine = () => {
     window.open(lineShareUrl(shoppingListText(r, ING)), '_blank', 'noopener,noreferrer')
+  }
+
+  /* 標示卡連結:給客人/包裝 QR 用的公開頁。第一次取得前跳免責同意,
+     同意時間記錄在伺服器(users.labelTermsAcceptedAt,善盡提醒義務的鐵證);
+     localStorage 只當「跳過重複詢問」的快取,清掉也只是再同意一次(冪等)。 */
+  const [labelLinkCopied, setLabelLinkCopied] = useState(false)
+  const copyLabelLink = async () => {
+    const LABEL_TERMS_KEY = 'bakery-label-page-terms-v1'
+    if (!localStorage.getItem(LABEL_TERMS_KEY)) {
+      const ok = await confirmDialog({
+        title: '取得標示卡連結前請確認',
+        confirmText: '我已了解並同意',
+        body:
+          '僅需同意一次:\n' +
+          '1. 標示卡頁為理論試算之參考資訊,不具法律效力。\n' +
+          '2. 依《食品安全衛生管理法》第 22 條,包裝食品的標示必須印在包裝上——標示卡連結/QR code 不能取代包裝上的法定標示。\n' +
+          '3. 將本站數據用於商業販售,一切法律責任(含標示不實 4 萬~400 萬元罰鍰)由使用者自行承擔;正式量產請送 SGS、台美檢驗等公正單位化驗。',
+      })
+      if (!ok) return
+      try {
+        await acceptTerms('label') // 伺服器留存同意時間
+      } catch { /* 記錄失敗不擋使用,下次會再詢問 */ }
+      localStorage.setItem(LABEL_TERMS_KEY, new Date().toISOString())
+    }
+    const url = `${window.location.origin}${window.location.pathname}#/label/${r._id}/${encodeURIComponent(r.name)}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setLabelLinkCopied(true)
+      setTimeout(() => setLabelLinkCopied(false), 1800)
+    } catch {
+      toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
+    }
   }
 
   /* 下載標示前的一次性同意(留存同意時間,善盡提醒義務;文字同 docs/legal/compliance.md) */
@@ -132,10 +178,10 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
           <button className="btn btn-sm" onClick={copyList}>{copied ? '✓ 已複製' : '📋 複製購買清單'}</button>
           <button className="btn btn-sm" onClick={shareToLine}>💬 傳到 LINE</button>
           <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>
-          {isEditor && (
+          {isEditor && <button className="btn btn-sm" onClick={onDuplicate}>📋 複製食譜</button>}
+          {mine && (
             <>
               <button className="btn btn-sm" onClick={onEdit}>編輯</button>
-              <button className="btn btn-sm" onClick={onDuplicate}>📋 複製食譜</button>
               <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>
             </>
           )}
@@ -146,164 +192,201 @@ export default function Detail({ recipe: r, ING, mold, isEditor, onEdit, onDelet
         烘焙帳本 · https://shccgxqp.github.io/bakery-recipe/ · 列印於 {new Date().toLocaleDateString('zh-TW')}
       </p>
 
-      <div className="mt-4.5 grid grid-cols-2 overflow-hidden rounded-[10px] border border-line bg-white sm:grid-cols-3 lg:grid-cols-6">
-        <Cell n={`$${fmt(per, 1)}`} l={`成本/份(共 $${fmt(c.cost, 0)})`} tone="text-yolk" />
-        {hasPrice
-          ? <Cell n={`$${fmt(r.price)}`} l="售價/份" />
-          : <Cell n="未定價" l="售價/份" tone="text-warn !text-[15px] leading-[1.9]" />}
-        {hasPrice
-          ? <Cell n={`$${fmt(profit, 1)}`} l="利潤/份" tone={profit >= 0 ? 'text-ok' : 'text-warn'} />
-          : <Cell n="—" l="利潤/份" />}
-        {hasPrice
-          ? <Cell n={`${fmt(margin)}%`} l="利潤率(利潤÷成本)" tone={margin >= 0 ? 'text-ok' : 'text-warn'} />
-          : <Cell n="—" l="利潤率" />}
-        <Cell n={fmt(c.tot.kcal / s)} l="大卡/份" />
-        <Cell n={fmt(labelGrams / s)} l={hasFinished ? '每份 g(成品)' : '每份約 g(生料)'} />
-      </div>
+      <Tabs className="mt-4" active={tab} onChange={setTab}
+        tabs={[
+          { id: 'items', label: '配方' },
+          { id: 'label', label: '營養標示與過敏原' },
+          { id: 'steps', label: '步驟與烘烤', hidden: !(r.steps?.length || r.bakes?.length || r.links?.length) },
+          { id: 'cost', label: '成本與毛利', hidden: !canCost },
+        ]} />
 
-      {(r.storage || r.shelfLifeDays > 0 || mold) && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-          {mold && (
-            <>
-              <span className="text-xs font-bold tracking-[.08em] text-ink-soft">模具</span>
-              <span className="rounded-md border border-line bg-white px-2.5 py-0.5">🥮 {mold.name}</span>
-            </>
-          )}
-          {(r.storage || r.shelfLifeDays > 0) && (
-            <>
-              <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
-              <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
-                🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
-              </span>
-            </>
-          )}
-        </div>
-      )}
+      {/* 面板用 hidden 而非 unmount:列印時 print:block 全部展開,「列印食譜卡」維持整頁輸出 */}
 
-      {(r.bakes?.length > 0) && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
-          <span className="text-xs font-bold tracking-[.08em] text-ink-soft">烘烤</span>
-          {r.bakes.map((b, i) => (
-            <span key={i} className="flex items-center gap-2">
-              {i > 0 && <span className="text-ink-soft">→</span>}
-              <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">🔥 {b}</span>
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-[1.4fr_1fr] print:grid-cols-1">
-        <div>
-          <table className="ltable">
-            <thead>
-              <tr><th>材料</th><th className="num">用量 g</th><th className="num">成本</th><th className="num">熱量</th></tr>
-            </thead>
-            <tbody>
-              {groupByLayer(c.rows).map((sec, si, all) => {
-                const hasLayers = all.length > 1 || sec.layer
-                const subG = sec.rows.reduce((a, r) => a + r.g, 0)
-                const subC = sec.rows.reduce((a, r) => a + (r.cost || 0), 0)
-                return (
-                  <FragmentSection key={si} sec={sec} hasLayers={hasLayers} subG={subG} subC={subC} />
-                )
-              })}
-              <tr className="total">
-                <td>合計({fmt(c.grams)} g)</td><td></td>
-                <td className="num">${fmt(c.cost, 0)}</td>
-                <td className="num">{fmt(c.tot.kcal)}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          {(r.steps?.length > 0) && (
-            <div className="mt-8">
-              <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">作法步驟</div>
-              <ol className="mt-4 space-y-5">
-                {r.steps.map((st, i) => {
-                  const { main, tip } = splitProTip(st)
-                  return (
-                    <li key={i} className="flex gap-3.5">
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 pt-px">
-                        <p className="text-[14.5px] leading-[1.9] text-ink">{main}</p>
-                        {tip && (
-                          <p className="mt-2 rounded-md border border-line bg-yolk-soft/60 px-3 py-2 text-[12.5px] leading-relaxed text-ink-soft">
-                            💡 <b className="font-semibold text-ink">Pro Tip</b>:{tip}
-                          </p>
-                        )}
-                      </div>
-                    </li>
-                  )
-                })}
-              </ol>
-            </div>
-          )}
-        </div>
-        <div>
-          <div className="nlabel">
-            <h4>營養標示</h4>
-            <div className="meta">本品每份 {fmt(labelGrams / s)} 公克 · 本包裝含 {s} 份</div>
-            <table>
-              <tbody>
-                <tr className="hd"><td></td><td className="num">每份</td><td className="num">每100公克</td><td className="num">每日參考值%</td></tr>
-                {NUTR.map(([k, zh, unit, d, dv]) => (
-                  <tr key={k}>
-                    <td>{zh}</td>
-                    <td className="num">{fmt(c.tot[k] / s, d)} {unit}</td>
-                    <td className="num">{fmt((c.tot[k] * 100) / Math.max(labelGrams, 1), d)} {unit}</td>
-                    <td className="num">{dv ? fmt((c.tot[k] / s / dv) * 100) + '%' : '＊'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="meta">＊參考值未訂定。{DV_NOTE}</div>
+      {/* ── 配方 ── */}
+      <div className={(tab === 'items' ? '' : 'hidden ') + 'print:block'}>
+        {(r.storage || r.shelfLifeDays > 0 || mold) && (
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px]">
+            {mold && (
+              <>
+                <span className="text-xs font-bold tracking-[.08em] text-ink-soft">模具</span>
+                <span className="rounded-md border border-line bg-white px-2.5 py-0.5">🥮 {mold.name}</span>
+              </>
+            )}
+            {(r.storage || r.shelfLifeDays > 0) && (
+              <>
+                <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
+                <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
+                  🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
+                </span>
+              </>
+            )}
+            <span className="text-xs font-bold tracking-[.08em] text-ink-soft">份數</span>
+            <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">{s} 份</span>
           </div>
+        )}
 
-          <button className="btn btn-sm mt-2 print:hidden" onClick={downloadLabel}>
-            ⬇ 下載營養標示圖片
-          </button>
+        <table className="ltable mt-4 max-w-2xl">
+          <thead>
+            <tr>
+              <th>材料</th><th className="num">用量 g</th>
+              {canCost && <th className="num">成本</th>}
+              <th className="num">熱量</th>
+            </tr>
+          </thead>
+          <tbody>
+            {groupByLayer(c.rows).map((sec, si, all) => {
+              const hasLayers = all.length > 1 || sec.layer
+              const subG = sec.rows.reduce((a, r) => a + r.g, 0)
+              const subC = sec.rows.reduce((a, r) => a + (r.cost || 0), 0)
+              return (
+                <FragmentSection key={si} sec={sec} hasLayers={hasLayers} subG={subG} subC={subC} showCost={canCost} />
+              )
+            })}
+            <tr className="total">
+              <td>合計({fmt(c.grams)} g)</td><td></td>
+              {canCost && <td className="num">${fmt(c.cost, 0)}</td>}
+              <td className="num">{fmt(c.tot.kcal)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="mt-2 text-[12px] text-ink-soft">
+          每份約 {fmt(labelGrams / s)} g{hasFinished ? '(成品實秤)' : '(生料估算)'} · {fmt(c.tot.kcal / s)} 大卡/份
+        </p>
+      </div>
 
-          {(al.has.length > 0 || al.may.length > 0) && (
-            <div className="mt-3 max-w-[340px] rounded-md border border-line bg-white px-3 py-2 text-[12.5px] leading-relaxed">
-              <b className="text-ink">過敏原資訊</b>
-              {al.has.length > 0 && <div>本產品含有:<b>{al.has.join('、')}</b></div>}
-              {al.may.length > 0 && <div className="text-ink-soft">本產品可能含有:{al.may.join('、')}</div>}
+      {/* ── 營養標示與過敏原 ── */}
+      <div className={(tab === 'label' ? '' : 'hidden ') + 'print:block'}>
+        <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div>
+            <div className="nlabel">
+              <h4>營養標示</h4>
+              <div className="meta">本品每份 {fmt(labelGrams / s)} 公克 · 本包裝含 {s} 份</div>
+              <table>
+                <tbody>
+                  <tr className="hd"><td></td><td className="num">每份</td><td className="num">每100公克</td><td className="num">每日參考值%</td></tr>
+                  {NUTR.map(([k, zh, unit, d, dv]) => (
+                    <tr key={k}>
+                      <td>{zh}</td>
+                      <td className="num">{fmt(c.tot[k] / s, d)} {unit}</td>
+                      <td className="num">{fmt((c.tot[k] * 100) / Math.max(labelGrams, 1), d)} {unit}</td>
+                      <td className="num">{dv ? fmt((c.tot[k] / s / dv) * 100) + '%' : '＊'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="meta">＊參考值未訂定。{DV_NOTE}</div>
             </div>
-          )}
-
-          {c.noNutr.length > 0 && (
-            <p className="mt-2 max-w-[340px] text-xs text-warn">
-              ⚠ 下列材料尚無營養資料,以 0 計算:{c.noNutr.join('、')}
+            <button className="btn btn-sm mt-2 print:hidden" onClick={downloadLabel}>
+              ⬇ 下載營養標示圖片
+            </button>
+          </div>
+          <div>
+            {(al.has.length > 0 || al.may.length > 0) && (
+              <div className="max-w-[340px] rounded-md border border-line bg-white px-3 py-2 text-[12.5px] leading-relaxed">
+                <b className="text-ink">過敏原資訊</b>
+                {al.has.length > 0 && <div>本產品含有:<b>{al.has.join('、')}</b></div>}
+                {al.may.length > 0 && <div className="text-ink-soft">本產品可能含有:{al.may.join('、')}</div>}
+              </div>
+            )}
+            {c.noNutr.length > 0 && (
+              <p className="mt-2 max-w-[340px] text-xs text-warn">
+                ⚠ 下列材料尚無營養資料,以 0 計算:{c.noNutr.join('、')}
+              </p>
+            )}
+            <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
+              {hasFinished
+                ? '本表依材料主檔數值與成品實秤重量理論試算,僅供研發參考,不具法律效力。'
+                : '本表依材料主檔生料數值理論試算,僅供研發參考,不具法律效力;烘焙水分蒸發會使成品每 100 公克實際值高於估算。'}
+              依《食品安全衛生管理法》第 28 條,商業販售之標示不得不實(第 45 條:違者處 4 萬~400 萬元罰鍰),
+              正式標示應以實際檢驗或供應商數據為準;量產上架建議送 SGS、台美檢驗等公正單位化驗。
             </p>
-          )}
-
-          <p className="mt-2 max-w-[340px] text-xs text-ink-soft">
-            {hasFinished
-              ? '本表依材料主檔數值與成品實秤重量理論試算,僅供研發參考,不具法律效力。'
-              : '本表依材料主檔生料數值理論試算,僅供研發參考,不具法律效力;烘焙水分蒸發會使成品每 100 公克實際值高於估算。'}
-            依《食品安全衛生管理法》第 28 條,商業販售之標示不得不實(第 45 條:違者處 4 萬~400 萬元罰鍰),
-            正式標示應以實際檢驗或供應商數據為準;量產上架建議送 SGS、台美檢驗等公正單位化驗。
-          </p>
-
-          {(r.links?.length > 0) && (
-            <div className="mt-6 max-w-[340px]">
-              <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">參考食譜</div>
-              <ul className="mt-2 space-y-1.5">
-                {r.links.map((l, i) => (
-                  <li key={i} className="text-[13px] leading-snug">
-                    <a href={l.url} target="_blank" rel="noopener noreferrer"
-                      className="text-ink underline decoration-line underline-offset-2 hover:text-yolk hover:decoration-yolk">
-                      {/youtu\.?be/i.test(l.url) ? '▶' : '🔗'} {l.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          </div>
         </div>
       </div>
+
+      {/* ── 步驟與烘烤 ── */}
+      <div className={(tab === 'steps' ? '' : 'hidden ') + 'print:block'}>
+        {(r.bakes?.length > 0) && (
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px]">
+            <span className="text-xs font-bold tracking-[.08em] text-ink-soft">烘烤</span>
+            {r.bakes.map((b, i) => (
+              <span key={i} className="flex items-center gap-2">
+                {i > 0 && <span className="text-ink-soft">→</span>}
+                <span className="rounded-md border border-line bg-white px-2.5 py-0.5 font-mono">🔥 {b}</span>
+              </span>
+            ))}
+          </div>
+        )}
+        {(r.steps?.length > 0) && (
+          <ol className="mt-5 max-w-2xl space-y-5">
+            {r.steps.map((st, i) => {
+              const { main, tip } = splitProTip(st)
+              return (
+                <li key={i} className="flex gap-3.5">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yolk-soft font-mono text-[11px] font-bold text-yolk">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1 pt-px">
+                    <p className="text-[14.5px] leading-[1.9] text-ink">{main}</p>
+                    {tip && (
+                      <p className="mt-2 rounded-md border border-line bg-yolk-soft/60 px-3 py-2 text-[12.5px] leading-relaxed text-ink-soft">
+                        💡 <b className="font-semibold text-ink">Pro Tip</b>:{tip}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
+        )}
+        {(r.links?.length > 0) && (
+          <div className="mt-6 max-w-[420px]">
+            <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">參考食譜</div>
+            <ul className="mt-2 space-y-1.5">
+              {r.links.map((l, i) => (
+                <li key={i} className="text-[13px] leading-snug">
+                  <a href={l.url} target="_blank" rel="noopener noreferrer"
+                    className="text-ink underline decoration-line underline-offset-2 hover:text-yolk hover:decoration-yolk">
+                    {/youtu\.?be/i.test(l.url) ? '▶' : '🔗'} {l.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* ── 成本與毛利(只有本人/站長)── */}
+      {canCost && (
+        <div className={(tab === 'cost' ? '' : 'hidden ') + 'print:block'}>
+          <div className="mt-4 grid max-w-3xl grid-cols-2 overflow-hidden rounded-[10px] border border-line bg-white sm:grid-cols-3 lg:grid-cols-6">
+            <Cell n={`$${fmt(per, 1)}`} l={`成本/份(共 $${fmt(c.cost, 0)})`} tone="text-yolk" />
+            {hasPrice
+              ? <Cell n={`$${fmt(r.price)}`} l="售價/份" />
+              : <Cell n="未定價" l="售價/份" tone="text-warn !text-[15px] leading-[1.9]" />}
+            {hasPrice
+              ? <Cell n={`$${fmt(profit, 1)}`} l="利潤/份" tone={profit >= 0 ? 'text-ok' : 'text-warn'} />
+              : <Cell n="—" l="利潤/份" />}
+            {hasPrice
+              ? <Cell n={`${fmt(margin)}%`} l="利潤率(利潤÷成本)" tone={margin >= 0 ? 'text-ok' : 'text-warn'} />
+              : <Cell n="—" l="利潤率" />}
+            <Cell n={fmt(c.tot.kcal / s)} l="大卡/份" />
+            <Cell n={fmt(labelGrams / s)} l={hasFinished ? '每份 g(成品)' : '每份約 g(生料)'} />
+          </div>
+          <p className="mt-2 text-[12px] text-ink-soft">
+            成本與毛利只有你自己(與站長)看得到,訪客與其他使用者不會看到這個分頁。售價在「編輯」裡修改。
+          </p>
+          <div className="mt-4 border-t border-line pt-3">
+            <button className="btn btn-sm" onClick={copyLabelLink}>
+              {labelLinkCopied ? '✓ 連結已複製' : '🏷 取得標示卡連結(給客人看的公開頁)'}
+            </button>
+            <p className="mt-1.5 max-w-xl text-[12px] text-ink-soft">
+              標示卡只顯示營養標示/過敏原/內容物/保存資訊,不含成本毛利,配方改了自動更新。
+              注意:連結/QR code 是補充資訊,依法不能取代包裝上的實體標示。
+            </p>
+          </div>
+        </div>
+      )}
     </>
   )
 }

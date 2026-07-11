@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchDeleted } from '../lib/api.js'
+import { getAuthToken } from '../lib/googleAuth.js'
 import { toast } from '../lib/toast.js'
 
 const TYPES = [
@@ -10,7 +11,7 @@ const TYPES = [
 
 /* 回收桶:軟刪除的材料/食譜/模具都在這,登入才看得到(跟編輯同一信任等級)。
    獨立頁面而非塞進各清單的篩選開關——三個 collection 共用同一個列表元件,邏輯集中一處。 */
-export default function TrashView({ auth, onRestore }) {
+export default function TrashView({ onRestore }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(null)
@@ -18,7 +19,7 @@ export default function TrashView({ auth, onRestore }) {
   const load = async () => {
     setLoading(true)
     try {
-      setData(await fetchDeleted(auth))
+      setData(await fetchDeleted(getAuthToken()))
     } catch (err) {
       toast('讀取回收桶失敗:' + err.message, { type: 'error' })
     } finally {
@@ -26,7 +27,7 @@ export default function TrashView({ auth, onRestore }) {
     }
   }
 
-  useEffect(() => { load() }, [auth]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const restore = async (type, id) => {
     setBusy(id)

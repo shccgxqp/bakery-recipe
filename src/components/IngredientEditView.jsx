@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import Dialog from './Dialog.jsx'
+import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Chip from './Chip.jsx'
 import { toast } from '../lib/toast.js'
+import { ingPath } from '../lib/slug.js'
+import { findSimilar } from '../lib/dedup.js'
 
 const NUT_FIELDS = [
   ['kcal', '熱量(大卡)'],
@@ -27,7 +29,11 @@ function AllergenPicker({ list, value, onChange }) {
   )
 }
 
-export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSave, onClose }) {
+/* 材料新增/編輯整頁(/ing/new、/ing/:id/edit),取代 IngredientDialog。
+   欄位跟原對話框一致;新增模式加查重提示(平台化大改造第 3 項)。 */
+export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder, onSave }) {
+  const navigate = useNavigate()
+  const isNew = !ing
   const [name, setName] = useState(ing?.name || '')
   const [category, setCategory] = useState(ing?.category || '')
   const [brand, setBrand] = useState(ing?.brand || '')
@@ -46,6 +52,14 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
   const [subIngredients, setSubIngredients] = useState(ing?.subIngredients || '')
   const [labelDate, setLabelDate] = useState(ing?.labelDate || '')
   const [note, setNote] = useState(ing?.note || '')
+
+  /* 查重只在新增模式跑(編輯自己就是那筆,不用比) */
+  const similar = useMemo(
+    () => (isNew ? findSimilar(name, Object.values(ING), null) : []),
+    [isNew, name, ING],
+  )
+
+  const cancel = () => navigate(ing ? ingPath(ing) : '/ings')
 
   const submit = async e => {
     e.preventDefault()
@@ -78,24 +92,35 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
   }
 
   return (
-    <Dialog
-      title={ing ? `編輯:${ing.name}` : '新增材料'}
-      onClose={onClose}
-      footer={
-        <>
-          <button type="button" className="btn" onClick={onClose} disabled={saving}>取消</button>
-          <button type="submit" form="ing-form" className="btn btn-primary" disabled={saving}>
-            {saving ? '儲存中…' : '儲存'}
-          </button>
-        </>
-      }
-    >
-      <form id="ing-form" onSubmit={submit}>
+    <div className="max-w-3xl">
+      <div className="flex flex-wrap items-baseline gap-3.5 border-b-[3px] border-ink pb-3">
+        <button className="btn btn-sm" onClick={cancel}>← 取消</button>
+        <h2 className="font-serif text-[28px] font-bold">{ing ? `編輯:${ing.name}` : '新增材料'}</h2>
+      </div>
+
+      <form onSubmit={submit} className="mt-5">
         <div className="grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">
           <div className="field sm:col-span-2">
             <label>材料名稱</label>
             <input value={name} onChange={e => setName(e.target.value)} required autoFocus />
           </div>
+
+          {similar.length > 0 && (
+            <div className="sm:col-span-2 rounded-[--radius-sm] border border-warn/40 bg-warn/5 px-3 py-2 text-[13px]">
+              <span className="font-bold text-warn">已有相似材料:</span>
+              {similar.map((s, i) => (
+                <span key={s._id}>
+                  {i > 0 && '、'}
+                  <button type="button" className="underline underline-offset-2 hover:text-yolk"
+                    onClick={() => navigate(ingPath(s))}>
+                    {s.name}{s.brand ? `(${s.brand})` : ''}
+                  </button>
+                </span>
+              ))}
+              <span className="text-ink-soft"> ——先看看是不是同一個,重複建檔會讓資料庫混亂;確定不同再繼續新增。</span>
+            </div>
+          )}
+
           <div className="field">
             <label>分類</label>
             <input value={category} onChange={e => setCategory(e.target.value)} list="ing-cat-list"
@@ -177,7 +202,14 @@ export default function IngredientDialog({ ing, allergenList, ingCatOrder, onSav
             <input value={note} onChange={e => setNote(e.target.value)} />
           </div>
         </div>
+
+        <div className="mt-6 flex justify-end gap-2 border-t-2 border-ink pt-3">
+          <button type="button" className="btn" onClick={cancel} disabled={saving}>取消</button>
+          <button type="submit" className="btn btn-primary" disabled={saving}>
+            {saving ? '儲存中…' : '儲存'}
+          </button>
+        </div>
       </form>
-    </Dialog>
+    </div>
   )
 }
