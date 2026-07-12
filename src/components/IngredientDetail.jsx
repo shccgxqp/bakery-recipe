@@ -4,14 +4,6 @@ import { recipePath } from '../lib/slug.js'
 import { ingCategoryColor } from '../lib/ingCategoryColors.js'
 import { canEditShared } from '../lib/permissions.js'
 
-/* 建立者顯示:公開頁面不能直接曝光 email(顯示名稱系統還沒做,見 roadmap
-   「公開顯示名稱」待辦)——站長顯示「站長」,其他使用者先遮罩 email。 */
-const OWNER_EMAIL = 'shccgxqp@gmail.com'
-function displayCreator(id) {
-  if (!id || id === 'owner' || id === OWNER_EMAIL) return '站長'
-  const at = id.indexOf('@')
-  return at > 0 ? `${id.slice(0, Math.min(2, at))}…${id.slice(at)}` : id
-}
 const dateOnly = d => (d ? String(d).slice(0, 10) : null)
 
 /* 材料詳細頁(/ing/:id/:name):完整資料 + 建立者/日期溯源。
@@ -126,12 +118,12 @@ export default function IngredientDetail({ ing, RCP, googleUser, onEdit, onDelet
         <p className="mt-6 max-w-4xl text-[13px] text-ink-soft">備註:{ing.note}</p>
       )}
 
-      {/* 溯源資訊 */}
+      {/* 溯源資訊(暱稱由伺服器帶,公開回應不含 email) */}
       <div className="mt-8 max-w-4xl border-t border-dashed border-line pt-3 text-[12px] text-ink-soft">
-        由 {displayCreator(ing.createdBy)} 建立
+        由 {ing.creatorName || '站長'} 建立
         {ing.createdAt && ` · ${dateOnly(ing.createdAt)}`}
-        {ing.lastEditedBy && (
-          <> · 最後由 {displayCreator(ing.lastEditedBy)} 於 {dateOnly(ing.lastEditedAt)} 修正</>
+        {ing.editorName && (
+          <> · 最後由 {ing.editorName} 於 {dateOnly(ing.lastEditedAt)} 修正</>
         )}
       </div>
     </>

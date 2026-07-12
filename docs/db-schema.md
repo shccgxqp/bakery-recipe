@@ -225,6 +225,11 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 - `GET  /api/data` — 公開讀取,一次回 `{ ingredients, recipes, molds, settings }`(已過濾軟刪除)。
   帶合法登入 token(header `Authorization: Bearer`)時 `recipes` 額外回**自己的**
   私人食譜;沒帶或無效只回 `public !== false` 的。沒有「站長看全部」的特例。
+  **隱私(v4.3.0)**:回應**不含任何 email**——`ownerId`/`createdBy`/
+  `lastEditedBy` 由伺服器 join users 表換成 `ownerName`/`creatorName`/
+  `editorName`(暱稱,空暱稱顯示「未命名烘焙師」、站長歸屬顯示站長暱稱)
+  與 `mine`/`editedByMe` 旗標(給前端顯示層權限與個人頁清單用);
+  資料庫文件本身仍存 email,寫入授權不受影響。
 - `POST /api/save` — 帶登入 token;逐筆 upsert + 軟刪除 + 復原
   (`{ upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
   時間戳與擁有權欄位由伺服器管;名稱撞唯一索引回 409。**逐筆檢查擁有權**:

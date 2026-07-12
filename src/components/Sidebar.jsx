@@ -10,15 +10,14 @@ const SORTS = [
   ['name', '名稱'],
 ]
 
+/* v4.3.0 導覽重整後,側欄只管「食譜工作區清單」:搜尋/排序/過敏原篩選/
+   清單/新增/採購清單。內容區塊切換與個人/工具全部搬去 TopBar。 */
 export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
   allergenList, excludeAllergens, setExcludeAllergens,
-  dataSource, ingsMode, moldsMode, trashMode, isEditor,
-  onLogin, onLogout, onMe, onAdmin,
-  onSelect, onNewRecipe, onToggleIngs, onToggleMolds,
-  onShopping, onExportJSON, onChangelog, onTrash,
-  googleUser,
+  dataSource, isEditor,
+  onSelect, onNewRecipe, onShopping,
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [allergyOpen, setAllergyOpen] = useState(false)
@@ -124,42 +123,11 @@ export default function Sidebar({
         {isEditor && (
           <button className="btn btn-primary" onClick={onNewRecipe}>＋ 新增食譜</button>
         )}
-        <div className="flex gap-2">
-          <button className={'btn flex-1 ' + (ingsMode ? 'btn-active' : '')} onClick={onToggleIngs}>材料主檔</button>
-          <button className={'btn flex-1 ' + (moldsMode ? 'btn-active' : '')} onClick={onToggleMolds}>模具庫</button>
-        </div>
-        <div className="flex gap-2">
-          <button className="btn btn-sm flex-1" onClick={onShopping}>🛒 採購清單</button>
-          <button className="btn btn-sm flex-1" onClick={onExportJSON} title="下載全部資料的 JSON 備份">⬇ 備份</button>
-        </div>
-        {isEditor && (
-          <button className={'btn btn-sm ' + (trashMode ? 'btn-active' : '')} onClick={onTrash}>🗑 回收桶</button>
-        )}
-        {googleUser?.role === 'owner' && (
-          <button className="btn btn-sm" onClick={onAdmin}>👥 使用者管理</button>
-        )}
+        <button className="btn btn-sm" onClick={onShopping}>🛒 採購清單</button>
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
         </div>
-        <button className="text-center font-mono text-[10.5px] text-ink-soft/70 underline decoration-dotted underline-offset-2 hover:text-ink"
-          onClick={onChangelog} title="看每一版更新了什麼">
-          v{APP_VERSION} · 更新紀錄
-        </button>
-        {isEditor ? (
-          <>
-            <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onMe}
-              title={googleUser?.email}>
-              👤 {googleUser?.displayName || '未命名烘焙師'} 的個人頁
-            </button>
-            <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogout}>
-              登出
-            </button>
-          </>
-        ) : (
-          <button className="text-center text-[11.5px] text-ink-soft underline hover:text-ink" onClick={onLogin}>
-            🔑 登入編輯
-          </button>
-        )}
+        <div className="text-center font-mono text-[10.5px] text-ink-soft/70">v{APP_VERSION}</div>
       </div>
       </div>
     </aside>

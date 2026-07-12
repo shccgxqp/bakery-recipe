@@ -23,6 +23,8 @@ import RegisterView from './components/RegisterView.jsx'
 import MeView from './components/MeView.jsx'
 import AdminUsersView from './components/AdminUsersView.jsx'
 import LabelView from './components/LabelView.jsx'
+import TopBar from './components/TopBar.jsx'
+import ExploreView from './components/ExploreView.jsx'
 import ToastHost from './components/ToastHost.jsx'
 import ConfirmHost from './components/ConfirmHost.jsx'
 import Skeleton from './components/Skeleton.jsx'
@@ -72,7 +74,7 @@ export default function App() {
     }
     if (parts[0] === 'label' && parts[1]) return { view: 'label', urlSelId: decodeURIComponent(parts[1]) }
     if (parts[0] === 'admin' && parts[1] === 'users') return { view: 'admin-users', urlSelId: null }
-    if (['ings', 'molds', 'trash', 'changelog', 'login', 'register', 'me'].includes(parts[0])) return { view: parts[0], urlSelId: null }
+    if (['explore', 'ings', 'molds', 'trash', 'changelog', 'login', 'register', 'me'].includes(parts[0])) return { view: parts[0], urlSelId: null }
     return { view: 'landing', urlSelId: null }
   }, [location.pathname])
 
@@ -318,7 +320,7 @@ export default function App() {
     <>
       {view === 'landing' ? (
         <Landing RCP={RCP} ING={ING} MOLDS={MOLDS}
-          onEnter={() => navigate('/r')}
+          onEnter={() => navigate('/explore')}
           onLogin={() => navigate('/login')} />
       ) : view === 'login' ? (
         <LoginView onAuthChange={onAuthChange} />
@@ -328,8 +330,19 @@ export default function App() {
         <LabelView id={urlSelId} />
       ) : coldLoading ? (
         <Skeleton />
+      ) : view === 'explore' ? (
+        <>
+          <TopBar view={view} googleUser={googleUser} onLogout={logout}
+            onExportJSON={() => exportBackupJSON(base)} />
+          <main className="mx-auto max-w-6xl px-4 pb-20 pt-5 md:px-9 md:pt-7">
+            <ExploreView RCP={RCP} ING={ING} catOrder={catOrder} />
+          </main>
+        </>
       ) : (
-        <div className="grid min-h-screen grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
+        <>
+        <TopBar view={view} googleUser={googleUser} onLogout={logout}
+          onExportJSON={() => exportBackupJSON(base)} />
+        <div className="grid grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
           <Sidebar
             groups={groups} ING={ING} RCP={RCP}
             selected={view === 'recipe' ? selected?._id : null}
@@ -338,20 +351,9 @@ export default function App() {
             allergenList={allergenList}
             excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
             dataSource={dataSource} isEditor={isEditor}
-            onLogin={() => navigate('/login')} onLogout={logout} onMe={() => navigate('/me')}
-            onAdmin={() => navigate('/admin/users')}
             onSelect={id => { const r = RCP.find(x => x._id === id); if (r) navigate(recipePath(r)) }}
             onNewRecipe={() => navigate('/r/new')}
-            onToggleIngs={() => navigate(view === 'ings' ? '/r' : '/ings')}
-            ingsMode={view === 'ings'}
-            onToggleMolds={() => navigate(view === 'molds' ? '/r' : '/molds')}
-            moldsMode={view === 'molds'}
             onShopping={() => setDlg({ type: 'shopping' })}
-            onExportJSON={() => exportBackupJSON(base)}
-            onChangelog={() => navigate('/changelog')}
-            onTrash={() => navigate(view === 'trash' ? '/r' : '/trash')}
-            trashMode={view === 'trash'}
-            googleUser={googleUser}
           />
           <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
             {view === 'changelog' ? (
@@ -456,6 +458,7 @@ export default function App() {
             <ScaleDialog recipe={selected} ING={ING} molds={MOLDS} onClose={() => setDlg(null)} />
           )}
         </div>
+        </>
       )}
 
       <ToastHost />

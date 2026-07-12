@@ -7,12 +7,6 @@ import { recipePath } from '../lib/slug.js'
 import { canEditShared } from '../lib/permissions.js'
 import Chip from './Chip.jsx'
 
-const OWNER_EMAIL = 'shccgxqp@gmail.com'
-function displayCreator(id) {
-  if (!id || id === 'owner' || id === OWNER_EMAIL) return '站長'
-  const at = id.indexOf('@')
-  return at > 0 ? `${id.slice(0, Math.min(2, at))}…${id.slice(at)}` : id
-}
 const dateOnly = d => (d ? String(d).slice(0, 10) : null)
 
 const DATA_SOURCE_ZH = {
@@ -103,10 +97,10 @@ export default function MoldDetail({ mold, RCP, googleUser, onEdit, onDelete }) 
       )}
 
       <div className="mt-8 max-w-4xl border-t border-dashed border-line pt-3 text-[12px] text-ink-soft">
-        由 {displayCreator(mold.createdBy)} 建立
+        由 {mold.creatorName || '站長'} 建立
         {mold.createdAt && ` · ${dateOnly(mold.createdAt)}`}
-        {mold.lastEditedBy && (
-          <> · 最後由 {displayCreator(mold.lastEditedBy)} 於 {dateOnly(mold.lastEditedAt)} 修正</>
+        {mold.editorName && (
+          <> · 最後由 {mold.editorName} 於 {dateOnly(mold.lastEditedAt)} 修正</>
         )}
       </div>
     </>

@@ -32,14 +32,15 @@ export default function MeView({ googleUser, RCP, ING, MOLDS, onAuthChange }) {
       })
       .catch(() => { /* 讀不到就讓使用者自己填,存檔時一樣會寫入 */ })
   }, [me])
-  const myRecipes = useMemo(() => RCP.filter(r => r.ownerId === me), [RCP, me])
+  /* v4.3.0:公開回應不含 email,改吃伺服器算好的 mine/editedByMe 旗標 */
+  const myRecipes = useMemo(() => RCP.filter(r => r.mine), [RCP])
   const myIngs = useMemo(
-    () => Object.values(ING).filter(i => i.createdBy === me || i.lastEditedBy === me),
-    [ING, me],
+    () => Object.values(ING).filter(i => i.mine || i.editedByMe),
+    [ING],
   )
   const myMolds = useMemo(
-    () => MOLDS.filter(m => m.createdBy === me || m.lastEditedBy === me),
-    [MOLDS, me],
+    () => MOLDS.filter(m => m.mine || m.editedByMe),
+    [MOLDS],
   )
   const pub = myRecipes.filter(r => r.public !== false)
   const priv = myRecipes.filter(r => r.public === false)

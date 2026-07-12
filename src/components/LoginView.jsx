@@ -19,7 +19,7 @@ export default function LoginView({ onAuthChange }) {
       await loginWithPassword(email, password)
       onAuthChange()
       /* 還沒設暱稱 → 引導去個人頁取暱稱(真名/email 永不公開) */
-      navigate(getGoogleUser()?.displayName ? '/r' : '/me')
+      navigate(getGoogleUser()?.displayName ? '/explore' : '/me')
     } catch (err) {
       toast(err.message, { type: 'error' })
     } finally {
@@ -57,7 +57,7 @@ export default function LoginView({ onAuthChange }) {
       <p className="text-center text-[13px] text-ink-soft">
         還沒有帳號?<button className="underline hover:text-ink" onClick={() => navigate('/register')}>註冊</button>
       </p>
-      <button className="text-center text-[12px] text-ink-soft underline hover:text-ink" onClick={() => navigate('/r')}>
+      <button className="text-center text-[12px] text-ink-soft underline hover:text-ink" onClick={() => navigate('/explore')}>
         ← 先逛逛,不登入
       </button>
     </div>

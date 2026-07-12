@@ -19,7 +19,7 @@ export default function RegisterView({ onAuthChange }) {
       await registerWithPassword(email, password, displayName, tosAccepted)
       onAuthChange()
       /* 註冊時沒填暱稱 → 引導去個人頁補(真名/email 永不公開) */
-      navigate(displayName.trim() ? '/r' : '/me')
+      navigate(displayName.trim() ? '/explore' : '/me')
     } catch (err) {
       toast(err.message, { type: 'error' })
     } finally {
