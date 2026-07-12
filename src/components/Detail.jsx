@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { calc, fmt, NUTR, DV_NOTE, groupByLayer, allergenSummary } from '../lib/calc.js'
 import { shoppingListText, lineShareUrl } from '../lib/shareText.js'
 import { downloadNutritionLabel } from '../lib/labelImage.js'
@@ -84,13 +84,26 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
   const canCost = mine || isOwner(googleUser)
   const [tab, setTab] = useState('items')
 
-  const [copied, setCopied] = useState(false)
-  const [linkCopied, setLinkCopied] = useState(false)
+  /* 分享下拉:輸出類動作(複製連結/購買清單/LINE/列印/複製食譜)收在一起,
+     右上角不再八顆按鈕排排站。回饋改 toast(選單點完就關,按鈕文字變化看不到) */
+  const [shareOpen, setShareOpen] = useState(false)
+  const shareRef = useRef(null)
+  useEffect(() => {
+    if (!shareOpen) return
+    const onDown = e => { if (!shareRef.current?.contains(e.target)) setShareOpen(false) }
+    const onKey = e => { if (e.key === 'Escape') setShareOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [shareOpen])
+
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href)
-      setLinkCopied(true)
-      setTimeout(() => setLinkCopied(false), 1800)
+      toast('連結已複製', { type: 'success' })
     } catch {
       toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
     }
@@ -98,8 +111,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
   const copyList = async () => {
     try {
       await navigator.clipboard.writeText(shoppingListText(r, ING))
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1800)
+      toast('購買清單已複製', { type: 'success' })
     } catch {
       toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
     }
@@ -174,11 +186,31 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
         <span className="ml-auto flex flex-wrap gap-2 print:hidden">
           <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>
-          <button className="btn btn-sm" onClick={copyLink}>{linkCopied ? '✓ 已複製' : '🔗 複製連結'}</button>
-          <button className="btn btn-sm" onClick={copyList}>{copied ? '✓ 已複製' : '📋 複製購買清單'}</button>
-          <button className="btn btn-sm" onClick={shareToLine}>💬 傳到 LINE</button>
-          <button className="btn btn-sm" onClick={() => window.print()}>🖨 列印食譜卡</button>
-          {isEditor && <button className="btn btn-sm" onClick={onDuplicate}>📋 複製食譜</button>}
+          <div ref={shareRef} className="relative">
+            <button type="button" aria-haspopup="menu" aria-expanded={shareOpen}
+              className={'btn btn-sm ' + (shareOpen ? 'btn-active' : '')}
+              onClick={() => setShareOpen(v => !v)}>
+              📤 分享 ▾
+            </button>
+            {shareOpen && (
+              <div role="menu"
+                className="absolute right-0 top-full z-30 mt-1 min-w-44 border-[2.5px] border-ink bg-paper py-1">
+                {[
+                  ['🔗 複製連結', () => { copyLink(); setShareOpen(false) }],
+                  ['📋 複製購買清單', () => { copyList(); setShareOpen(false) }],
+                  ['💬 傳到 LINE', () => { shareToLine(); setShareOpen(false) }],
+                  ['🖨 列印食譜卡', () => { setShareOpen(false); window.print() }],
+                  ...(isEditor ? [['📄 複製食譜', () => { setShareOpen(false); onDuplicate() }]] : []),
+                ].map(([zh, fn]) => (
+                  <button key={zh} type="button" role="menuitem"
+                    className="block w-full whitespace-nowrap px-3.5 py-2 text-left text-[13.5px] hover:bg-yolk-soft"
+                    onClick={fn}>
+                    {zh}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {mine && (
             <>
               <button className="btn btn-sm" onClick={onEdit}>編輯</button>
@@ -192,7 +224,8 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         烘焙帳本 · https://shccgxqp.github.io/bakery-recipe/ · 列印於 {new Date().toLocaleDateString('zh-TW')}
       </p>
 
-      <Tabs className="mt-4" active={tab} onChange={setTab}
+      {/* 分頁籤只在手機(<md)出現;桌面空間夠,四個區塊全部一次顯示 */}
+      <Tabs className="mt-4 md:hidden" active={tab} onChange={setTab}
         tabs={[
           { id: 'items', label: '配方' },
           { id: 'label', label: '營養標示與過敏原' },
@@ -200,10 +233,14 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
           { id: 'cost', label: '成本與毛利', hidden: !canCost },
         ]} />
 
-      {/* 面板用 hidden 而非 unmount:列印時 print:block 全部展開,「列印食譜卡」維持整頁輸出 */}
+      {/* 面板:手機照 tab 切換(hidden),桌面 md:block 全開,列印 print:block 全開。
+          桌面各面板前補區段標題(手機由 tab 籤擔任標題,不重複) */}
 
       {/* ── 配方 ── */}
-      <div className={(tab === 'items' ? '' : 'hidden ') + 'print:block'}>
+      <div className={(tab === 'items' ? '' : 'hidden ') + 'md:block print:block'}>
+        <div className="hidden pt-6 md:block print:block">
+          <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">配方</div>
+        </div>
         {(r.storage || r.shelfLifeDays > 0 || mold) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px]">
             {mold && (
@@ -255,7 +292,10 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
       </div>
 
       {/* ── 營養標示與過敏原 ── */}
-      <div className={(tab === 'label' ? '' : 'hidden ') + 'print:block'}>
+      <div className={(tab === 'label' ? '' : 'hidden ') + 'md:block print:block'}>
+        <div className="hidden pt-8 md:block print:block">
+          <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">營養標示與過敏原</div>
+        </div>
         <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
             <div className="nlabel">
@@ -305,7 +345,12 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
       </div>
 
       {/* ── 步驟與烘烤 ── */}
-      <div className={(tab === 'steps' ? '' : 'hidden ') + 'print:block'}>
+      <div className={(tab === 'steps' ? '' : 'hidden ') + 'md:block print:block'}>
+        {(r.steps?.length > 0 || r.bakes?.length > 0 || r.links?.length > 0) && (
+          <div className="hidden pt-8 md:block print:block">
+            <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">步驟與烘烤</div>
+          </div>
+        )}
         {(r.bakes?.length > 0) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px]">
             <span className="text-xs font-bold tracking-[.08em] text-ink-soft">烘烤</span>
@@ -361,7 +406,10 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
 
       {/* ── 成本與毛利(只有本人/站長)── */}
       {canCost && (
-        <div className={(tab === 'cost' ? '' : 'hidden ') + 'print:block'}>
+        <div className={(tab === 'cost' ? '' : 'hidden ') + 'md:block print:block'}>
+          <div className="hidden pt-8 md:block print:block">
+            <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">成本與毛利</div>
+          </div>
           <div className="mt-4 grid max-w-3xl grid-cols-2 overflow-hidden rounded-[10px] border border-line bg-white sm:grid-cols-3 lg:grid-cols-6">
             <Cell n={`$${fmt(per, 1)}`} l={`成本/份(共 $${fmt(c.cost, 0)})`} tone="text-yolk" />
             {hasPrice
