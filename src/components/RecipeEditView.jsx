@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Chip from './Chip.jsx'
 import IngredientPicker from './IngredientPicker.jsx'
 import { toast } from '../lib/toast.js'
-import { recipePath } from '../lib/slug.js'
+import { ledgerRecipePath } from '../lib/slug.js'
 
 const SECTIONS = [
   ['sec-basic', '基本資料'],
@@ -88,7 +88,7 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
   const delItem = i => setItems(prev => prev.filter((_, j) => j !== i))
 
-  const cancel = () => navigate(r ? recipePath(r) : '/r')
+  const cancel = () => navigate(r ? ledgerRecipePath(r) : '/ledger')
   const jump = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   const submit = async e => {

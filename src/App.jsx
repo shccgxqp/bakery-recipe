@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { LS_CACHE, DEFAULT_CAT_ORDER, DEFAULT_ALLERGENS, DEFAULT_ING_CAT_ORDER } from './config.js'
 import { calc, metrics, allergenSummary } from './lib/calc.js'
 import { loadData, pushData } from './lib/api.js'
-import { recipePath, ingPath, moldPath } from './lib/slug.js'
+import { recipePath, ledgerRecipePath, ingPath, moldPath } from './lib/slug.js'
 import Sidebar from './components/Sidebar.jsx'
 import Landing from './components/Landing.jsx'
 import Detail from './components/Detail.jsx'
@@ -47,6 +47,7 @@ export default function App() {
   const [dataSource, setDataSource] = useState('讀取中…')
   const [query, setQuery] = useState('')
   const [sortBy, setSortBy] = useState('category') // category | cost | margin | name
+  const [recipeVisibility, setRecipeVisibility] = useState('all') // all | public | private
   const [excludeAllergens, setExcludeAllergens] = useState(() => new Set())
   const [dlg, setDlg] = useState(null) // {type:'recipe'|'ing'|'mold'|'shopping'|'scale'|'login', ...}
 
@@ -61,6 +62,10 @@ export default function App() {
       if (parts[1] === 'new') return { view: 'recipe-new', urlSelId: null }
       if (parts[1] && parts[2] === 'edit') return { view: 'recipe-edit', urlSelId: decodeURIComponent(parts[1]) }
       return { view: 'recipe', urlSelId: parts[1] ? decodeURIComponent(parts[1]) : null }
+    }
+    if (parts[0] === 'ledger') {
+      if (parts[1] === 'r' && parts[2]) return { view: 'ledger-recipe', urlSelId: decodeURIComponent(parts[2]) }
+      return { view: 'ledger', urlSelId: null }
     }
     if (parts[0] === 'ing' && parts[1]) {
       if (parts[1] === 'new') return { view: 'ing-new', urlSelId: null }
@@ -103,13 +108,15 @@ export default function App() {
   }, [base])
   const RCP = base.recipes
   const MOLDS = base.molds || []
+  const myRecipes = useMemo(() => RCP.filter(r => r.mine), [RCP])
 
   /* ---- 分類分組(含搜尋 + 排序) ----
      sortBy==='category': 依分類分組,組內照原順序(預設)
      其他:不分組,單一清單依指標排序,缺值(如未定價)沉底 */
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const list = RCP
+    const list = myRecipes
+      .filter(r => recipeVisibility === 'all' || (recipeVisibility === 'public' ? r.public !== false : r.public === false))
       .filter(r => !q || r.name.toLowerCase().includes(q))
       .filter(r => {
         if (excludeAllergens.size === 0) return true
@@ -141,10 +148,19 @@ export default function App() {
       return b.m.margin - a.m.margin
     })
     return { g: { 全部: withMetric.map(x => x.r) }, cats: ['全部'], flat: true }
-  }, [RCP, ING, query, sortBy, catOrder, excludeAllergens])
+  }, [myRecipes, recipeVisibility, ING, query, sortBy, catOrder, excludeAllergens])
 
   const flat = useMemo(() => groups.cats.flatMap(c => groups.g[c].map(r => r._id)), [groups])
-  const selected = RCP.find(r => r._id === urlSelId) || RCP.find(r => r._id === flat[0]) || null
+  const selected = urlSelId
+    ? myRecipes.find(r => r._id === urlSelId) || null
+    : myRecipes.find(r => r._id === flat[0]) || null
+  const publicRecipe = RCP.find(r => r._id === urlSelId && r.public !== false) || null
+
+  useEffect(() => {
+    if (view === 'ledger-recipe' && urlSelId && RCP.length > 0 && !myRecipes.some(r => r._id === urlSelId)) {
+      navigate('/ledger', { replace: true })
+    }
+  }, [view, urlSelId, RCP.length, myRecipes, navigate])
 
   /* ---- 開站讀 API(成功就更新離線快取)。token 直接從 localStorage 讀
      (getAuthToken() 每次呼叫都拿最新值,不會有 React state 非同步的落後問題)---- */
@@ -200,7 +216,7 @@ export default function App() {
     const doc = { ...orig, ...obj, _id }
     if (doc.sortOrder == null) doc.sortOrder = Math.max(0, ...RCP.map(r => r.sortOrder || 0)) + 10
     await write({ upserts: { recipes: [doc] } })
-    navigate(recipePath(doc))
+    navigate(ledgerRecipePath(doc))
   }
   /* 食譜編輯頁的「快速新增材料」:最小欄位建檔(名稱+分類),其餘留待材料頁補;
      write() 會 refresh,新材料馬上出現在 ING 供 picker 顯示 */
@@ -232,7 +248,7 @@ export default function App() {
     if (!ok) return
     try {
       await write({ deletes: { recipes: [r._id] } })
-      if (urlSelId === r._id) navigate('/r')
+      if (urlSelId === r._id) navigate('/ledger')
     } catch (err) { toast('刪除失敗:' + err.message, { type: 'error' }) }
   }
   /* 複製食譜:立即存檔(不怕使用者取消編輯白做工),存完直接開編輯讓使用者改名/調整 */
@@ -306,12 +322,12 @@ export default function App() {
         ? flat[Math.min(pos + 1, flat.length - 1)]
         : flat[Math.max(pos - 1, 0)]
       const nextRecipe = RCP.find(r => r._id === next)
-      if (nextRecipe) navigate(recipePath(nextRecipe))
+      if (nextRecipe) navigate(ledgerRecipePath(nextRecipe))
       document.getElementById('ri-' + next)?.scrollIntoView({ block: 'nearest' })
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [dlg, editingView, flat, selected, RCP, navigate])
+  }, [dlg, editingView, flat, selected, myRecipes, navigate])
 
   /* 冷啟動(無快取)資料還在讀時秀骨架屏;有快取則沿用現行「先顯示快取,背景刷新」 */
   const coldLoading = view !== 'landing' && dataSource === '讀取中…' && RCP.length === 0
@@ -342,20 +358,23 @@ export default function App() {
         <>
         <TopBar view={view} googleUser={googleUser} onLogout={logout}
           onExportJSON={() => exportBackupJSON(base)} />
-        <div className="grid grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block">
-          <Sidebar
-            groups={groups} ING={ING} RCP={RCP}
-            selected={view === 'recipe' ? selected?._id : null}
+        <div className={isEditor && (view === 'ledger' || view === 'ledger-recipe')
+          ? 'grid grid-cols-1 md:grid-cols-[272px_minmax(0,1fr)] print:block'
+          : ''}>
+          {isEditor && (view === 'ledger' || view === 'ledger-recipe') && <Sidebar
+            groups={groups} ING={ING} RCP={myRecipes}
+            selected={view === 'ledger-recipe' ? selected?._id : null}
             query={query} setQuery={setQuery} searchRef={searchRef}
             sortBy={sortBy} setSortBy={setSortBy}
             allergenList={allergenList}
             excludeAllergens={excludeAllergens} setExcludeAllergens={setExcludeAllergens}
-            dataSource={dataSource} isEditor={isEditor}
-            onSelect={id => { const r = RCP.find(x => x._id === id); if (r) navigate(recipePath(r)) }}
+            dataSource={dataSource} isEditor={isEditor} visibility={recipeVisibility} setVisibility={setRecipeVisibility}
+            onSelect={id => { const r = myRecipes.find(x => x._id === id); if (r) navigate(ledgerRecipePath(r)) }}
             onNewRecipe={() => navigate('/r/new')}
             onShopping={() => setDlg({ type: 'shopping' })}
-          />
-          <main className="min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7">
+          />}
+          <main className={'min-w-0 px-4 pb-20 pt-5 md:px-9 md:pt-7 ' +
+            (isEditor && (view === 'ledger' || view === 'ledger-recipe') ? '' : 'mx-auto max-w-6xl')}>
             {view === 'changelog' ? (
               <ChangelogView />
             ) : view === 'me' ? (
@@ -436,13 +455,24 @@ export default function App() {
                 onEdit={id => navigate(`/ing/${id}/edit`)}
                 onAdd={() => navigate('/ing/new')}
                 onDelete={deleteIng} />
+            ) : view === 'recipe' && publicRecipe ? (
+              <Detail recipe={publicRecipe} ING={ING} isEditor={isEditor} googleUser={googleUser}
+                mold={MOLDS.find(m => m._id === publicRecipe.moldId) || null}
+                onBack={() => navigate('/explore')}
+                onEdit={() => {}} onDelete={() => {}} onDuplicate={() => {}} onScale={() => {}} />
+            ) : view === 'recipe' ? (
+              <p className="mt-10 text-sm text-ink-soft">找不到這道公開食譜，可能已刪除、設為私人或網址有誤。</p>
+            ) : (view === 'ledger' || view === 'ledger-recipe') && !isEditor ? (
+              <p className="mt-10 text-sm text-ink-soft">
+                請先登入，才能開啟自己的配方帳。<button className="ml-2 underline hover:text-ink" onClick={() => navigate('/login')}>登入</button>
+              </p>
             ) : selected ? (
               <Detail recipe={selected} ING={ING} isEditor={isEditor} googleUser={googleUser}
                 mold={MOLDS.find(m => m._id === selected.moldId) || null}
                 onEdit={() => navigate(`/r/${selected._id}/edit`)}
                 onDelete={() => deleteRecipe(selected)}
                 onDuplicate={() => duplicateRecipe(selected)}
-                onScale={() => setDlg({ type: 'scale' })} />
+                onScale={() => setDlg({ type: 'scale' })} workspace />
             ) : (
               <p className="mt-10 text-sm text-ink-soft">請從左側選一道甜點,或按「＋ 新增食譜」。</p>
             )}

@@ -6,6 +6,7 @@ import { toast } from '../lib/toast.js'
 import { confirmDialog } from '../lib/confirm.js'
 import { canEditRecipe, isOwner } from '../lib/permissions.js'
 import { acceptTerms } from '../lib/googleAuth.js'
+import { recipePath } from '../lib/slug.js'
 import Tabs from './Tabs.jsx'
 
 /* 一個「層」段落:段標題列 + 材料列 + 層小計
@@ -65,7 +66,7 @@ function Cell({ n, l, tone }) {
   )
 }
 
-export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onEdit, onDelete, onDuplicate, onScale }) {
+export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onEdit, onDelete, onDuplicate, onScale, workspace = false, onBack }) {
   const c = calc(r, ING)
   const s = r.servings || 1
   const per = c.cost / s
@@ -81,7 +82,8 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
      編輯/刪除逐項判斷(canEditRecipe),複製食譜任何登入者都可以
      (複製出來的是自己的,伺服器蓋自己的 ownerId) */
   const mine = canEditRecipe(r, googleUser)
-  const canCost = mine || isOwner(googleUser)
+  const canCost = workspace && (mine || isOwner(googleUser))
+  const canManage = workspace && mine
   const [tab, setTab] = useState('items')
 
   /* 分享下拉:輸出類動作(複製連結/購買清單/LINE/列印/複製食譜)收在一起,
@@ -102,7 +104,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href)
+      await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}#${recipePath(r)}`)
       toast('連結已複製', { type: 'success' })
     } catch {
       toast('複製失敗,瀏覽器不支援剪貼簿權限。', { type: 'error' })
@@ -173,6 +175,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
 
   return (
     <>
+      {onBack && <button className="mb-3 text-sm text-ink-soft underline decoration-line underline-offset-4 hover:text-ink" onClick={onBack}>← 探索食譜</button>}
       <div className="flex flex-wrap items-baseline gap-3.5 border-b-[3px] border-ink pb-3">
         <h2 className="font-serif text-[28px] font-bold">{r.name}</h2>
         <span className="whitespace-nowrap rounded-full bg-yolk-soft px-3 py-0.5 text-xs font-bold tracking-[.08em] text-yolk">
@@ -185,7 +188,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         )}
         {r.note && <span className="text-[13px] text-ink-soft">{r.note}</span>}
         <span className="ml-auto flex flex-wrap gap-2 print:hidden">
-          <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>
+          {workspace && <button className="btn btn-sm" onClick={onScale}>⇄ 換算</button>}
           <div ref={shareRef} className="relative">
             <button type="button" aria-haspopup="menu" aria-expanded={shareOpen}
               className={'btn btn-sm ' + (shareOpen ? 'btn-active' : '')}
@@ -200,7 +203,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
                   ['📋 複製購買清單', () => { copyList(); setShareOpen(false) }],
                   ['💬 傳到 LINE', () => { shareToLine(); setShareOpen(false) }],
                   ['🖨 列印食譜卡', () => { setShareOpen(false); window.print() }],
-                  ...(isEditor ? [['📄 複製食譜', () => { setShareOpen(false); onDuplicate() }]] : []),
+                  ...(workspace && isEditor ? [['📄 複製食譜', () => { setShareOpen(false); onDuplicate() }]] : []),
                 ].map(([zh, fn]) => (
                   <button key={zh} type="button" role="menuitem"
                     className="block w-full whitespace-nowrap px-3.5 py-2 text-left text-[13.5px] hover:bg-yolk-soft"
@@ -211,7 +214,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
               </div>
             )}
           </div>
-          {mine && (
+          {canManage && (
             <>
               <button className="btn btn-sm" onClick={onEdit}>編輯</button>
               <button className="btn btn-sm btn-danger" onClick={onDelete}>刪除</button>

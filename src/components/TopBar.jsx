@@ -16,6 +16,7 @@ const NAV = [
 /* view → 目前所在的導覽區塊(食譜相關視圖都算「探索食譜」這條線) */
 const sectionOf = view => {
   if (['explore', 'recipe', 'recipe-new', 'recipe-edit'].includes(view)) return 'explore'
+  if (['ledger', 'ledger-recipe'].includes(view)) return 'ledger'
   if (['ings', 'ing-detail', 'ing-new', 'ing-edit'].includes(view)) return 'ings'
   if (['molds', 'mold-detail', 'mold-new', 'mold-edit'].includes(view)) return 'molds'
   return null
@@ -57,7 +58,7 @@ export default function TopBar({ view, googleUser, onLogout, onExportJSON }) {
         </button>
 
         <nav className="flex gap-x-1">
-          {NAV.map(([key, path, zh]) => (
+          {[...NAV, ...(googleUser ? [['ledger', '/ledger', '我的帳本']] : [])].map(([key, path, zh]) => (
             <button key={key} onClick={() => navigate(path)}
               className={
                 'border-b-2 px-2.5 py-1 text-[13.5px] tracking-[.04em] ' +

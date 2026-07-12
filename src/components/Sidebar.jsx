@@ -16,7 +16,7 @@ export default function Sidebar({
   groups, ING, RCP, selected, query, setQuery, searchRef,
   sortBy, setSortBy,
   allergenList, excludeAllergens, setExcludeAllergens,
-  dataSource, isEditor,
+  dataSource, isEditor, visibility, setVisibility,
   onSelect, onNewRecipe, onShopping,
 }) {
   const [collapsed, setCollapsed] = useState(false)
@@ -31,7 +31,7 @@ export default function Sidebar({
     <aside className="flex flex-col border-r border-line bg-paper-deep print:hidden md:sticky md:top-0 md:h-screen">
       <div className="flex items-start justify-between gap-2 border-b-[3px] border-ink px-4.5 pb-3.5 pt-5.5">
         <div>
-          <h1 className="font-serif text-[22px] font-bold tracking-[.06em]">烘焙帳本</h1>
+          <h1 className="font-serif text-[22px] font-bold tracking-[.06em]">我的配方帳</h1>
           <small className="block text-xs text-ink-soft">配方 · 成本 · 營養,一頁看完</small>
         </div>
         <button
@@ -54,6 +54,9 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-wrap gap-1 px-3.5 pb-2 pt-2">
+        <Chip size="sm" active={visibility === 'all'} onClick={() => setVisibility('all')}>全部</Chip>
+        <Chip size="sm" active={visibility === 'public'} onClick={() => setVisibility('public')}>公開</Chip>
+        <Chip size="sm" tone="warn" active={visibility === 'private'} onClick={() => setVisibility('private')}>🔒 私人</Chip>
         {SORTS.map(([key, label]) => (
           <Chip key={key} size="sm" active={sortBy === key} onClick={() => setSortBy(key)}>{label}</Chip>
         ))}
@@ -120,9 +123,6 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line p-3.5">
-        {isEditor && (
-          <button className="btn btn-primary" onClick={onNewRecipe}>＋ 新增食譜</button>
-        )}
         <button className="btn btn-sm" onClick={onShopping}>🛒 採購清單</button>
         <div className="text-center font-mono text-[11.5px] tracking-[.04em] text-ink-soft">
           {RCP.length} 道甜點 · {Object.keys(ING).length} 種材料 · 資料:{dataSource}
