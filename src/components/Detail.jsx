@@ -234,10 +234,14 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         ]} />
 
       {/* 面板:手機照 tab 切換(hidden),桌面 md:block 全開,列印 print:block 全開。
-          桌面各面板前補區段標題(手機由 tab 籤擔任標題,不重複) */}
+          桌面兩欄配置(配方+步驟 左|營養標示 右,成本全寬底部)——配方跟
+          標示併排互相對照是真實使用情境。用 grid 定位而非搬 DOM:標示
+          right col row-span-2,步驟排配方正下方;print:block 蓋掉 grid,
+          列印維持單欄、DOM 順序(配方→標示→步驟)不變。 */}
+      <div className="md:grid md:grid-cols-[1.4fr_1fr] md:grid-rows-[auto_1fr] md:gap-x-10 print:block">
 
       {/* ── 配方 ── */}
-      <div className={(tab === 'items' ? '' : 'hidden ') + 'md:block print:block'}>
+      <div className={(tab === 'items' ? '' : 'hidden ') + 'min-w-0 md:col-start-1 md:row-start-1 md:block print:block'}>
         <div className="hidden pt-6 md:block print:block">
           <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">配方</div>
         </div>
@@ -291,12 +295,12 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         </p>
       </div>
 
-      {/* ── 營養標示與過敏原 ── */}
-      <div className={(tab === 'label' ? '' : 'hidden ') + 'md:block print:block'}>
-        <div className="hidden pt-8 md:block print:block">
+      {/* ── 營養標示與過敏原(桌面:右欄,縱跨兩列)── */}
+      <div className={(tab === 'label' ? '' : 'hidden ') + 'min-w-0 md:col-start-2 md:row-span-2 md:row-start-1 md:block print:block'}>
+        <div className="hidden pt-6 md:block print:block">
           <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">營養標示與過敏原</div>
         </div>
-        <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="mt-4 flex flex-col gap-6">
           <div>
             <div className="nlabel">
               <h4>營養標示</h4>
@@ -344,8 +348,8 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         </div>
       </div>
 
-      {/* ── 步驟與烘烤 ── */}
-      <div className={(tab === 'steps' ? '' : 'hidden ') + 'md:block print:block'}>
+      {/* ── 步驟與烘烤(桌面:接在配方正下方,左欄)── */}
+      <div className={(tab === 'steps' ? '' : 'hidden ') + 'min-w-0 md:col-start-1 md:row-start-2 md:block print:block'}>
         {(r.steps?.length > 0 || r.bakes?.length > 0 || r.links?.length > 0) && (
           <div className="hidden pt-8 md:block print:block">
             <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">步驟與烘烤</div>
@@ -404,7 +408,9 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         )}
       </div>
 
-      {/* ── 成本與毛利(只有本人/站長)── */}
+      </div>{/* /桌面兩欄 grid */}
+
+      {/* ── 成本與毛利(只有本人/站長,全寬底部)── */}
       {canCost && (
         <div className={(tab === 'cost' ? '' : 'hidden ') + 'md:block print:block'}>
           <div className="hidden pt-8 md:block print:block">
