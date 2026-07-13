@@ -64,6 +64,11 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
     const nm = name.trim()
     if (!nm) return
     const v = x => { const f = parseFloat(x); return Number.isFinite(f) ? f : 0 }
+    /* 採購價/採購重量是私人資料(見 db-schema.md ingredientPrices),不進這份
+       公開的材料文件——可空:沒填就不動你原本存的價格,不會清成 0 */
+    const priceInfo = (String(price).trim() !== '' && String(grams).trim() !== '')
+      ? { packPrice: v(price), packGrams: Math.max(0.1, v(grams)) }
+      : null
     setSaving(true)
     try {
       await onSave(ing || null, {
@@ -71,15 +76,13 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
         category: category.trim() || '未分類',
         brand: brand.trim(),
         spec: spec.trim(),
-        packPrice: v(price),
-        packGrams: Math.max(0.1, v(grams)),
         per100g: noData ? null : Object.fromEntries(NUT_FIELDS.map(([k]) => [k, v(nut[k])])),
         allergens,
         mayContain,
         subIngredients: subIngredients.trim(),
         labelDate: labelDate || null,
         note: note.trim(),
-      })
+      }, priceInfo)
     } catch (err) {
       toast('儲存失敗:' + err.message, { type: 'error' })
     } finally {
@@ -134,12 +137,12 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
             <input value={spec} onChange={e => setSpec(e.target.value)} placeholder="例:35.1% 乳脂" />
           </div>
           <div className="field">
-            <label>採購價(NT$)</label>
-            <input type="number" min="0" step="0.1" value={price} onChange={e => setPrice(e.target.value)} required />
+            <label>採購價(NT$,只有你自己看得到;可空,之後再回來補)</label>
+            <input type="number" min="0" step="0.1" value={price} onChange={e => setPrice(e.target.value)} />
           </div>
           <div className="field">
-            <label>採購重量(g)</label>
-            <input type="number" min="0.1" step="0.1" value={grams} onChange={e => setGrams(e.target.value)} required />
+            <label>採購重量(g,只有你自己看得到;可空)</label>
+            <input type="number" min="0.1" step="0.1" value={grams} onChange={e => setGrams(e.target.value)} />
           </div>
         </div>
 

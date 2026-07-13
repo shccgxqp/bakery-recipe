@@ -25,9 +25,10 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   _id: "8b1f4c2e-…",            // 字串 UUID,前端產生
   name: "依思尼 無鹽奶油",       // 顯示名稱,unique index(部分索引,見下)
 
-  /* -- 私人營運資料 -- */
-  packPrice: 285,               // 採購價 NT$
-  packGrams: 500,               // 採購重量 g(成本 = 用量 × packPrice / packGrams)
+  /* 採購價/採購重量(packPrice/packGrams)v4.6.0 起搬到 ingredientPrices
+     collection(見下),不再是這個文件的欄位——每個人買同一項材料的價格
+     不同,而且對工作室是機密,不該公開;GET /api/data 回應會把目前登入者
+     自己的價格併回這個材料物件上(欄位名稱不變,前端 calc.js 不用改) */
 
   /* -- 公開參考資料(材料資料庫的主力內容)-- */
   category: "乳製品",            // 分類,值取自 settings.ingCatOrder(台灣烘焙材料行通用分類)
@@ -80,8 +81,12 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   ],
   finishedGrams: null,          // 成品重 g(出爐實秤)。標籤的「每一份量X公克」
                                 //  和「每100公克」都要用成品重算(烘焙失水,生料重會偏低)
-  shelfLifeDays: null,          // 保存期限(天)
-  storage: "",                  // 保存條件(如「冷藏」)
+  storage: [                    // 保存期限(v4.6.0 起改彈性清單,取代舊的單一
+                                //  storage 字串+shelfLifeDays 數字——冷藏冷凍
+                                //  可以並行標示,不限定只有這兩種保存方式)
+    { method: "冷藏", days: "3~5天" },
+    { method: "冷凍", days: "2~3週" },
+  ],                            // 可為空陣列(沒填保存資訊)
   sortOrder: 10,                // 分類內顯示順序(間隔 10 編號,插入取中間值)
   ownerId: "shccgxqp@gmail.com", // 帳號系統第一階段(2026-07-10)加的,存建立者
                                 //  email。phase 4(2026-07-10)起這是真正的權限判斷
@@ -137,6 +142,35 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 ```
 
 食譜加選填 `moldId`(null = 未綁定;綁定後才開放「按模具換算」)。
+
+### `ingredientPrices`(材料採購價,v4.6.0 新增,私人資料)
+
+每個使用者對同一項材料的採購價/採購重量各自獨立——同一項材料每個人買的
+通路、時間點不同,價格不一樣,而且這類進貨金額對工作室是機密。一筆
+`(ingredientId, ownerId)` 一個文件,只有 `ownerId` 本人能寫/讀到自己這筆
+(不是 `canWriteShared` 那種本人或站長皆可的規則,站長對別人的採購價沒有
+特例,純粹私人資料)。
+
+```js
+{
+  _id: "user@example.com:8b1f4c2e-…",  // 伺服器組出來的複合字串鍵,不信任
+                                        //  client 傳的 _id,天然防止跨帳戶覆蓋
+  ingredientId: "8b1f4c2e-…",
+  ownerId: "user@example.com",         // 一律等於寫入者自己的 token email
+  packPrice: 285,                      // 採購價 NT$
+  packGrams: 500,                      // 採購重量 g
+  createdAt, updatedAt
+}
+```
+
+`GET /api/data` 只在使用者帶合法登入 token 時,把呼叫者自己的價格列
+`find({ ownerId: caller })` 一次撈出,依 `ingredientId` 併回對應材料物件的
+`packPrice`/`packGrams` 欄位再回傳;訪客或還沒替這項材料設過價格的使用者,
+這兩個欄位就不存在(跟 `per100g: null` 的「尚無資料」是同一種概念,
+`calc.js` 用 0 計並列入 `noPrice` 警示,不當真的免費)。
+`POST /api/save` 新增 `prices: [{ ingredientId, packPrice, packGrams }]`
+這個 top-level 鍵,伺服器一律用呼叫者自己的 `caller.id` 組 `_id`/`ownerId`,
+不接受 client 指定要寫誰的價格。
 
 ### `users`(帳號系統,2026-07-10 新增)
 
@@ -231,11 +265,14 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
   與 `mine`/`editedByMe` 旗標(給前端顯示層權限與個人頁清單用);
   資料庫文件本身仍存 email,寫入授權不受影響。
 - `POST /api/save` — 帶登入 token;逐筆 upsert + 軟刪除 + 復原
-  (`{ upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...} }`)。
-  時間戳與擁有權欄位由伺服器管;名稱撞唯一索引回 409。**逐筆檢查擁有權**:
-  食譜只有 `ownerId` 相符本人能寫(站長不例外);材料/模具本人或站長皆可,站長編輯
-  蓋 `lastEditedBy`/`lastEditedAt`。整批 payload 有任何一筆沒過權限檢查就整批 403、
-  不寫入任何東西。寫入用 `resolveCallerChecked`(查 DB:停用擋下、role 即時)。
+  (`{ upserts: {ingredients, recipes, molds}, deletes: {...}, restores: {...},
+  prices: [{ingredientId, packPrice, packGrams}] }`)。時間戳與擁有權欄位由
+  伺服器管;名稱撞唯一索引回 409。**逐筆檢查擁有權**:食譜只有 `ownerId`
+  相符本人能寫(站長不例外);材料/模具本人或站長皆可,站長編輯蓋
+  `lastEditedBy`/`lastEditedAt`;`prices` 一律寫呼叫者自己的 `ingredientPrices`
+  文件,不需要額外授權檢查(`_id`/`ownerId` 伺服器組,不接受 client 指定)。
+  整批 payload 有任何一筆沒過權限檢查就整批 403、不寫入任何東西。寫入用
+  `resolveCallerChecked`(查 DB:停用擋下、role 即時)。
 - `GET  /api/label?id=` — 對外標示卡專屬端點:任何人可讀、不受公開/私人影響
   (id 是不可猜 UUID);後端算好只回標示欄位(營養 8 項/過敏原/內容物重量遞減/
   保存),**成本/售價/配方克數不出後端**。
@@ -269,8 +306,9 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 ## 六、未來擴充(依優先序)
 
 1. 標籤輸出:品名+內容物(重量遞減、複合材料展開)+過敏原+淨重(`finishedGrams`)
-   +有效日期(`shelfLifeDays`)——欄位都已就緒,做輸出介面即可。
+   +有效日期(`storage`)——欄位都已就緒,做輸出介面即可。
 2. 公開材料資料庫頁:每個材料固定網址,SEO 考慮預渲染(整站搬 Vercel)。
 3. 半成品引用、烘焙日誌、採購清單。
-4. 需帳戶系統(末期):進貨紀錄/價格歷史(`purchases` collection)、多工作室
-   (私人欄位加 `ownerId`)、商場綁定。
+4. 需帳戶系統(末期):進貨紀錄/價格歷史(`purchases` collection,記錄每次
+   進貨的時間點,`ingredientPrices` 目前只有「現在這個價格」,還沒有歷史)、
+   多工作室(私人欄位加 `ownerId`)、商場綁定。

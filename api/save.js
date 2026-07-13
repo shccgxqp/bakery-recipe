@@ -4,13 +4,17 @@
    body: {
      upserts: { ingredients: [完整文件], recipes: [完整文件], molds: [完整文件] },
      deletes: { ingredients: [_id], recipes: [_id], molds: [_id] },
-     restores: { ingredients: [_id], recipes: [_id], molds: [_id] }
+     restores: { ingredients: [_id], recipes: [_id], molds: [_id] },
+     prices: [{ ingredientId, packPrice, packGrams }]
    }
    權限(見 docs/roadmap.md 第 2 項 phase 4):
    - 食譜:只有 ownerId 相符的本人能寫/刪/復原,站長(owner 身份)不例外。
    - 材料/模具:createdBy 相符的本人,或站長皆可(公開資料庫,站長能修正錯誤,
      站長編輯時蓋 lastEditedBy/lastEditedAt)。
    - 新文件一律放行,擁有權由伺服器蓋章,不信任 client payload。
+   - prices(材料採購價,私人資料,見 db-schema.md):一律寫呼叫者自己的
+     ingredientPrices 文件,_id/ownerId 伺服器組,不接受 client 指定要寫誰的,
+     不需要額外授權檢查(你只可能寫到自己的那筆)。
    - 整個 payload 逐筆授權檢查為 pre-pass,任何一筆沒過就整批 403、不寫入任何東西。 */
 
 import { getDb, cors, readBody } from './_lib/mongo.js'
@@ -66,6 +70,28 @@ async function restoreDocs(col, ids, now) {
   return r.modifiedCount
 }
 
+/* 材料採購價(私人):_id/ownerId 一律用呼叫者自己的身份組,不信任 client,
+   天然防止寫到別人的價格,不需要額外授權檢查 */
+async function upsertPrices(col, entries, now, caller) {
+  let n = 0
+  for (const p of entries || []) {
+    if (!p || typeof p.ingredientId !== 'string' || !p.ingredientId) continue
+    const packPrice = Number(p.packPrice)
+    const packGrams = Number(p.packGrams)
+    if (!Number.isFinite(packPrice) || packPrice < 0) continue
+    if (!Number.isFinite(packGrams) || packGrams <= 0) continue
+    const _id = `${caller.id}:${p.ingredientId}`
+    await col.updateOne(
+      { _id },
+      { $set: { ingredientId: p.ingredientId, ownerId: caller.id, packPrice, packGrams, updatedAt: now },
+        $setOnInsert: { createdAt: now } },
+      { upsert: true },
+    )
+    n++
+  }
+  return n
+}
+
 export default async function handler(req, res) {
   cors(res)
   if (req.method === 'OPTIONS') return res.status(204).end()
@@ -80,6 +106,7 @@ export default async function handler(req, res) {
       ingredients: db.collection('ingredients'),
       recipes: db.collection('recipes'),
       molds: db.collection('molds'),
+      ingredientPrices: db.collection('ingredientPrices'),
     }
     const authorizeOf = kind => (kind === 'recipes' ? canWriteRecipe : canWriteShared)
 
@@ -109,6 +136,7 @@ export default async function handler(req, res) {
       molds: await upsertDocs(cols.molds, body.upserts?.molds || [], now, caller, {
         authorize: canWriteShared, stampNew: stampNewShared, stampOwnerEdit,
       }),
+      prices: await upsertPrices(cols.ingredientPrices, body.prices, now, caller),
       deletedIngredients: await softDelete(cols.ingredients, body.deletes?.ingredients, now),
       deletedRecipes: await softDelete(cols.recipes, body.deletes?.recipes, now),
       deletedMolds: await softDelete(cols.molds, body.deletes?.molds, now),

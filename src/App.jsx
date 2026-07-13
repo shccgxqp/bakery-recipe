@@ -180,11 +180,11 @@ export default function App() {
     })
   }, [refresh])
 
-  const write = useCallback(async ({ upserts, deletes, restores }) => {
+  const write = useCallback(async ({ upserts, deletes, restores, prices }) => {
     const token = getAuthToken()
     if (!token) throw new Error('尚未登入')
     try {
-      await pushData(token, upserts || {}, deletes || {}, restores || {})
+      await pushData(token, upserts || {}, deletes || {}, restores || {}, prices || [])
     } catch (err) {
       if (err.message === '尚未登入') {
         googleLogout()
@@ -225,7 +225,7 @@ export default function App() {
     await write({
       upserts: {
         ingredients: [{
-          _id, name, category, brand: '', spec: '', packPrice: 0, packGrams: 0.1,
+          _id, name, category, brand: '', spec: '',
           per100g: null, allergens: [], mayContain: [],
           subIngredients: '', labelDate: null, note: '',
         }],
@@ -233,11 +233,16 @@ export default function App() {
     })
     return _id
   }
-  /* 材料存檔(整頁編輯器):存完導到該材料的詳細頁 */
-  const saveIng = async (orig, obj) => {
+  /* 材料存檔(整頁編輯器):存完導到該材料的詳細頁。priceInfo(採購價/採購重量)
+     是私人資料(見 db-schema.md ingredientPrices),分開走 prices 這個管道,
+     不進 ingredients 這份公開文件 */
+  const saveIng = async (orig, obj, priceInfo) => {
     const _id = orig?._id || crypto.randomUUID()
     const doc = { ...orig, ...obj, _id }
-    await write({ upserts: { ingredients: [doc] } })
+    await write({
+      upserts: { ingredients: [doc] },
+      prices: priceInfo ? [{ ingredientId: _id, ...priceInfo }] : [],
+    })
     navigate(ingPath(doc))
   }
   const deleteRecipe = async r => {

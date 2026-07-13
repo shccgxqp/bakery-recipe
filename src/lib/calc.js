@@ -25,6 +25,7 @@ export function calc(recipe, ING) {
   let grams = 0
   const missing = []
   const noNutr = []
+  const noPrice = []
   for (const it of recipe.items) {
     const ing = ING[it.ingredientId]
     const g = it.grams
@@ -33,7 +34,11 @@ export function calc(recipe, ING) {
       rows.push({ name: '(材料已刪除)', g, layer: it.layer || '', missing: true })
       continue
     }
-    const c = (g * ing.packPrice) / (ing.packGrams || 1)
+    /* packPrice/packGrams 是私人採購價(v4.6.0 起綁個人帳戶),沒登入或
+       還沒填自己的採購價時 ing.packPrice 會是 undefined——當 0 成本計,
+       跟 per100g:null 的「尚無營養資料」同一種警示邏輯,不是真的免費 */
+    const hasPrice = ing.packPrice != null && ing.packGrams
+    const c = hasPrice ? (g * ing.packPrice) / ing.packGrams : 0
     cost += c
     grams += g
     const n = {}
@@ -42,9 +47,10 @@ export function calc(recipe, ING) {
       tot[k] += n[k]
     }
     if (ing.per100g == null) noNutr.push(ing.name)
-    rows.push({ name: ing.name, g, layer: it.layer || '', cost: c, n })
+    if (!hasPrice) noPrice.push(ing.name)
+    rows.push({ name: ing.name, g, layer: it.layer || '', cost: c, noPrice: !hasPrice, n })
   }
-  return { rows, cost, tot, grams, missing, noNutr: [...new Set(noNutr)] }
+  return { rows, cost, tot, grams, missing, noNutr: [...new Set(noNutr)], noPrice: [...new Set(noPrice)] }
 }
 
 /* 食譜過敏原標示 = 材料標註的聯集,即時計算、不落地儲存
@@ -71,13 +77,13 @@ export function metrics(r, ING) {
   return { cost: c.cost, per, margin }
 }
 
-/* rows → 依「層」分段(保持原順序);全部無層 → 單一無名段 */
+/* rows → 依「層」分段,同名的層自動合併成一段(即使在原始材料清單裡不連續),
+   段落順序 = 該層第一次出現的順序;全部無層 → 單一無名段 */
 export function groupByLayer(rows) {
-  const sections = []
+  const sections = new Map()
   for (const row of rows) {
-    const last = sections[sections.length - 1]
-    if (!last || last.layer !== row.layer) sections.push({ layer: row.layer, rows: [row] })
-    else last.rows.push(row)
+    if (!sections.has(row.layer)) sections.set(row.layer, { layer: row.layer, rows: [] })
+    sections.get(row.layer).rows.push(row)
   }
-  return sections
+  return [...sections.values()]
 }

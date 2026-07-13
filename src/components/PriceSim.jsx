@@ -6,7 +6,11 @@ export default function PriceSim({ ING, RCP }) {
   const [ingId, setIngId] = useState('')
   const [pct, setPct] = useState(10)
 
-  const list = Object.values(ING).sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))
+  /* 只列出「我自己設過採購價」的材料——沒設價格的材料漲價模擬沒有意義
+     (v4.6.0 起 packPrice 是私人資料,見 db-schema.md ingredientPrices) */
+  const list = Object.values(ING)
+    .filter(i => i.packPrice != null && i.packGrams)
+    .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))
 
   const rows = useMemo(() => {
     const ing = ING[ingId]

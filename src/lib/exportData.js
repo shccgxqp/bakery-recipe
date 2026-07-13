@@ -36,8 +36,8 @@ export function exportIngredientsCSV(ING) {
     .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'))
     .map(i => [
       i.name, i.category || '', i.brand || '', i.spec || '',
-      i.packPrice, i.packGrams,
-      ((i.packPrice * 100) / (i.packGrams || 1)).toFixed(1),
+      i.packPrice ?? '', i.packGrams ?? '',
+      i.packPrice != null && i.packGrams ? ((i.packPrice * 100) / i.packGrams).toFixed(1) : '',
       ...NUTR.map(([k]) => (i.per100g ? (i.per100g[k] ?? 0) : '無資料')),
       (i.allergens || []).join('、'), (i.mayContain || []).join('、'),
       i.subIngredients || '', i.labelDate || '', i.note || '',

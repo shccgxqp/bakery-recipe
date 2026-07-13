@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     const ids = [...new Set(r.items.map(it => it.ingredientId))]
     const ings = await db.collection('ingredients')
       .find({ _id: { $in: ids } })
-      .project({ name: 1, per100g: 1, allergens: 1, mayContain: 1, subIngredients: 1, packPrice: 1, packGrams: 1 })
+      .project({ name: 1, per100g: 1, allergens: 1, mayContain: 1, subIngredients: 1 })
       .toArray()
     const ING = Object.fromEntries(ings.map(i => [i._id, i]))
 
@@ -62,8 +62,7 @@ export default async function handler(req, res) {
         dvNote: DV_NOTE,
         allergens: al,
         contents,
-        shelfLifeDays: r.shelfLifeDays || null,
-        storage: r.storage || '',
+        storage: r.storage || [],
         noNutr: c.noNutr,
         updatedAt: r.updatedAt || null,
       },

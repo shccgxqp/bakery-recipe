@@ -80,11 +80,11 @@ export default function LabelView({ id }) {
         </section>
       )}
 
-      {(label.storage || label.shelfLifeDays) && (
+      {label.storage?.length > 0 && (
         <section className="mt-5">
           <h3 className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">保存</h3>
           <p className="mt-2 text-[13.5px]">
-            {[label.storage, label.shelfLifeDays ? `保存期限 ${label.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
+            {label.storage.map(s => [s.method, s.days].filter(Boolean).join(' ')).join('、')}
           </p>
         </section>
       )}

@@ -118,9 +118,9 @@ function SectionRows({ sec, cols, isEditor, onEdit, onDelete }) {
               {i.spec && <span className="ml-1 text-[11px] text-ink-soft">{i.spec}</span>}
             </td>
             <td className="text-[12.5px] text-ink-soft">{i.brand || '—'}</td>
-            <td className="num">${fmt(i.packPrice)}</td>
-            <td className="num">{fmt(i.packGrams)}</td>
-            <td className="num">${fmt((i.packPrice * 100) / (i.packGrams || 1), 1)}</td>
+            <td className="num">{i.packPrice != null ? `$${fmt(i.packPrice)}` : '—'}</td>
+            <td className="num">{i.packGrams != null ? fmt(i.packGrams) : '—'}</td>
+            <td className="num">{i.packPrice != null && i.packGrams ? `$${fmt((i.packPrice * 100) / i.packGrams, 1)}` : '—'}</td>
             <td className="num">{p ? fmt(p.kcal) : '—'}</td>
             <td className="whitespace-nowrap text-[11.5px] text-ink-soft">
               {(i.allergens || []).join('、') || '—'}

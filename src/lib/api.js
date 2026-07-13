@@ -23,9 +23,10 @@ export async function loadData(token) {
 /* 逐筆 upsert + 軟刪除 + 復原
    upserts:  { ingredients: [doc], recipes: [doc], molds: [doc] }
    deletes:  { ingredients: [_id], recipes: [_id], molds: [_id] }
-   restores: { ingredients: [_id], recipes: [_id], molds: [_id] } */
-export async function pushData(token, upserts, deletes, restores) {
-  const j = await post('/api/save', token, { upserts, deletes, restores })
+   restores: { ingredients: [_id], recipes: [_id], molds: [_id] }
+   prices:   [{ ingredientId, packPrice, packGrams }](私人採購價,見 db-schema.md) */
+export async function pushData(token, upserts, deletes, restores, prices) {
+  const j = await post('/api/save', token, { upserts, deletes, restores, prices })
   if (!j.ok) throw new Error(j.error || '寫入失敗')
   return j
 }

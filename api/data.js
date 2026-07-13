@@ -9,7 +9,12 @@
    - recipes:  ownerName(暱稱或「未命名烘焙師」)、mine(是不是我的)
    - ing/mold: creatorName、editorName(站長修正過才有)、mine、editedByMe
    前端顯示層權限(src/lib/permissions.js)吃這些旗標;真正的寫入授權
-   仍在 api/save.js 以資料庫裡的 email 比對,不受影響。 */
+   仍在 api/save.js 以資料庫裡的 email 比對,不受影響。
+
+   材料採購價(v4.6.0):packPrice/packGrams 不再是 ingredients 文件本身的欄位,
+   改存 ingredientPrices(見 db-schema.md),只有登入者才會併回自己的價格——
+   訪客、或還沒替這項材料設過價格的使用者,這兩個欄位就不存在(calc.js
+   當「尚無資料」處理,列入 noPrice 警示,不是真的免費)。 */
 
 import { getDb, cors } from './_lib/mongo.js'
 import { resolveCaller } from './_lib/auth.js'
@@ -26,12 +31,17 @@ export default async function handler(req, res) {
     const recipeFilter = caller
       ? { deletedAt: null, $or: [{ public: { $ne: false } }, { ownerId: caller.id }] }
       : { deletedAt: null, public: { $ne: false } }
-    const [ingredients, recipes, molds, settings] = await Promise.all([
+    const [ingredients, recipes, molds, settings, myPrices] = await Promise.all([
       db.collection('ingredients').find({ deletedAt: null }).sort({ name: 1 }).toArray(),
       db.collection('recipes').find(recipeFilter).sort({ sortOrder: 1 }).toArray(),
       db.collection('molds').find({ deletedAt: null }).sort({ name: 1 }).toArray(),
       db.collection('settings').findOne({ _id: 'main' }),
+      caller
+        ? db.collection('ingredientPrices').find({ ownerId: caller.id })
+            .project({ ingredientId: 1, packPrice: 1, packGrams: 1 }).toArray()
+        : [],
     ])
+    const priceOf = Object.fromEntries(myPrices.map(p => [p.ingredientId, { packPrice: p.packPrice, packGrams: p.packGrams }]))
 
     /* email → 暱稱對照(只查回應中實際出現的 email) */
     const emails = new Set()
@@ -70,7 +80,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({
       ok: true,
-      ingredients: ingredients.map(cleanShared),
+      ingredients: ingredients.map(d => ({ ...cleanShared(d), ...priceOf[d._id] })),
       recipes: recipes.map(cleanRecipe),
       molds: molds.map(cleanShared),
       settings,

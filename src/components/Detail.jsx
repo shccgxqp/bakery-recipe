@@ -248,7 +248,7 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
         <div className="hidden pt-6 md:block print:block">
           <div className="border-b-2 border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">配方</div>
         </div>
-        {(r.storage || r.shelfLifeDays > 0 || mold) && (
+        {(r.storage?.length > 0 || mold) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px]">
             {mold && (
               <>
@@ -256,12 +256,14 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
                 <span className="rounded-md border border-line bg-white px-2.5 py-0.5">🥮 {mold.name}</span>
               </>
             )}
-            {(r.storage || r.shelfLifeDays > 0) && (
+            {r.storage?.length > 0 && (
               <>
                 <span className="text-xs font-bold tracking-[.08em] text-ink-soft">保存</span>
-                <span className="rounded-md border border-line bg-white px-2.5 py-0.5">
-                  🧊 {[r.storage, r.shelfLifeDays > 0 ? `${r.shelfLifeDays} 天` : ''].filter(Boolean).join(' · ')}
-                </span>
+                {r.storage.map((s, i) => (
+                  <span key={i} className="rounded-md border border-line bg-white px-2.5 py-0.5">
+                    🧊 {[s.method, s.days].filter(Boolean).join(' ')}
+                  </span>
+                ))}
               </>
             )}
             <span className="text-xs font-bold tracking-[.08em] text-ink-soft">份數</span>
@@ -338,6 +340,11 @@ export default function Detail({ recipe: r, ING, mold, isEditor, googleUser, onE
             {c.noNutr.length > 0 && (
               <p className="mt-2 max-w-[340px] text-xs text-warn">
                 ⚠ 下列材料尚無營養資料,以 0 計算:{c.noNutr.join('、')}
+              </p>
+            )}
+            {canCost && c.noPrice.length > 0 && (
+              <p className="mt-2 max-w-[340px] text-xs text-warn">
+                ⚠ 下列材料你還沒設定採購價,成本以 0 計算:{c.noPrice.join('、')}
               </p>
             )}
             <p className="mt-2 max-w-[340px] text-xs text-ink-soft">

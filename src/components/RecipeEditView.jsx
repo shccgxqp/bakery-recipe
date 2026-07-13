@@ -14,6 +14,7 @@ const SECTIONS = [
 
 const emptyBake = () => ({ temp: '', time: '', note: '' })
 const emptyLink = () => ({ title: '', url: '' })
+const emptyStorage = () => ({ method: '', days: '' })
 
 function SectionTitle({ id, children }) {
   return (
@@ -67,8 +68,7 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const [bakes, setBakes] = useState(r?.bakes?.length ? r.bakes.map(b => ({ ...b })) : [emptyBake()])
   const [links, setLinks] = useState(r?.links?.length ? r.links.map(l => ({ ...l })) : [emptyLink()])
   const [finishedGrams, setFinishedGrams] = useState(r?.finishedGrams ?? '')
-  const [shelfLifeDays, setShelfLifeDays] = useState(r?.shelfLifeDays ?? '')
-  const [storage, setStorage] = useState(r?.storage || '')
+  const [storage, setStorage] = useState(r?.storage?.length ? r.storage.map(s => ({ ...s })) : [emptyStorage()])
   const [moldId, setMoldId] = useState(r?.moldId || '')
   const [isPublic, setIsPublic] = useState(r?.public !== false)
   const [saving, setSaving] = useState(false)
@@ -84,12 +84,32 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
   const stepOps = makeListOps(steps, setSteps, () => '')
   const bakeOps = makeListOps(bakes, setBakes, emptyBake)
   const linkOps = makeListOps(links, setLinks, emptyLink)
+  const storageOps = makeListOps(storage, setStorage, emptyStorage)
 
   const setItem = (i, k, v) => setItems(prev => prev.map((it, j) => (j === i ? { ...it, [k]: v } : it)))
   const delItem = i => setItems(prev => prev.filter((_, j) => j !== i))
 
+  /* 所屬部分的排列順序 = 各部分在 items 裡第一次出現的順序(跟展示頁
+     groupByLayer 同一套規則);拖曳改成上下移動按鈕,手機也好操作。
+     移動時把 items 依新的部分順序重新分組排列,部分內原本的材料順序不變 */
+  const layerOrder = (() => {
+    const seen = new Set(); const list = []
+    for (const it of items) { const k = it.section || ''; if (!seen.has(k)) { seen.add(k); list.push(k) } }
+    return list
+  })()
+  const moveLayer = (from, to) => {
+    if (to < 0 || to >= layerOrder.length) return
+    const order = [...layerOrder]
+    ;[order[from], order[to]] = [order[to], order[from]]
+    const buckets = new Map(order.map(k => [k, []]))
+    for (const it of items) buckets.get(it.section || '').push(it)
+    setItems(order.flatMap(k => buckets.get(k)))
+  }
+
   const cancel = () => navigate(r ? ledgerRecipePath(r) : '/ledger')
   const jump = id => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  /* 步驟框依內容自動延伸高度(含既有多行內容剛載入時也要撐開,不用等打字才長高) */
+  const autoGrow = el => { if (el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px' } }
 
   const submit = async e => {
     e.preventDefault()
@@ -117,8 +137,9 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
           .filter(l => /^https?:\/\//.test(l.url)),
         items: rows,
         finishedGrams: num(finishedGrams),
-        shelfLifeDays: num(shelfLifeDays),
-        storage: storage.trim(),
+        storage: storage
+          .map(s => ({ method: s.method.trim(), days: s.days.trim() }))
+          .filter(s => s.method || s.days),
         moldId: moldId || null,
         public: isPublic,
       })
@@ -189,9 +210,24 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
           {[...new Set([...items.map(it => it.section).filter(Boolean), '餅乾層', '奶油層', '塔皮', '內餡', '蛋糕體', '淋面'])]
             .map(s => <option key={s} value={s} />)}
         </datalist>
+        {layerOrder.length > 1 && (
+          <div className="mb-2.5 flex flex-wrap items-center gap-1.5 rounded-md border border-line bg-white p-2">
+            <span className="text-[11.5px] font-bold text-ink-soft">所屬部分順序(展示頁依此順序分段):</span>
+            {layerOrder.map((layer, i) => (
+              <span key={layer || '(空白)'}
+                className="flex items-center gap-1 rounded-md border border-line bg-paper px-2 py-0.5 text-[12.5px]">
+                {layer || '未分層'}
+                <button type="button" title="往前移" disabled={i === 0}
+                  className="font-bold disabled:opacity-25" onClick={() => moveLayer(i, i - 1)}>▲</button>
+                <button type="button" title="往後移" disabled={i === layerOrder.length - 1}
+                  className="font-bold disabled:opacity-25" onClick={() => moveLayer(i, i + 1)}>▼</button>
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex flex-col gap-2">
           {items.map((it, i) => (
-            <div key={i} className="grid grid-cols-[1fr_92px_120px_32px] gap-2">
+            <div key={i} className="grid grid-cols-[1fr_92px_140px_32px] gap-2">
               <IngredientPicker ING={ING} value={it.ingredientId} ingCatOrder={ingCatOrder}
                 onPick={id => setItem(i, 'ingredientId', id)}
                 onQuickAdd={async (nm, category) => {
@@ -232,8 +268,10 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
             <NumberedRow key={i} n={i + 1} onAdd={() => stepOps.addAfter(i)} onDel={() => stepOps.del(i)}>
               <textarea rows={2} value={st}
                 onChange={e => stepOps.set(i, () => e.target.value)}
+                ref={autoGrow}
+                onInput={e => { e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px' }}
                 placeholder={i === 0 ? '例:奶油乳酪回溫,與糖攪拌至滑順' : `第 ${i + 1} 步…`}
-                className="w-full rounded-md border border-line bg-white px-2.5 py-1.5 text-sm leading-relaxed" />
+                className="w-full resize-none overflow-hidden rounded-md border border-line bg-white px-2.5 py-1.5 text-sm leading-relaxed" />
             </NumberedRow>
           ))}
         </div>
@@ -293,17 +331,6 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
             <input type="number" min="0" step="1" value={finishedGrams} onChange={e => setFinishedGrams(e.target.value)} />
           </div>
           <div className="field">
-            <label>保存期限(天,可空)</label>
-            <input type="number" min="0" step="1" value={shelfLifeDays} onChange={e => setShelfLifeDays(e.target.value)} />
-          </div>
-          <div className="field">
-            <label>保存條件(可空)</label>
-            <input value={storage} onChange={e => setStorage(e.target.value)} list="storage-list" placeholder="例:冷藏" />
-            <datalist id="storage-list">
-              {['常溫', '冷藏', '冷凍', '常溫避光'].map(x => <option key={x} value={x} />)}
-            </datalist>
-          </div>
-          <div className="field">
             <label>公開狀態</label>
             <div className="flex gap-1.5">
               <Chip active={isPublic} onClick={() => setIsPublic(true)}>公開</Chip>
@@ -311,6 +338,31 @@ export default function RecipeEditView({ recipe: r, ING, RCP, molds, onSave, onQ
             </div>
           </div>
         </div>
+
+        <div className="mb-2.5 mt-4.5 border-b border-ink pb-1 text-xs font-bold tracking-[.12em] text-ink-soft">
+          保存期限(一種保存方式一筆,可空;冷藏冷凍可以都填,例:方式「冷藏」+
+          天數「3~5天」、方式「冷凍」+天數「2~3週」)
+        </div>
+        <datalist id="storage-method-list">
+          {['常溫', '冷藏', '冷凍', '常溫避光'].map(x => <option key={x} value={x} />)}
+        </datalist>
+        <div className="flex flex-col gap-2">
+          {storage.map((s, i) => (
+            <NumberedRow key={i} n={i + 1} onAdd={() => storageOps.addAfter(i)} onDel={() => storageOps.del(i)}>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_1.4fr]">
+                <input value={s.method} onChange={e => storageOps.set(i, { method: e.target.value })}
+                  list="storage-method-list" placeholder="保存方式,例:冷藏"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+                <input value={s.days} onChange={e => storageOps.set(i, { days: e.target.value })}
+                  placeholder="天數,例:3~5天"
+                  className="rounded-md border border-line bg-white px-2.5 py-1.5 text-sm" />
+              </div>
+            </NumberedRow>
+          ))}
+        </div>
+        <button type="button" className="btn btn-sm mt-2" onClick={() => setStorage(p => [...p, emptyStorage()])}>
+          ＋ 加一種保存方式
+        </button>
 
         <div className="mt-6 flex justify-end gap-2 border-t-2 border-ink pt-3">
           <button type="button" className="btn" onClick={cancel} disabled={saving}>取消</button>
