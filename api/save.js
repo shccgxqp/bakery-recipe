@@ -17,15 +17,67 @@
      不需要額外授權檢查(你只可能寫到自己的那筆)。
    - 整個 payload 逐筆授權檢查為 pre-pass,任何一筆沒過就整批 403、不寫入任何東西。 */
 
+import { randomUUID } from 'node:crypto'
 import { getDb, cors, readBody } from './_lib/mongo.js'
 import { resolveCallerChecked, canWriteRecipe, canWriteShared } from './_lib/auth.js'
 
 const STRIP_FIELDS = ['_id', 'createdAt', 'updatedAt', 'deletedAt', 'ownerId', 'createdBy', 'lastEditedBy', 'lastEditedAt']
+const INGREDIENT_VERSION_FIELDS = [
+  'name', 'category', 'brand', 'spec', 'per100g', 'allergens', 'mayContain',
+  'subIngredients', 'labelDate', 'note', 'evidence', 'verification',
+]
 
 function stripDoc(d) {
   const rest = { ...d }
   for (const f of STRIP_FIELDS) delete rest[f]
   return rest
+}
+
+function sameValue(left, right) {
+  const stable = value => {
+    if (Array.isArray(value)) return value.map(stable)
+    if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map(key => [key, stable(value[key])]))
+    return value ?? null
+  }
+  return JSON.stringify(stable(left)) === JSON.stringify(stable(right))
+}
+
+function ingredientVersionChanged(previous, next) {
+  return INGREDIENT_VERSION_FIELDS.some(field => !sameValue(previous[field], next[field]))
+}
+
+function ingredientSnapshot(doc, archivedAt) {
+  return {
+    id: randomUUID(),
+    archivedAt,
+    reason: '材料資料更新',
+    ...Object.fromEntries(INGREDIENT_VERSION_FIELDS.map(field => [field, doc[field] ?? null])),
+  }
+}
+
+function sanitizeIngredientEvidence(entries) {
+  const allowedTypes = new Set(['package_label', 'manufacturer', 'official_db', 'user_input', 'unknown'])
+  const allowedScopes = new Set(['identity', 'nutrition', 'ingredients', 'allergens'])
+  return (Array.isArray(entries) ? entries : []).slice(0, 10).map(entry => {
+    const url = String(entry?.url || '').trim()
+    return {
+      id: typeof entry?.id === 'string' && entry.id ? entry.id.slice(0, 100) : randomUUID(),
+      type: allowedTypes.has(entry?.type) ? entry.type : 'unknown',
+      scopes: (Array.isArray(entry?.scopes) ? entry.scopes : []).filter(scope => allowedScopes.has(scope)),
+      title: String(entry?.title || '').trim().slice(0, 200),
+      url: /^https?:\/\//i.test(url) ? url.slice(0, 1000) : '',
+      reference: String(entry?.reference || '').trim().slice(0, 200),
+      checkedAt: /^\d{4}-\d{2}-\d{2}$/.test(entry?.checkedAt || '') ? entry.checkedAt : null,
+      confidence: ['high', 'medium', 'pending'].includes(entry?.confidence) ? entry.confidence : 'pending',
+    }
+  }).filter(entry => entry.title || entry.url || entry.reference)
+}
+
+function sanitizeIngredientVerification(value) {
+  return {
+    status: ['pending', 'verified', 'needs_review', 'outdated'].includes(value?.status) ? value.status : 'pending',
+    latestVerifiedAt: /^\d{4}-\d{2}-\d{2}$/.test(value?.latestVerifiedAt || '') ? value.latestVerifiedAt : null,
+  }
 }
 
 /* 逐筆授權檢查,回傳沒過的第一個錯誤訊息(null = 全部通過) */
@@ -39,13 +91,27 @@ async function authorizeBatch(col, ids, caller, authorize) {
   return null
 }
 
-async function upsertDocs(col, docs, now, caller, { authorize, stampNew, stampOwnerEdit }) {
+async function upsertDocs(col, docs, now, caller, { authorize, stampNew, stampOwnerEdit, keepIngredientHistory = false }) {
   let n = 0
   for (const d of docs) {
     if (!d || typeof d._id !== 'string' || !d._id) continue
     if (typeof d.name !== 'string' || !d.name.trim()) continue
-    const existing = await col.findOne({ _id: d._id }, { projection: { ownerId: 1, createdBy: 1 } })
+    const existing = await col.findOne(
+      { _id: d._id },
+      { projection: keepIngredientHistory ? { history: 1, ...Object.fromEntries(INGREDIENT_VERSION_FIELDS.map(field => [field, 1])), ownerId: 1, createdBy: 1 } : { ownerId: 1, createdBy: 1 } },
+    )
     const rest = stripDoc(d)
+    /* history 是伺服器管理的不可變版本紀錄，不能由 client 覆寫或捏造。 */
+    if (keepIngredientHistory) {
+      delete rest.history
+      rest.evidence = sanitizeIngredientEvidence(rest.evidence)
+      rest.verification = sanitizeIngredientVerification(rest.verification)
+      if (existing && ingredientVersionChanged(existing, rest)) {
+        rest.history = [...(existing.history || []), ingredientSnapshot(existing, now)]
+      } else if (existing?.history) {
+        rest.history = existing.history
+      }
+    }
     const set = { ...rest, updatedAt: now }
     const setOnInsert = { createdAt: now, deletedAt: null }
     if (!existing) stampNew(setOnInsert, caller)
@@ -128,7 +194,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       ok: true,
       ingredients: await upsertDocs(cols.ingredients, body.upserts?.ingredients || [], now, caller, {
-        authorize: canWriteShared, stampNew: stampNewShared, stampOwnerEdit,
+        authorize: canWriteShared, stampNew: stampNewShared, stampOwnerEdit, keepIngredientHistory: true,
       }),
       recipes: await upsertDocs(cols.recipes, body.upserts?.recipes || [], now, caller, {
         authorize: canWriteRecipe, stampNew: stampNewRecipe,

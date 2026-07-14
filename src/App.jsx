@@ -9,6 +9,7 @@ import Landing from './components/Landing.jsx'
 import Detail from './components/Detail.jsx'
 import IngredientsView from './components/IngredientsView.jsx'
 import IngredientDetail from './components/IngredientDetail.jsx'
+import IngredientHistoryView from './components/IngredientHistoryView.jsx'
 import ChangelogView from './components/ChangelogView.jsx'
 import MoldsView from './components/MoldsView.jsx'
 import TrashView from './components/TrashView.jsx'
@@ -70,6 +71,7 @@ export default function App() {
     if (parts[0] === 'ing' && parts[1]) {
       if (parts[1] === 'new') return { view: 'ing-new', urlSelId: null }
       if (parts[2] === 'edit') return { view: 'ing-edit', urlSelId: decodeURIComponent(parts[1]) }
+      if (parts[2] === 'history') return { view: 'ing-history', urlSelId: decodeURIComponent(parts[1]) }
       return { view: 'ing-detail', urlSelId: decodeURIComponent(parts[1]) }
     }
     if (parts[0] === 'mold' && parts[1]) {
@@ -227,7 +229,8 @@ export default function App() {
         ingredients: [{
           _id, name, category, brand: '', spec: '',
           per100g: null, allergens: [], mayContain: [],
-          subIngredients: '', labelDate: null, note: '',
+          subIngredients: '', labelDate: null, note: '', evidence: [],
+          verification: { status: 'pending', latestVerifiedAt: null },
         }],
       },
     })
@@ -455,6 +458,8 @@ export default function App() {
               <IngredientDetail ing={ING[urlSelId] || null} RCP={RCP} googleUser={googleUser}
                 onEdit={id => navigate(`/ing/${id}/edit`)}
                 onDelete={deleteIng} />
+            ) : view === 'ing-history' ? (
+              <IngredientHistoryView ing={ING[urlSelId] || null} />
             ) : view === 'ings' ? (
               <IngredientsView ING={ING} RCP={RCP} ingCatOrder={ingCatOrder} isEditor={isEditor}
                 onEdit={id => navigate(`/ing/${id}/edit`)}

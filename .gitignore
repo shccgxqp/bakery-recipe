@@ -10,3 +10,7 @@ node_modules/
 dist/
 .vercel
 .env*
+
+# Local coordination state shared by AI agents in this working copy.
+# The protocol and CLI are tracked; active claims and handoffs are deliberately not.
+.ai-team/runtime/

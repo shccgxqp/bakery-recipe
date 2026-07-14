@@ -1,0 +1,3642 @@
+[
+  {
+    "_id": "000ad106-3dac-4669-9fb7-0617e1ae7b86",
+    "brand": "三能",
+    "volume": 42,
+    "note": "SN61845;椰子造型,單顆容積",
+    "count": 5,
+    "name": "椰子模-5入(陽極) 7.1×4cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "035efa04-4d76-45ac-b4d3-6c3eb5d1fa8d",
+    "brand": "三能",
+    "volume": 150,
+    "note": "SN62295;瓣紋造型,單顆容積",
+    "count": 5,
+    "name": "低糖布里歐模-5入 大",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "072b7de1-3a0b-4654-8749-62f9c9e575d3",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6860;SN6862(同尺寸重複型號)",
+    "count": 1,
+    "name": "乳酪蛋糕模(1000不沾) 21.4×10cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 21.4,
+      "topW": 10,
+      "botL": 21.4,
+      "botW": 10,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "07c91b03-050c-4e01-8fe4-315b34038702",
+    "brand": "三能",
+    "volume": 60,
+    "note": "SN6501",
+    "count": 1,
+    "name": "卡娜蕾銅模-中",
+    "shape": "round",
+    "dims": {
+      "topD": 4.4,
+      "bottomD": 4.4,
+      "h": 4.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "086a5d08-cd0b-421b-a237-d4f19dc96d3b",
+    "brand": "三能",
+    "volume": 280,
+    "note": "SN6807",
+    "count": 1,
+    "name": "八星菊花模(800系列不沾) 8.2cm",
+    "shape": "round",
+    "dims": {
+      "topD": 8.2,
+      "bottomD": 8.2,
+      "h": 6.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0a4236a5-6456-4bbd-8565-96ac28638e4a",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN64065",
+    "count": 5,
+    "name": "大圓沖孔模-5入(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 9.4,
+      "bottomD": 8.3,
+      "h": 3.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0ad78ba0-c502-48c0-a40b-6fafba94971a",
+    "brand": "三能",
+    "volume": 100,
+    "note": "SN61535;橢圓造型,單顆容積",
+    "count": 5,
+    "name": "橢圓模-5入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0b687f23-6412-4111-99e5-84dadd4283f7",
+    "brand": "三能",
+    "volume": 3350,
+    "note": "SN6828",
+    "count": 1,
+    "name": "雙層空心模(800系列不沾) 22cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 22,
+      "bottomD": 22,
+      "h": 11.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0c2fa255-59d6-4028-8f9a-7b33b6bd87ba",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2142",
+    "count": 1,
+    "name": "磅蛋糕模(800不沾) 16.9×7.9",
+    "shape": "rect",
+    "dims": {
+      "topL": 16.9,
+      "topW": 7.9,
+      "botL": 16.9,
+      "botW": 7.9,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0d7f9694-1ad1-45e0-8a4f-0bf6d8c4112b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2199",
+    "count": 1,
+    "name": "300g低糖鑄鋁土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 18,
+      "topW": 12,
+      "botL": 18,
+      "botW": 12,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "0ec2c568-1adc-466e-926d-bfa9c8e4d6c1",
+    "brand": "三能",
+    "volume": 175,
+    "note": "SN60855;火山造型,單顆容積",
+    "count": 5,
+    "name": "火山模-5入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "11f1871e-873b-4389-9db2-2e2b696699c4",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5077",
+    "count": 1,
+    "name": "12\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 30.5,
+      "bottomD": 29.9,
+      "h": 8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "12dee52e-84d4-498e-a609-22f907a80114",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "迷你小吐司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 15.5,
+      "topW": 8.7,
+      "botL": 15.5,
+      "botW": 8.7,
+      "h": 4.8
+    },
+    "note": "WK9023;50g麵糰;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "12f984e2-56ac-4f4a-9e81-bb25a5c33be9",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "13吋不沾淺長方盤",
+    "shape": "rect",
+    "dims": {
+      "topL": 34.5,
+      "topW": 24.6,
+      "botL": 34.5,
+      "botW": 24.6,
+      "h": 2.5
+    },
+    "note": "WK9042;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "17884e98-d5c1-4365-a7c9-3d7f5412111f",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6201",
+    "count": 1,
+    "name": "小蛋糕模(1000系列不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 10,
+      "bottomD": 9.7,
+      "h": 2.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "19242e09-bf53-4f00-af5f-1be27f30fff6",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6602",
+    "count": 1,
+    "name": "海綿盒(陽極) 11×8.3cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 11,
+      "topW": 8.3,
+      "botL": 11,
+      "botW": 8.3,
+      "h": 4.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "19d01aff-927f-401e-81d4-8983924d581b",
+    "brand": "三能",
+    "volume": 110,
+    "note": "SN64265;貓爪造型,單顆容積",
+    "count": 5,
+    "name": "貓爪蛋糕模-5入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "1c02c35f-0242-4409-b15f-6a73b06ec0c9",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5123",
+    "count": 1,
+    "name": "10\"活動方型蛋糕模(硬膜)",
+    "shape": "square",
+    "dims": {
+      "topW": 25.4,
+      "botW": 25.4,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "1caee7f0-c9be-448a-9bb8-aa34eed16132",
+    "name": "圓塔模-5入(陽極) 8cm",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 8,
+      "h": 1.8
+    },
+    "volume": null,
+    "note": "SN62445;適用壓模SN4203",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "1ce10cfe-95b7-47fe-b85c-4520ce753488",
+    "brand": "三能",
+    "volume": 55,
+    "note": "SN61545",
+    "count": 5,
+    "name": "長方型模-5入(不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 8.8,
+      "topW": 4.4,
+      "botL": 8.8,
+      "botW": 4.4,
+      "h": 1.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "1f430960-2f70-4365-921d-469cc550538f",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2196;底徑依同款(SN2066)推估",
+    "count": 1,
+    "name": "低糖鑄鋁土司盒-450g",
+    "shape": "rect",
+    "dims": {
+      "topL": 19.6,
+      "topW": 10.6,
+      "botL": 18.5,
+      "botW": 10.1,
+      "h": 11
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "1fb5ff4a-4563-4367-9698-d2afe62ccccb",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2197",
+    "count": 1,
+    "name": "正方型低糖鑄鋁土司盒 10cm",
+    "shape": "square",
+    "dims": {
+      "topW": 10,
+      "botW": 10,
+      "h": 10
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "20a9d15d-9851-4c89-8f42-5d4b901e3cab",
+    "brand": "三能",
+    "volume": 80,
+    "note": "SN60435;半圓造型,單顆容積",
+    "count": 5,
+    "name": "淺半圓模-5入(陽極) Ø7cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "217f8dab-1cee-45b3-b9db-3be1db1ea6aa",
+    "brand": "三能",
+    "volume": 1850,
+    "note": "SN6827",
+    "count": 1,
+    "name": "雙層空心模(800系列不沾) 18cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 18,
+      "bottomD": 18,
+      "h": 9.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "231c9f5c-abb0-41d3-bb2f-238dc6042a4c",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2065",
+    "count": 1,
+    "name": "900g低糖健康土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 32.5,
+      "topW": 10.7,
+      "botL": 31.5,
+      "botW": 10,
+      "h": 12
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "24193c98-8d81-4ea1-9967-d53b9774e8de",
+    "brand": "三能",
+    "volume": 110,
+    "note": "SN61415;檸檬造型,單顆容積",
+    "count": 5,
+    "name": "檸檬模-5入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "25a50c96-5ae3-45bd-afd6-3af6118e8b4d",
+    "name": "8cm圓塔模-5入(陽極)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 8,
+      "h": 2
+    },
+    "volume": null,
+    "note": "SN60745;適用7cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "275a5a4e-aacf-4575-b452-36df08e21661",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN66065",
+    "count": 5,
+    "name": "海綿盒-5入(800不沾) 9.6×6.6cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 9.6,
+      "topW": 6.6,
+      "botL": 9.6,
+      "botW": 6.6,
+      "h": 4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "27726b20-7db2-4874-9591-b7616e90e737",
+    "brand": "三能",
+    "volume": 55,
+    "note": "SN60655;蛋塔造型,單顆容積",
+    "count": 5,
+    "name": "蛋塔模-5入(陽極) 7.6×4.6cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "2b4c1a1d-8b40-4015-b301-e3c5b37184d5",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6600",
+    "count": 1,
+    "name": "海綿盒(1000不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 11,
+      "topW": 8.3,
+      "botL": 11,
+      "botW": 8.3,
+      "h": 4.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "30347407-ec3d-4fda-97c0-4ad5c310e2e3",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2145;SN2147(同尺寸重複型號)",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾) 20×6.5",
+    "shape": "rect",
+    "dims": {
+      "topL": 20,
+      "topW": 6.5,
+      "botL": 19,
+      "botW": 6,
+      "h": 4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3192317a-b88d-4278-a2a3-f886fd1e76bf",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2064",
+    "count": 1,
+    "name": "1200g低糖健康土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 37,
+      "topW": 12,
+      "botL": 36.1,
+      "botW": 11.6,
+      "h": 12.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "35ab3ae4-ad45-406c-9d7e-c62386b09d2f",
+    "name": "7cm圓塔模-5入(硬膜)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 7,
+      "h": 2.5
+    },
+    "volume": null,
+    "note": "SN60725;適用6cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "35f74728-ce6a-4b16-94a1-7d0c21b6245c",
+    "brand": "三能",
+    "volume": 180,
+    "note": "SN6830",
+    "count": 1,
+    "name": "空心圓模(陽極,薄) 9.4cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 9.4,
+      "bottomD": 9.4,
+      "h": 3.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3a7cfc4a-b290-4e1e-b333-b50e2a2f76d9",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5022",
+    "count": 1,
+    "name": "6\"活動蛋糕模(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.7,
+      "h": 6.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3aca740b-e603-4c6d-8b47-761e8d6489a4",
+    "brand": "三能",
+    "volume": 30,
+    "note": "SN60415;半圓造型,單顆容積",
+    "count": 5,
+    "name": "淺半圓模-5入(陽極) Ø5.1cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3ba59d79-c747-4be0-a28a-38358c6d5a8b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2155",
+    "count": 1,
+    "name": "450g土司盒(全包直角)",
+    "shape": "rect",
+    "dims": {
+      "topL": 19.6,
+      "topW": 10.6,
+      "botL": 18.4,
+      "botW": 10.2,
+      "h": 11
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3db309ba-485b-46a8-a3c4-64a8f4e71259",
+    "brand": "三能",
+    "volume": 740,
+    "note": "SN2132",
+    "count": 1,
+    "name": "水果條磅蛋糕模 23×5",
+    "shape": "rect",
+    "dims": {
+      "topL": 23,
+      "topW": 5,
+      "botL": 23,
+      "botW": 4,
+      "h": 6.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "3f346908-7ff8-493e-bcfb-d7b52701f7b2",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "玫瑰金4吋蛋糕模(加高)",
+    "shape": "round",
+    "dims": {
+      "topD": 11.7,
+      "bottomD": 11.7,
+      "h": 9.9
+    },
+    "note": "WK9418;1mm鋁合金陽極,活動底,無塗層利於戚風攀爬;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "4072990a-cf9b-468a-98b8-b56b8bd86b5d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2120",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾,230g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 17.5,
+      "topW": 8.5,
+      "botL": 17.2,
+      "botW": 8.2,
+      "h": 7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "446386c6-8ccc-4042-a3e5-56ed0f04b7ef",
+    "brand": "三能",
+    "volume": 65,
+    "note": "SN6504",
+    "count": 1,
+    "name": "卡娜蕾鍍鋁模-中(800不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 4.4,
+      "bottomD": 4.4,
+      "h": 4.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "45f2029d-b7c8-49da-ba61-fedd0dc3894d",
+    "brand": "三能",
+    "volume": 55,
+    "note": "SN61435",
+    "count": 5,
+    "name": "長方型模-5入(陽極)",
+    "shape": "rect",
+    "dims": {
+      "topL": 8.8,
+      "topW": 4.5,
+      "botL": 8.8,
+      "botW": 4.5,
+      "h": 1.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "48996f29-3f4f-45f7-a9bd-05fc6a6a25f8",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5142",
+    "count": 1,
+    "name": "6\"活動凸點深蛋糕模(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.5,
+      "h": 8.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "48bd49a4-97a0-4b80-94ec-c4ef00fefc6f",
+    "brand": "三能",
+    "volume": 960,
+    "note": "SN6829",
+    "count": 1,
+    "name": "咕咕霍夫模(陽極) 14cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 14,
+      "bottomD": 14,
+      "h": 7.8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "49372689-f2bb-4ecc-959f-1ac1b732f2ea",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6867",
+    "count": 1,
+    "name": "乳酪蛋糕模(1000不沾) 14×7.2cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 14,
+      "topW": 7.2,
+      "botL": 14,
+      "botW": 7.2,
+      "h": 4.6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "49fce470-e4f4-4042-b67d-a1f40b81e6c4",
+    "brand": "三能",
+    "volume": 1500,
+    "note": "SN2410;麵糰270g",
+    "count": 1,
+    "name": "貓型土司盒",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4a6d0651-1182-43d0-b840-90b8a4d196c6",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6214;麵糰80g",
+    "count": 1,
+    "name": "長方型模(1000不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 11.4,
+      "topW": 5.9,
+      "botL": 11.4,
+      "botW": 5.9,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4b99f88b-bd00-4fcc-8a74-384d2ce56851",
+    "name": "5cm圓塔模-5入(硬膜)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 5,
+      "h": 2.2
+    },
+    "volume": null,
+    "note": "SN60695;適用4cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4c99ae54-8980-43ba-a77a-ca4395211511",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5021",
+    "count": 1,
+    "name": "6\"活動蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.7,
+      "h": 6.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4d51f978-6c0e-4300-8208-c51747b1ddc4",
+    "brand": "三能",
+    "volume": 95,
+    "note": "SN62915;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) 6.8×4.6cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4dfa5698-0e73-4e5d-84bf-7b9133b5e98d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5013",
+    "count": 1,
+    "name": "5\"固定蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 12.7,
+      "bottomD": 12.3,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "4e3a0a1f-86ae-4221-a4d1-e7fe68ba0774",
+    "name": "5cm圓塔模-5入(1000不沾)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 5,
+      "h": 2.2
+    },
+    "volume": null,
+    "note": "SN64075",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "500333d5-6411-4068-8415-9f08e82619e3",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5001",
+    "count": 1,
+    "name": "4\"活動蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 10.2,
+      "bottomD": 9.8,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "51234c97-bd22-4cfd-bb25-3833fdcd91ca",
+    "brand": "三能",
+    "volume": 390,
+    "note": "SN6865;半圓造型",
+    "count": 1,
+    "name": "半圓蛋糕模(1000不沾) Ø10cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5126455a-06a3-406c-96a5-ff3b10137b8d",
+    "brand": "三能",
+    "volume": 410,
+    "note": "SN6230;瓣紋造型",
+    "count": 1,
+    "name": "低糖布里歐模-14瓣(森不沾) 14cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "515f54e5-0095-4f40-a5bc-83fe2e18e18c",
+    "brand": "三能",
+    "volume": 280,
+    "note": "SN6234;瓣紋造型",
+    "count": 1,
+    "name": "低糖布里歐模-12瓣(森不沾)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5232a07e-2a9e-4445-b4b1-492dd49fe23d",
+    "brand": "三能",
+    "volume": 95,
+    "note": "SN62275;瓣紋造型,單顆容積",
+    "count": 5,
+    "name": "布里歐模-5入",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "52903d76-758a-4070-825b-7c89ef0c0075",
+    "brand": "三能",
+    "volume": 95,
+    "note": "SN62395;瓣紋造型,單顆容積",
+    "count": 5,
+    "name": "低糖布里歐模-5入 小",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "531c945c-ac48-41cd-8898-2156f9cc5b4d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5012",
+    "count": 1,
+    "name": "5\"活動蛋糕模(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 12.7,
+      "bottomD": 12.3,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "54d3c6c0-1b9d-41cd-8bd4-0e19f6feb727",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN60325",
+    "count": 5,
+    "name": "大圓模-5入(1000不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 10.5,
+      "bottomD": 9,
+      "h": 3.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "55134fd6-4612-46ed-a5f9-22603a27abdf",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2014",
+    "count": 1,
+    "name": "1000g土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 32.7,
+      "topW": 12.1,
+      "botL": 32.7,
+      "botW": 12.1,
+      "h": 12.1
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5587709f-cc6e-4bac-80ac-ae978235559d",
+    "brand": "三能",
+    "volume": 65,
+    "note": "MT-340416",
+    "count": 1,
+    "name": "卡娜蕾銅模-中(MT)",
+    "shape": "round",
+    "dims": {
+      "topD": 4.5,
+      "bottomD": 4.5,
+      "h": 4.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "55bd300b-87aa-4fd7-a041-ca7520527eae",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5047",
+    "count": 1,
+    "name": "8\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 20.3,
+      "bottomD": 19.7,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5627c576-27d0-4735-87a2-04457f0bb1ad",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5037",
+    "count": 1,
+    "name": "7\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 17.8,
+      "bottomD": 17.2,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "568cee6d-3d28-447f-8b19-6faac0f2641c",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色11吋方形捲邊深烤模",
+    "shape": "square",
+    "dims": {
+      "topW": 28.6,
+      "botW": 28.6,
+      "h": 3.5
+    },
+    "note": "WK9076;重型碳鋼捲邊;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "56fa7a66-c5af-4dbc-8baa-8d542325e01e",
+    "brand": "三能",
+    "volume": 1600,
+    "note": "UN16001",
+    "count": 1,
+    "name": "15cm戚風蛋糕模組",
+    "shape": "tube",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 13,
+      "h": 11.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "57723664-1a7d-4834-ac0e-102534956b9e",
+    "brand": "三能",
+    "volume": 1180,
+    "note": "SN6809",
+    "count": 1,
+    "name": "八星菊花模(800系列不沾) 13.2cm",
+    "shape": "round",
+    "dims": {
+      "topD": 13.2,
+      "bottomD": 13.2,
+      "h": 10.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "578f3760-fd0e-4a53-9826-6970f52c8bfd",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "13吋淺長方烤盤(配蓋)",
+    "shape": "rect",
+    "dims": {
+      "topL": 36.6,
+      "topW": 24.8,
+      "botL": 36.6,
+      "botW": 24.8,
+      "h": 5.3
+    },
+    "note": "WK9813;含防塵蓋;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "583be9a7-96b0-47bc-a0d6-6490ed79f5de",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "黑色中號不沾模",
+    "shape": "rect",
+    "dims": {
+      "topL": 25.5,
+      "topW": 13.2,
+      "botL": 25.5,
+      "botW": 13.2,
+      "h": 6.2
+    },
+    "note": "WK112009;中號規格;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "59588269-7b4c-4283-8930-36d9465dd3f7",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5010",
+    "count": 1,
+    "name": "5\"固定蛋糕模(1000不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 12.7,
+      "bottomD": 12.3,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "596c2b45-881c-4b9a-8ef9-a3a6b10bc97a",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5057",
+    "count": 1,
+    "name": "9\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 22.9,
+      "bottomD": 22.3,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "59aa049c-b501-4275-be98-1aba8e1d19e4",
+    "name": "8cm圓塔模-5入(硬膜)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 8,
+      "h": 2
+    },
+    "volume": null,
+    "note": "SN60755;適用7cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5a807992-2e30-4e6c-af80-4198f60d413d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5133",
+    "count": 1,
+    "name": "10\"固定方型蛋糕模(1000不沾)",
+    "shape": "square",
+    "dims": {
+      "topW": 25.4,
+      "botW": 25.4,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5b694778-5157-4448-a9ba-307d79217716",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5027",
+    "count": 1,
+    "name": "6\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.7,
+      "h": 7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5da41537-cbf0-4589-9bd6-b0cbb8e82863",
+    "brand": "三能",
+    "volume": 1150,
+    "note": "SN6850",
+    "count": 1,
+    "name": "平底空心圓模(1000不沾)",
+    "shape": "tube",
+    "dims": {
+      "topD": 16.4,
+      "bottomD": 15.4,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5f215d69-62b3-4a7e-947d-7d36fbdebb38",
+    "brand": "三能",
+    "volume": 2100,
+    "note": "SN2307;心型造型",
+    "count": 1,
+    "name": "心型土司盒(300g)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "5fdb9d2e-ea6e-4363-9ab3-68633f78aefd",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5023",
+    "count": 1,
+    "name": "6\"固定蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.7,
+      "h": 7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "60179159-273d-4256-8dc8-4ac5fdab955d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2195;麵糰250g,無尾熊壓紋",
+    "count": 1,
+    "name": "鑄鋁土司盒-無尾熊 250g",
+    "shape": "rect",
+    "dims": {
+      "topL": 16,
+      "topW": 9.4,
+      "botL": 16,
+      "botW": 9.4,
+      "h": 7.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6067ae8d-5359-442e-87a6-6373dfd1d724",
+    "brand": "三能",
+    "volume": 1550,
+    "note": "SN2412;麵糰280g",
+    "count": 1,
+    "name": "熊型土司盒",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "60dc3e6e-952d-44cb-a8d4-acb5e4e5f1b8",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN62135",
+    "count": 5,
+    "name": "方型模-5入(1000不沾)",
+    "shape": "square",
+    "dims": {
+      "topW": 6,
+      "botW": 6,
+      "h": 3.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6252a158-9690-4e70-b9ad-800d8c97fbb0",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6257",
+    "count": 1,
+    "name": "鋁合金長條模(1500不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 17.1,
+      "topW": 6.5,
+      "botL": 17.1,
+      "botW": 6.5,
+      "h": 3.6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "62b7b42a-d1b5-44b1-8817-052a304a7977",
+    "brand": "三能",
+    "volume": 850,
+    "note": "SN2414;麵糰180g",
+    "count": 1,
+    "name": "雲朵土司盒",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "647cf6a9-c3a1-41fc-8c84-1ef1b9c54f6d",
+    "brand": "三能",
+    "volume": 1180,
+    "note": "SN6825;SN6826(同尺寸重複型號)",
+    "count": 1,
+    "name": "淺雙層空心模(800不沾) 17.9cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 17.9,
+      "bottomD": 17.9,
+      "h": 6.3
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "64b929c7-004c-461f-9c35-d9bf65684bc3",
+    "brand": "三能",
+    "volume": 165,
+    "note": "SN62265;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) Ø9.4cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "69ada247-5970-4a66-9e94-5a6f58495d05",
+    "brand": "三能",
+    "volume": 50,
+    "note": "SN6402;橢圓菊花造型",
+    "count": 1,
+    "name": "橢圓菊花蛋糕模(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6a6888fc-318f-474f-b7e7-c938533c5942",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色11吋正方形水果捲模",
+    "shape": "square",
+    "dims": {
+      "topW": 27.8,
+      "botW": 27.8,
+      "h": 2.9
+    },
+    "note": "WK9055;輕量化鋁合金;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "6b803f6e-7035-4a11-bdf7-d1e26263569b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2143",
+    "count": 1,
+    "name": "磅蛋糕模(陽極) 16.9×7.9",
+    "shape": "rect",
+    "dims": {
+      "topL": 16.9,
+      "topW": 7.9,
+      "botL": 16.9,
+      "botW": 7.9,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6bb7b81b-93ac-40dd-bd0a-28f5af45092e",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2067;麵糰225g",
+    "count": 1,
+    "name": "低糖健康土司盒-本體",
+    "shape": "rect",
+    "dims": {
+      "topL": 18.1,
+      "topW": 9.1,
+      "botL": 17,
+      "botW": 7.3,
+      "h": 7.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6c01b29b-0eae-43fa-a176-bf109879af08",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5125",
+    "count": 1,
+    "name": "12\"活動方型蛋糕模(硬膜)",
+    "shape": "square",
+    "dims": {
+      "topW": 30.5,
+      "botW": 30.5,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6ced0abc-4f47-4311-a0f6-0b230d559955",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2073",
+    "count": 1,
+    "name": "磅蛋糕模(陽極,40g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 10,
+      "topW": 5.6,
+      "botL": 9.2,
+      "botW": 4.8,
+      "h": 3.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6e2251c6-e689-4908-8bbf-c31b463fe4d7",
+    "brand": "三能",
+    "volume": 1200,
+    "note": "SN2308;鑽石造型,非長方體",
+    "count": 1,
+    "name": "95g鑽石土司模(1000不沾)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "6e9d7fe3-9aad-48bc-8014-78254a21fbf1",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN66075",
+    "count": 5,
+    "name": "海綿盒-5入(800不沾) 11×8.3cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 11,
+      "topW": 8.3,
+      "botL": 11,
+      "botW": 8.3,
+      "h": 4.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "70222e38-917b-4384-b3d3-651b9ca23a0a",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5162",
+    "count": 1,
+    "name": "5\"活動蛋糕模(淼系列不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 12.7,
+      "bottomD": 12.3,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "71812f3f-6941-4c56-a39a-40e1715d045e",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5042",
+    "count": 1,
+    "name": "8\"活動蛋糕模(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 20.3,
+      "bottomD": 19.7,
+      "h": 7.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7278fcb1-3874-40be-b8b8-296670143d04",
+    "brand": "三能",
+    "volume": 55,
+    "note": "SN6237;半圓菊花造型",
+    "count": 1,
+    "name": "半圓菊花模(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7284f26f-0d36-425c-bc5a-03896c0abc4c",
+    "brand": "三能",
+    "volume": 55,
+    "note": "SN60425;半圓造型,單顆容積",
+    "count": 5,
+    "name": "淺半圓模-5入(陽極) Ø6.1cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "72ff5ef2-582a-47c6-a668-7ef77baaa267",
+    "brand": "三能",
+    "volume": 120,
+    "note": "SN62925;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) 7.3×5cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "751ad97b-1c18-40a6-a03d-0e07f2104d25",
+    "brand": "三能",
+    "volume": 110,
+    "note": "SN6502",
+    "count": 1,
+    "name": "卡娜蕾銅模-大",
+    "shape": "round",
+    "dims": {
+      "topD": 5.5,
+      "bottomD": 5.5,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "759ed61e-5a10-4882-b781-b616f3316f7a",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5067",
+    "count": 1,
+    "name": "10\"固定凸點蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 25.4,
+      "bottomD": 24.8,
+      "h": 8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "76128baf-e1e9-40af-b938-6d17cf9f03a3",
+    "brand": "三能",
+    "volume": 3450,
+    "note": "SN6824",
+    "count": 1,
+    "name": "咕咕霍夫模(陽極) 22cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 22,
+      "bottomD": 22,
+      "h": 11.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "76ffbf50-19d5-42b1-bd1d-0664b7114b6c",
+    "brand": "三能",
+    "volume": 15,
+    "note": "SN61825;椰子造型,單顆容積",
+    "count": 5,
+    "name": "椰子模-5入(陽極) 4.9×2.6cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7760ac43-0c48-4e8e-91f5-3536898ce1be",
+    "brand": "三能",
+    "volume": 3743,
+    "note": "SN2304",
+    "count": 1,
+    "name": "圓土司盒(750g)",
+    "shape": "log",
+    "dims": {
+      "d": 12,
+      "length": 33.1
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "78452bd0-3e5f-465f-8abf-b628f1fbc0fa",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5011",
+    "count": 1,
+    "name": "5\"活動蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 12.7,
+      "bottomD": 12.3,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "78808c32-6d5d-4804-8d1c-d334df8b354e",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2125",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾,250g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 24,
+      "topW": 7.7,
+      "botL": 23.6,
+      "botW": 7.3,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "78bc710d-da54-4bcb-b283-382c61353dc7",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "半熟芝士模套裝",
+    "shape": "rect",
+    "dims": {
+      "topL": 6.7,
+      "topW": 5,
+      "botL": 6.7,
+      "botW": 5,
+      "h": 2.6
+    },
+    "note": "WK9779;4件套裝(含不沾油布);外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "78d297fa-7128-4cb9-a7dd-99169e04cda0",
+    "brand": "三能",
+    "volume": 580,
+    "note": "SN6832",
+    "count": 1,
+    "name": "空心圓模(陽極) 13cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 13,
+      "bottomD": 13,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "79621273-97f6-433e-93ea-47cdd52352ab",
+    "brand": "三能",
+    "volume": 180,
+    "note": "SN6839",
+    "count": 1,
+    "name": "空心圓模(800不沾) 9.4cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 9.4,
+      "bottomD": 9.4,
+      "h": 3.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "79df5678-548e-43b1-b1f1-85b3c9c3cb79",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5041",
+    "count": 1,
+    "name": "8\"活動蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 20.3,
+      "bottomD": 19.7,
+      "h": 7.4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "79f980f9-2a97-4263-886d-a7c30029fb42",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色水立方吐司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 11.5,
+      "topW": 11.4,
+      "botL": 11.5,
+      "botW": 11.4,
+      "h": 10.6
+    },
+    "note": "WK9317;250g麵糰;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "7a4f849f-dcf0-4e8c-a26e-1a3a1ffbfab3",
+    "brand": "三能",
+    "volume": 150,
+    "note": "SN62935;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) 7.9×5.3cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7a594382-68e7-4049-9c5d-188ee949598f",
+    "brand": "三能",
+    "volume": 1100,
+    "note": "SN2063;麵糰230g",
+    "count": 1,
+    "name": "房屋低糖健康土司盒 小",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7c057924-0524-4594-baf9-ee4f90bdee58",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6601",
+    "count": 1,
+    "name": "海綿盒(陽極) 9.6×6.6cm",
+    "shape": "rect",
+    "dims": {
+      "topL": 9.6,
+      "topW": 6.6,
+      "botL": 9.6,
+      "botW": 6.6,
+      "h": 4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7c30b9b0-2b27-4ee0-beb3-21c85a17faf9",
+    "brand": "三能",
+    "volume": 60,
+    "note": "SN6147;橢圓造型",
+    "count": 1,
+    "name": "橢圓模(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "7e8f785f-cff0-48de-8288-145ab66b0a98",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2121;底徑依同尺寸款(SN2074/SN2174)推估",
+    "count": 1,
+    "name": "磅蛋糕模(800不沾) 15.1×6.7",
+    "shape": "rect",
+    "dims": {
+      "topL": 15.1,
+      "topW": 6.7,
+      "botL": 14.2,
+      "botW": 5.8,
+      "h": 6.6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "80836b9f-f3fa-4b04-9ab1-d2a4b0fca153",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2198",
+    "count": 1,
+    "name": "正方型低糖鑄鋁土司盒 7.5cm",
+    "shape": "square",
+    "dims": {
+      "topW": 7.5,
+      "botW": 7.5,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "80a382ff-1da3-4f88-bfbf-38dafc552391",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2052",
+    "count": 1,
+    "name": "450g土司盒-本體",
+    "shape": "rect",
+    "dims": {
+      "topL": 19.7,
+      "topW": 10.6,
+      "botL": 19.7,
+      "botW": 10.6,
+      "h": 11
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "81e09891-13af-49a2-a078-79b440172af5",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2183",
+    "count": 1,
+    "name": "正方型波紋土司盒",
+    "shape": "square",
+    "dims": {
+      "topW": 10,
+      "botW": 10,
+      "h": 10
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "82949357-ba08-4612-97d0-b37338f449de",
+    "name": "7cm圓塔模-5入(陽極)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 7,
+      "h": 2.5
+    },
+    "volume": null,
+    "note": "SN60715;適用6cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "86029a01-3f59-415e-b523-c9969ffef48c",
+    "brand": "三能",
+    "volume": 1400,
+    "note": "SN2102;階梯造型",
+    "count": 1,
+    "name": "跳箱土司盒(400g)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "8895f1e3-b591-4c0b-b73f-0d783b3ef2b1",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色6吋活動圓模",
+    "shape": "round",
+    "dims": {
+      "topD": 16.8,
+      "bottomD": 16.8,
+      "h": 7
+    },
+    "note": "WK9052;重型碳鋼,捲邊防翹曲;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "88ef76e9-b3b9-4de3-b7ae-f8de7ad61d19",
+    "brand": "三能",
+    "volume": 240,
+    "note": "SN60845;瑪芬紙杯造型,單顆容積",
+    "count": 5,
+    "name": "瑪芬模-5入(1000不沾)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "8af4760e-1a58-4551-bbde-58e77bc0f7d3",
+    "brand": "三能",
+    "volume": 50,
+    "note": "SN61525;船型造型,單顆容積",
+    "count": 5,
+    "name": "船型模-5入(陽極) 11×5.5cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "8b4211af-8df4-4f32-a60b-6863ad2337f3",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6260",
+    "count": 1,
+    "name": "鋁合金大圓模(1500不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 14,
+      "bottomD": 12.2,
+      "h": 4.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "8cb32c59-fff4-462f-9e1b-4e0ccd117a9b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2191;麵糰250g",
+    "count": 1,
+    "name": "低糖鑄鋁土司盒-250g",
+    "shape": "rect",
+    "dims": {
+      "topL": 16,
+      "topW": 9.4,
+      "botL": 16,
+      "botW": 9.4,
+      "h": 7.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "8e2906af-3289-4d86-9539-f623b7ae6d42",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5002",
+    "count": 1,
+    "name": "4\"活動蛋糕模(陽極)",
+    "shape": "round",
+    "dims": {
+      "topD": 10.2,
+      "bottomD": 9.8,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "924a551a-1ee7-4681-91c1-32eee1b4d28d",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "小號1磅蛋糕模",
+    "shape": "rect",
+    "dims": {
+      "topL": 18.2,
+      "topW": 11.3,
+      "botL": 18.2,
+      "botW": 11.3,
+      "h": 6.2
+    },
+    "note": "WK9064;1磅/約300g麵糰;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "92bbb1e6-4b2d-4eb2-aea3-ec36edf2e7a6",
+    "name": "圓塔模-5入(陽極) 7cm",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 7,
+      "h": 1.7
+    },
+    "volume": null,
+    "note": "SN62425;適用壓模SN4201",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "94616e3d-000b-46e7-9b86-4976ba4d1e03",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2076;麵糰175g",
+    "count": 1,
+    "name": "水果條磅蛋糕模 175g",
+    "shape": "rect",
+    "dims": {
+      "topL": 21,
+      "topW": 7.7,
+      "botL": 20.6,
+      "botW": 7.3,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "977ac672-2ee6-4bc3-baf6-08530f411581",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色波紋帶蓋吐司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 21.9,
+      "topW": 11.9,
+      "botL": 21.9,
+      "botW": 11.9,
+      "h": 11.2
+    },
+    "note": "WK9088;450g(12兩);外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "979dab8a-01c4-4a69-8d09-4106a747a7da",
+    "brand": "三能",
+    "volume": 1180,
+    "note": "SN6815",
+    "count": 1,
+    "name": "空心圓模(1000不沾) 17.8cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 17.8,
+      "bottomD": 17.8,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "98dafe4d-e5b5-493a-91e9-c1e3772ab00c",
+    "brand": "三能",
+    "volume": 240,
+    "note": "SN62045;星型造型,單顆容積",
+    "count": 5,
+    "name": "星型模-5入(1000不沾)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "9936ab0f-9b08-4d8a-9355-d0d31257dfbd",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5163",
+    "count": 1,
+    "name": "6\"活動蛋糕模(淼系列不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.7,
+      "h": 6.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "9cabaaf6-1bce-4e0a-ac69-65a6b72332f0",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2066",
+    "count": 1,
+    "name": "450g低糖健康土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 19.6,
+      "topW": 10.6,
+      "botL": 18.5,
+      "botW": 10.1,
+      "h": 11
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "9f920e4f-0fdc-404a-b85f-c68700827f48",
+    "brand": "三能",
+    "volume": 2150,
+    "note": "SN6834",
+    "count": 1,
+    "name": "空心圓模(陽極) 21.5cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 21.5,
+      "bottomD": 21.5,
+      "h": 7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a2659ae1-4d5e-4567-b2cf-9e36d406804d",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2329;波紋壓花",
+    "count": 1,
+    "name": "250g節能波紋土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 16,
+      "topW": 9.4,
+      "botL": 15.6,
+      "botW": 8.8,
+      "h": 7.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a47464bb-6a63-45e4-9cf8-d85937e9c658",
+    "name": "圓塔模-5入(陽極) 6.5cm",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 6.5,
+      "h": 1.7
+    },
+    "volume": null,
+    "note": "SN62415;適用壓模SN4200",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a5b8a5dd-d508-4467-84f6-600471bfa644",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2146;SN2148(同尺寸重複型號)",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾) 23×4.5",
+    "shape": "rect",
+    "dims": {
+      "topL": 23,
+      "topW": 4.5,
+      "botL": 22,
+      "botW": 3.5,
+      "h": 4.6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a762380d-b396-470a-94a8-b4ae10ebe9a4",
+    "name": "5cm圓塔模-5入(陽極)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 5,
+      "h": 2.2
+    },
+    "volume": null,
+    "note": "SN60685;適用4cm壓模",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a84eca09-9791-40c8-95b4-d8e8b8935668",
+    "brand": "三能",
+    "volume": 110,
+    "note": "SN6503",
+    "count": 1,
+    "name": "卡娜蕾鍍鋁模-大(不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 5.5,
+      "bottomD": 5.5,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "a97498ba-33ae-4e9a-bf84-b29dc340fd03",
+    "brand": "三能",
+    "volume": 1180,
+    "note": "SN6833",
+    "count": 1,
+    "name": "空心圓模(陽極) 17.8cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 17.8,
+      "bottomD": 17.8,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "aaf125dc-1bc8-4972-8315-9511ea87c0d6",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5131",
+    "count": 1,
+    "name": "8\"固定方型蛋糕模(1000不沾)",
+    "shape": "square",
+    "dims": {
+      "topW": 20.3,
+      "botW": 20.3,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "add7e6df-fb79-47d3-9ccc-27b5365251ce",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2181",
+    "count": 1,
+    "name": "正方型土司盒(110g)",
+    "shape": "square",
+    "dims": {
+      "topW": 10,
+      "botW": 10,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "af1be559-5403-4877-a14b-09243adcbf18",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2326;波紋壓花",
+    "count": 1,
+    "name": "450g低糖健康波紋土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 19.6,
+      "topW": 10.6,
+      "botL": 18.5,
+      "botW": 10.1,
+      "h": 11
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "af4b3b42-61ed-4ca3-a244-a2486cee9451",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5121",
+    "count": 1,
+    "name": "8\"活動方型蛋糕模(硬膜)",
+    "shape": "square",
+    "dims": {
+      "topW": 20.3,
+      "botW": 20.3,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "afac27a9-6198-4e64-9edb-da933c1e42be",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2126",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾,215g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 21,
+      "topW": 7.7,
+      "botL": 20.6,
+      "botW": 7.3,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "b08cc611-3147-4716-a330-38c26d8deed8",
+    "brand": "三能",
+    "volume": 1900,
+    "note": "SN2306;梅花造型",
+    "count": 1,
+    "name": "梅花型土司盒(350g)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "b1a94b03-6d5f-4791-878e-0c04b1ec4412",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2135",
+    "count": 1,
+    "name": "磅蛋糕模(800不沾) 27×5.5",
+    "shape": "rect",
+    "dims": {
+      "topL": 27,
+      "topW": 5.5,
+      "botL": 27,
+      "botW": 5.5,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "b26b9a83-2f64-4f08-84f5-a8c3948d6a66",
+    "brand": "三能",
+    "volume": 1290,
+    "note": "SN6864;半圓造型",
+    "count": 1,
+    "name": "半圓蛋糕模(1000不沾) Ø15cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "b6dbd6e8-f83b-4228-b088-91399747fddd",
+    "brand": "三能",
+    "volume": 30,
+    "note": "SN61515;船型造型,單顆容積",
+    "count": 5,
+    "name": "船型模-5入(陽極) 9×4cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "bb353d46-9255-4620-b0a7-b7e4d4c3ba3c",
+    "brand": "三能",
+    "volume": 477,
+    "note": "SN2301",
+    "count": 1,
+    "name": "圓土司模(110g)",
+    "shape": "log",
+    "dims": {
+      "d": 4.5,
+      "length": 30
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "bc792959-095c-4ac4-9c16-49fa7eda2921",
+    "brand": "三能",
+    "volume": 75,
+    "note": "SN61945;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) 8×4.8cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "be7068b6-3cc3-484f-b76a-5fe2e7b4f286",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5043",
+    "count": 1,
+    "name": "8\"固定蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 20.3,
+      "bottomD": 19.7,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "be85e149-bac4-4bcf-be65-12fbd30dfc3b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2093;麵糰145g",
+    "count": 1,
+    "name": "土司盒(不沾) 18×6",
+    "shape": "rect",
+    "dims": {
+      "topL": 18,
+      "topW": 6,
+      "botL": 18,
+      "botW": 6,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "bf28e172-a47e-43de-ba2e-0912eda24f21",
+    "brand": "三能",
+    "volume": 85,
+    "note": "SN6048;半圓花型造型",
+    "count": 1,
+    "name": "半圓小花蛋糕模(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "bf53411e-b22c-416a-8f72-ed5186183596",
+    "brand": "三能",
+    "volume": 2800,
+    "note": "UN16002",
+    "count": 1,
+    "name": "20cm戚風蛋糕模組",
+    "shape": "tube",
+    "dims": {
+      "topD": 20.3,
+      "bottomD": 18.2,
+      "h": 11.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "bfccc721-c021-4149-a8f3-7e76d53eb706",
+    "brand": "三能",
+    "volume": 1180,
+    "note": "SN6821;SN6820(同尺寸重複型號)",
+    "count": 1,
+    "name": "淺雙層空心模(陽極) 17.9cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 17.9,
+      "bottomD": 17.9,
+      "h": 6.3
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:42:29.732Z",
+    "updatedAt": "2026-07-09T13:42:29.732Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c0034ed9-4da3-4d53-9139-2087d1dc9070",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2180",
+    "count": 1,
+    "name": "正方型土司盒(95g)",
+    "shape": "square",
+    "dims": {
+      "topW": 7.5,
+      "botW": 7.5,
+      "h": 7.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c0e7335d-005e-446c-a78d-1af74112d60a",
+    "brand": "三能",
+    "volume": 110,
+    "note": "SN61416;檸檬造型,單顆容積",
+    "count": 10,
+    "name": "檸檬模-10入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c1b6325c-7182-47e4-a371-cebbd8100283",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5161",
+    "count": 1,
+    "name": "4\"活動蛋糕模(淼系列不沾)",
+    "shape": "round",
+    "dims": {
+      "topD": 10.2,
+      "bottomD": 9.8,
+      "h": 5.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c29af372-e002-4337-bfb6-aae7e27029b1",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2119",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾) 13×5",
+    "shape": "rect",
+    "dims": {
+      "topL": 13,
+      "topW": 5,
+      "botL": 13,
+      "botW": 5,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c3d0e354-f41d-4822-acf0-9aa293b5d05c",
+    "brand": "三能",
+    "volume": 550,
+    "note": "SN6814;菊花造型",
+    "count": 1,
+    "name": "固定菊花模(1000不沾)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c5209f46-c7e3-4f85-92f4-0bd7aab145c4",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2170",
+    "count": 1,
+    "name": "250g深土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 15.7,
+      "topW": 8.5,
+      "botL": 14.8,
+      "botW": 8,
+      "h": 8.8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c52ef37a-3456-4f6f-99ba-8e4220726755",
+    "brand": "三能",
+    "volume": 65,
+    "note": "SN61855;椰子造型,單顆容積",
+    "count": 5,
+    "name": "椰子模-5入(陽極) 8.1×5cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c8183247-3843-479a-a013-f3b0c8342dde",
+    "brand": "三能",
+    "volume": 105,
+    "note": "SN64055;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕沖孔模-5入",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c8470afb-5747-4949-8dba-cab2a7d4fdc0",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2118",
+    "count": 1,
+    "name": "磅蛋糕模(1000不沾) 11×6",
+    "shape": "rect",
+    "dims": {
+      "topL": 11,
+      "topW": 6,
+      "botL": 11,
+      "botW": 6,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "c9b87fb7-2f6f-4475-8ad2-2288aac9b3ff",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2092;麵糰265g",
+    "count": 1,
+    "name": "土司盒(不沾) 18×12",
+    "shape": "rect",
+    "dims": {
+      "topL": 18,
+      "topW": 12,
+      "botL": 18,
+      "botW": 12,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "cdebba7a-2b86-42b3-a620-43741ea36665",
+    "brand": "三能",
+    "volume": 1600,
+    "note": "SN2411;麵糰270g",
+    "count": 1,
+    "name": "兔型土司盒",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "ce188102-e002-4763-974a-81e95014d53f",
+    "brand": "三能",
+    "volume": 185,
+    "note": "SN63035;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) 10.5×8.1cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d253e9c9-7d9f-41c2-a883-1cfb94fa8319",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2072",
+    "count": 1,
+    "name": "磅蛋糕模(陽極,70g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 12.8,
+      "topW": 6.6,
+      "botL": 11.8,
+      "botW": 5.6,
+      "h": 4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d28c96c9-835a-4a04-9fb2-c7d7e6a0aa3b",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2068",
+    "count": 1,
+    "name": "1000g低糖健康土司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 32.7,
+      "topW": 12.1,
+      "botL": 31.2,
+      "botW": 11.9,
+      "h": 12.1
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d432b512-7e0c-4b53-962b-6b8d5052a1d0",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2179",
+    "count": 1,
+    "name": "正方型土司盒(50g)",
+    "shape": "square",
+    "dims": {
+      "topW": 6,
+      "botW": 6,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d4d2b284-0e87-41d3-845c-343b1a8d0797",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6259",
+    "count": 1,
+    "name": "鋁合金長方模(1500不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 13.9,
+      "topW": 8,
+      "botL": 13.9,
+      "botW": 8,
+      "h": 4.8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d6d15965-3f05-47cd-bd06-e9139c0fc47c",
+    "brand": "三能",
+    "volume": 2741,
+    "note": "SN2305",
+    "count": 1,
+    "name": "波紋圓土司盒(600g)",
+    "shape": "log",
+    "dims": {
+      "d": 12.4,
+      "length": 22.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d7780fea-ad56-4143-a8f5-ae76d0ad510c",
+    "brand": "三能",
+    "volume": 30,
+    "note": "SN61615;船型造型,單顆容積",
+    "count": 5,
+    "name": "船型菊花模-5入(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "d9be55a0-fc1f-4572-af7c-9c9272ccd0d0",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2074",
+    "count": 1,
+    "name": "磅蛋糕模(陽極,135g)",
+    "shape": "rect",
+    "dims": {
+      "topL": 15.1,
+      "topW": 6.7,
+      "botL": 14.2,
+      "botW": 5.8,
+      "h": 6.6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "dd8bb14d-73ca-4e0a-809a-9a90da9e44c1",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2078;麵糰285g",
+    "count": 1,
+    "name": "水果條磅蛋糕模 285g",
+    "shape": "rect",
+    "dims": {
+      "topL": 17.5,
+      "topW": 9,
+      "botL": 17.2,
+      "botW": 8.7,
+      "h": 8.3
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "deaae075-717b-4926-b348-0d99e53713af",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2075;麵糰250g",
+    "count": 1,
+    "name": "水果條磅蛋糕模 250g",
+    "shape": "rect",
+    "dims": {
+      "topL": 24,
+      "topW": 7.7,
+      "botL": 23.6,
+      "botW": 7.3,
+      "h": 6.2
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "df19ad28-13a1-4f1f-8fd8-9a3a6a5c0abc",
+    "brand": "三能",
+    "volume": 650,
+    "note": "SN6235;瓣紋造型,容積非柱體公式",
+    "count": 1,
+    "name": "低糖布里歐模-14瓣(森不沾) 16cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e2cd72c0-528d-4517-ba96-b712540e692f",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色長條不沾吐司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 22.3,
+      "topW": 8.7,
+      "botL": 22.3,
+      "botW": 8.7,
+      "h": 7.7
+    },
+    "note": "WK9403;300g麵糰;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "e47866c6-0306-4941-aad0-fcd7841bdd88",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "黑色4吋活底圓模",
+    "shape": "round",
+    "dims": {
+      "topD": 11.9,
+      "bottomD": 11.9,
+      "h": 7.5
+    },
+    "note": "WK9935;重型碳鋼,加厚黑色不沾;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "e47f5d2f-c487-4794-bd98-11cea455c6bc",
+    "brand": "三能",
+    "volume": 25,
+    "note": "SN61835;椰子造型,單顆容積",
+    "count": 5,
+    "name": "椰子模-5入(陽極) 6×3cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e4ff21bb-36a6-4715-98c4-7c540053e3a9",
+    "brand": "三能",
+    "volume": 135,
+    "note": "SN6281;花型造型",
+    "count": 1,
+    "name": "小花蛋糕模(陽極)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e554a36d-bb53-4f75-b5e6-b52a02dc68a9",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5141",
+    "count": 1,
+    "name": "6\"活動凸點深蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 15.2,
+      "bottomD": 14.5,
+      "h": 8.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e5c3aa3c-6aa9-4e7e-8109-084c30184475",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5003",
+    "count": 1,
+    "name": "4\"固定蛋糕模(硬膜)",
+    "shape": "round",
+    "dims": {
+      "topD": 10.2,
+      "bottomD": 9.7,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e6152f62-70e4-493b-86ff-6b2e47f1015a",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2070;麵糰230g",
+    "count": 1,
+    "name": "水果條磅蛋糕模 230g",
+    "shape": "rect",
+    "dims": {
+      "topL": 17.5,
+      "topW": 8.5,
+      "botL": 17.2,
+      "botW": 8.2,
+      "h": 7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e6d61780-7688-4004-85ab-4651e1d8f4f2",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6866",
+    "count": 1,
+    "name": "乳酪蛋糕模(800不沾)",
+    "shape": "rect",
+    "dims": {
+      "topL": 17,
+      "topW": 6.5,
+      "botL": 17,
+      "botW": 6.5,
+      "h": 3.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e87e406b-5492-46e0-b012-ad6359eeeb3c",
+    "brand": "三能",
+    "volume": 560,
+    "note": "SN6258",
+    "count": 1,
+    "name": "鋁合金空心圓模(1500不沾)",
+    "shape": "tube",
+    "dims": {
+      "topD": 13.5,
+      "bottomD": 12,
+      "h": 4.9
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "e8f84bb0-e162-4d98-9fbd-e2e6bbe378dd",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "黑色波紋帶蓋吐司盒",
+    "shape": "rect",
+    "dims": {
+      "topL": 21.3,
+      "topW": 12.2,
+      "botL": 21.3,
+      "botW": 12.2,
+      "h": 11.5
+    },
+    "note": "WK9287;450g(12兩)半條;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "eaaf9a37-1a22-415a-9713-4d253fa4980a",
+    "brand": "三能",
+    "volume": 45,
+    "note": "SN60615;蛋塔造型,單顆容積",
+    "count": 5,
+    "name": "蛋塔模-5入(陽極) 7×3.9cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "ee42df9a-79a7-482e-af44-1e1f0e0ceea4",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色13吋加深長方盤",
+    "shape": "rect",
+    "dims": {
+      "topL": 34.6,
+      "topW": 24.7,
+      "botL": 34.6,
+      "botW": 24.7,
+      "h": 6
+    },
+    "note": "WK9041;874g,適合水浴法;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "ee68f87b-a118-42c4-8909-94b1620ee56e",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN6861",
+    "count": 1,
+    "name": "乳酪蛋糕模(陽極)",
+    "shape": "rect",
+    "dims": {
+      "topL": 21.4,
+      "topW": 10,
+      "botL": 21.4,
+      "botW": 10,
+      "h": 5.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "ee99c0c0-d95f-4864-8566-cfb6394b2fee",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "金色8吋活動圓模",
+    "shape": "round",
+    "dims": {
+      "topD": 21.8,
+      "bottomD": 21.8,
+      "h": 7.4
+    },
+    "note": "WK9053;重型碳鋼,抗扭曲捲邊;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "ef6424fb-cb94-4662-887c-fe69cebaaf62",
+    "brand": "三能",
+    "volume": 1100,
+    "note": "SN2413;麵糰200g",
+    "count": 1,
+    "name": "牛型土司盒",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f105f82b-3823-440f-b786-1b69985a5b90",
+    "brand": "三能",
+    "volume": 50,
+    "note": "SN60645;蛋塔造型,單顆容積",
+    "count": 5,
+    "name": "蛋塔模-5入(陽極) 7.2×4.3cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f1d0cee8-ef5e-48c1-af50-e8b4835ed7a1",
+    "brand": "Chefmade 學廚",
+    "volume": null,
+    "dataSource": "web",
+    "count": 1,
+    "name": "中號2磅長方不沾模",
+    "shape": "rect",
+    "dims": {
+      "topL": 24.3,
+      "topW": 14.6,
+      "botL": 24.3,
+      "botW": 14.6,
+      "h": 6.6
+    },
+    "note": "WK9039;2磅容量;外部最大尺寸,非內徑,容積為粗估",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T14:45:18.846Z",
+    "updatedAt": "2026-07-09T14:45:18.846Z"
+  },
+  {
+    "_id": "f41c34f6-bc19-4fae-a35b-414eef8f0bda",
+    "brand": "三能",
+    "volume": 180,
+    "note": "SN2101;階梯造型",
+    "count": 1,
+    "name": "跳箱土司盒(50g)",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f4201c08-42ef-4c97-88bd-984edd0ec38e",
+    "brand": "三能",
+    "volume": 1800,
+    "note": "SN2331;麵糰440g",
+    "count": 1,
+    "name": "房屋低糖健康土司盒 大",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f45bd06a-13db-4885-a965-1f543c27b24a",
+    "brand": "三能",
+    "volume": 105,
+    "note": "SN62535;花型造型,單顆容積",
+    "count": 5,
+    "name": "小花蛋糕模-5入(陽極) Ø5.4cm",
+    "shape": "other",
+    "dims": {},
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f4b2b18f-280a-4e11-8542-ce4d3364154c",
+    "brand": "三能",
+    "volume": 1880,
+    "note": "SN6823",
+    "count": 1,
+    "name": "咕咕霍夫模(陽極) 18cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 17.7,
+      "bottomD": 17.7,
+      "h": 9.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f5efac11-45af-441d-9c1d-4b6ab34cf5ff",
+    "brand": "三能",
+    "volume": 100,
+    "note": "MT-340417",
+    "count": 1,
+    "name": "卡娜蕾銅模-大(MT)",
+    "shape": "round",
+    "dims": {
+      "topD": 5.3,
+      "bottomD": 5.3,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f7708c58-791e-40d4-a715-4be1b583e698",
+    "brand": "三能",
+    "volume": 1552,
+    "note": "SN2303",
+    "count": 1,
+    "name": "圓土司盒(375g)",
+    "shape": "log",
+    "dims": {
+      "d": 8.3,
+      "length": 28.7
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f89fe07b-8cd3-48c5-84d1-1ca361e08757",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN5135",
+    "count": 1,
+    "name": "12\"固定方型蛋糕模(1000不沾)",
+    "shape": "square",
+    "dims": {
+      "topW": 30.5,
+      "botW": 30.5,
+      "h": 6
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f8c9ccb8-9c51-4eaf-9950-93320098d0cf",
+    "name": "圓塔模-5入(陽極) 7.5cm",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 7.5,
+      "h": 1.8
+    },
+    "volume": null,
+    "note": "SN62435;適用壓模SN4202",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "f8d00a1e-4514-4198-aed5-c83003bad57f",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN66015",
+    "count": 5,
+    "name": "海綿盒-5入(陽極)",
+    "shape": "rect",
+    "dims": {
+      "topL": 9.6,
+      "topW": 6.6,
+      "botL": 9.6,
+      "botW": 6.6,
+      "h": 4
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "fa1781b7-4f0d-4edc-a2b6-abb83ff3dd4e",
+    "brand": "三能",
+    "volume": 550,
+    "note": "SN5213;中柱高15.3cm(高於外壁),容積為扣中柱後實測值",
+    "count": 1,
+    "name": "4\"活動日式戚風蛋糕模",
+    "shape": "tube",
+    "dims": {
+      "topD": 10.2,
+      "bottomD": 10,
+      "h": 8.5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "fccd9920-9788-46ce-8701-2a141cf42bf5",
+    "brand": "三能",
+    "volume": 380,
+    "note": "SN6831",
+    "count": 1,
+    "name": "空心圓模(陽極) 11cm",
+    "shape": "tube",
+    "dims": {
+      "topD": 11,
+      "bottomD": 11,
+      "h": 5
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "ff196c3b-e431-4339-b65c-8e222479fd50",
+    "name": "7cm圓塔模-5入(1000不沾)",
+    "brand": "三能",
+    "count": 5,
+    "shape": "tart",
+    "dims": {
+      "d": 7,
+      "h": 2.5
+    },
+    "volume": null,
+    "note": "SN64085",
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:07:23.209Z",
+    "updatedAt": "2026-07-09T13:07:23.209Z",
+    "dataSource": "catalog"
+  },
+  {
+    "_id": "ff8ec191-2619-464e-aa81-284eb556ada6",
+    "brand": "三能",
+    "volume": null,
+    "note": "SN2099",
+    "count": 1,
+    "name": "130g土司盒-本體",
+    "shape": "rect",
+    "dims": {
+      "topL": 14.1,
+      "topW": 8.1,
+      "botL": 12.5,
+      "botW": 6.5,
+      "h": 4.8
+    },
+    "deletedAt": null,
+    "createdAt": "2026-07-09T13:39:17.306Z",
+    "updatedAt": "2026-07-09T13:39:17.306Z",
+    "dataSource": "catalog"
+  }
+]

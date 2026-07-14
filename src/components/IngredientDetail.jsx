@@ -38,12 +38,15 @@ export default function IngredientDetail({ ing, RCP, googleUser, onEdit, onDelet
             style={{ background: catColor }} />
           {ing.category || '未分類'}
         </span>
-        {editable && (
-          <span className="ml-auto flex gap-2">
+        <span className="ml-auto flex gap-2">
+          <button className="btn btn-sm" onClick={() => navigate(`/ing/${ing._id}/history`)}>◷ 資料歷史{ing.history?.length ? `(${ing.history.length})` : ''}</button>
+          {editable && (
+            <>
             <button className="btn btn-sm" onClick={() => onEdit(ing._id)}>✎ 編輯</button>
             <button className="btn btn-sm btn-danger" onClick={() => onDelete(ing._id)}>刪除</button>
-          </span>
-        )}
+            </>
+          )}
+        </span>
       </div>
 
       <div className="mt-5 grid max-w-4xl gap-x-10 gap-y-6 md:grid-cols-2">
@@ -88,6 +91,8 @@ export default function IngredientDetail({ ing, RCP, googleUser, onEdit, onDelet
               <tr><td>可能含有</td><td>{(ing.mayContain || []).join('、') || '—'}</td></tr>
               {ing.subIngredients && <tr><td>成分(照包裝)</td><td className="text-[13px]">{ing.subIngredients}</td></tr>}
               <tr><td>標示登記日</td><td>{dateOnly(ing.labelDate) || '—'}</td></tr>
+              <tr><td>查核狀態</td><td>{({ verified: '已查核', needs_review: '需要複核', outdated: '可能已過期', pending: '待確認' })[ing.verification?.status] || '待確認'}</td></tr>
+              <tr><td>最後查核日</td><td>{dateOnly(ing.verification?.latestVerifiedAt) || '—'}</td></tr>
             </tbody>
           </table>
         </section>

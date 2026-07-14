@@ -8,7 +8,11 @@
     "note": "",
     "steps": [],
     "bakes": [
-      "170°C 30~40分"
+      {
+        "temp": "170°C",
+        "time": "30~40分",
+        "note": ""
+      }
     ],
     "links": [],
     "items": [
@@ -80,11 +84,11 @@
     ],
     "sortOrder": 160,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "07dbbb16-6e74-440c-aaef-0b9f301d411b",
@@ -150,11 +154,11 @@
     ],
     "sortOrder": 80,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "1c926301-67ca-4a10-9b9e-18ad2add26fb",
@@ -235,11 +239,12 @@
     ],
     "sortOrder": 180,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "moldId": "71812f3f-6941-4c56-a39a-40e1715d045e",
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "27f106b9-4d54-4707-ae87-af53283a8171",
@@ -295,11 +300,11 @@
     ],
     "sortOrder": 100,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "4a83e050-0c26-4364-ab97-52ca9a3a7952",
@@ -310,8 +315,16 @@
     "note": "",
     "steps": [],
     "bakes": [
-      "70°C 20分鐘結皮",
-      "150-160°C 16分鐘"
+      {
+        "temp": "70°C",
+        "time": "20分鐘",
+        "note": "結皮"
+      },
+      {
+        "temp": "150-160°C",
+        "time": "16分鐘",
+        "note": ""
+      }
     ],
     "links": [
       {
@@ -358,11 +371,11 @@
     ],
     "sortOrder": 70,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "55d24a85-464c-4813-8236-1016ea1a857d",
@@ -370,7 +383,7 @@
     "servings": 49,
     "category": "餅乾常溫",
     "price": null,
-    "note": "方形模21.5cm",
+    "note": "Chefmade WK9076 方形模28.6cm",
     "steps": [],
     "bakes": [],
     "links": [],
@@ -403,11 +416,12 @@
     ],
     "sortOrder": 60,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "moldId": "568cee6d-3d28-447f-8b19-6faac0f2641c",
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "6150234a-5424-41d1-9637-8f57b1ac961c",
@@ -415,7 +429,7 @@
     "servings": 12,
     "category": "餅乾常溫",
     "price": 80,
-    "note": "方形模21.5cm",
+    "note": "Chefmade WK9076 方形模28.6cm",
     "steps": [],
     "bakes": [],
     "links": [
@@ -493,11 +507,12 @@
     ],
     "sortOrder": 10,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "moldId": "568cee6d-3d28-447f-8b19-6faac0f2641c",
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "67d3f3ca-1c27-4165-9a8c-a268334f1b32",
@@ -543,11 +558,11 @@
     ],
     "sortOrder": 50,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-14T07:55:10.835Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": "2026-07-14T07:55:10.835Z",
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "77d775ed-9b1f-40b0-9848-b96a83f5e776",
@@ -588,11 +603,11 @@
     ],
     "sortOrder": 200,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "786ed5e6-137c-4299-a005-3de0bbe9e972",
@@ -628,16 +643,16 @@
     ],
     "sortOrder": 90,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "86fa8a6e-fb98-444a-bc3c-772c61892dfa",
     "name": "雪球餅乾",
-    "servings": 35,
+    "servings": 20,
     "category": "餅乾常溫",
     "price": null,
     "note": "",
@@ -655,7 +670,11 @@
       "在放涼後的雪球上再篩一些糖粉，就可以上桌了"
     ],
     "bakes": [
-      "160˚C預熱 16~18分鐘"
+      {
+        "temp": "160°C",
+        "time": "16~18分鐘",
+        "note": "預熱後烤"
+      }
     ],
     "links": [
       {
@@ -702,11 +721,24 @@
     ],
     "sortOrder": 40,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-14T08:07:30.297Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [
+      {
+        "method": "常溫避光",
+        "days": "1~2週"
+      },
+      {
+        "method": "冷凍",
+        "days": "1~3月 (放常溫有水氣再重新裹糖粉)"
+      }
+    ],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com",
+    "mine": true,
+    "moldId": null,
+    "ownerName": "jim",
+    "public": true
   },
   {
     "_id": "8b5f9b26-2f36-4508-8a55-0f36ab632921",
@@ -714,11 +746,19 @@
     "servings": 12,
     "category": "餅乾常溫",
     "price": 80,
-    "note": "方形模21.5cm",
+    "note": "Chefmade WK9076 方形模28.6cm",
     "steps": [],
     "bakes": [
-      "餅乾層 180°C 23分",
-      "奶油層 170°C 40分"
+      {
+        "temp": "180°C",
+        "time": "23分",
+        "note": "餅乾層"
+      },
+      {
+        "temp": "170°C",
+        "time": "40分",
+        "note": "奶油層"
+      }
     ],
     "links": [
       {
@@ -795,11 +835,77 @@
     ],
     "sortOrder": 20,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "moldId": "568cee6d-3d28-447f-8b19-6faac0f2641c",
+    "ownerId": "shccgxqp@gmail.com"
+  },
+  {
+    "_id": "939fa902-d0dc-4386-98f6-8ce488578010",
+    "bakes": [],
+    "category": "蛋糕冷藏",
+    "createdAt": "2026-07-11T11:49:19.574Z",
+    "deletedAt": "2026-07-11T12:47:11.646Z",
+    "finishedGrams": null,
+    "items": [
+      {
+        "ingredientId": "47779db8-dd96-4357-a42e-4328b1e07c34",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "92dd96c0-8b4e-406a-a3b2-1697a780b308",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 53,
+        "layer": ""
+      },
+      {
+        "ingredientId": "b6a6d684-fa5a-4f71-967c-3ddd85fca821",
+        "grams": 340,
+        "layer": ""
+      },
+      {
+        "ingredientId": "ed2b5b52-0dd1-4b17-953f-e87ac60c4a31",
+        "grams": 120,
+        "layer": ""
+      },
+      {
+        "ingredientId": "14eb8d38-2b47-4572-aa65-b04fbf3dd32d",
+        "grams": 30,
+        "layer": ""
+      },
+      {
+        "ingredientId": "9211cc65-4f4e-49f3-9f17-6cff9aee984d",
+        "grams": 100,
+        "layer": ""
+      },
+      {
+        "ingredientId": "3046a5e0-59d1-44af-af92-4490426b35e9",
+        "grams": 3,
+        "layer": ""
+      }
+    ],
+    "links": [
+      {
+        "title": "食不相瞞 #96 義式經典提拉米蘇 (YouTube)",
+        "url": "https://www.youtube.com/watch?v=IUt0l_QUGR0"
+      }
+    ],
+    "name": "提拉米蘇(複製)",
+    "note": "",
+    "ownerId": "shccgxqp@gmail.com",
+    "price": 100,
+    "servings": 8,
+    "sortOrder": 121,
+    "steps": [],
+    "storage": [],
+    "updatedAt": "2026-07-13T07:40:52.043Z"
   },
   {
     "_id": "aa8bf531-7b53-477f-a890-7e9e2462d8d4",
@@ -855,11 +961,11 @@
     ],
     "sortOrder": 110,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "b361bf59-5710-427c-a992-2839d320dd76",
@@ -929,83 +1035,122 @@
     ],
     "sortOrder": 140,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "b9a5a8e7-815f-4f5d-8d3e-5be8e02ba246",
-    "name": "柳丁磅蛋糕",
+    "name": "抹茶柳丁磅蛋糕",
     "servings": 16,
-    "category": "蛋糕冷藏",
+    "category": "蛋糕冷凍",
     "price": 70,
-    "note": "",
-    "steps": [],
+    "note": "冷凍吃像冰淇淋，此模具是當作夾心蛋糕製作，單純蛋糕體就很好吃 ，用正常模具也可以",
+    "steps": [
+      "烤箱預熱與削皮： 烤箱預熱 170°C。將柳丁 300g 洗淨擦乾，刨下最外層的橙色皮屑（避開白色部分）切碎備用。接著將柳丁去皮去籽、切成小丁。",
+      "均質打成柳丁泥： 將切好的柳丁丁、沙拉油 50g、細砂糖 270g、全蛋 165g 以及步驟 1 的柳丁皮屑一同放入深盆中，使用均質機徹底打成細緻無顆粒的液狀果泥。",
+      "粉類混合過篩： 將鑽石低筋麵粉 240g、泡打粉 10g、抹茶粉 12g 倒入另一個盆中，混合均勻並使用細篩網過篩。",
+      "攪拌混合麵糊： 將過篩後的粉類分兩次加入步驟 2 的柳丁泥中，改用橡皮刮刀以切拌、翻拌的方式混合至完全看不到粉粒即可，切勿過度攪拌以免出筋。",
+      "入模震動烘烤： 將麵糊倒入磅蛋糕模具中（約 8 分滿），在桌面上用力震敲 2-3 下排出內部大氣泡。送入預熱 170°C 的烤箱烘烤 40 分鐘，至竹籤插入中心無濕麵糊沾黏即可出爐。",
+      "打發可爾必思內餡： 烘烤期間，將冷藏的艾恩摩爾動物性鮮奶油 480g 與可爾必思 120g 倒入盆中，用電動打蛋器打發至質地堅挺、不流動的 9 分發狀態，完成後立刻送冰箱冷藏備用。",
+      "融化白巧克力： 將白鈕扣巧克力 70g 放入耐熱碗中，利用微波爐分次微波 10 秒、隔水加熱或利用烤箱餘溫將其完全融化，裝入擠花袋中備用。",
+      "熬煮刷面酒糖水： 小鍋內依照「水 20g、細砂糖 10g、蘭姆酒 10g」（比例 2:1:1）的份量，先將水與糖煮滾至融化，關火後倒入蘭姆酒拌勻放涼。",
+      "出爐刷面與放涼： 蛋糕出爐後，趁熱用烘焙刷將步驟 8 的酒糖水均勻刷在蛋糕表面與四周以鎖住濕氣，接著將蛋糕完全放涼。",
+      "組裝夾心與頂部裝飾： 蛋糕放涼後切成需要的大小並橫切對切。在切面上刷一層酒糖水，中間塗上冷藏的可爾必思鮮奶油並蓋上另一半。接著在表面擠上白巧克力線條，並趁巧克力尚未凝固前，灑上預留的柳丁皮屑。 依分量切片後用保鮮膜個別包緊，送入冷凍庫凍硬，即可隨時享受冰淇淋般的極致口感！"
+    ],
     "bakes": [
-      "170°C 40分"
+      {
+        "temp": "170°C",
+        "time": "40分",
+        "note": ""
+      }
     ],
     "links": [],
     "items": [
       {
         "ingredientId": "d27b8d79-54bf-4178-814b-c3b94f7eb2a6",
         "grams": 300,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "c446f44c-3976-498d-ada2-4a8d4e6f7fc8",
         "grams": 165,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
-        "grams": 280,
-        "layer": ""
+        "grams": 270,
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "6bc77f45-f1ae-4f22-85f2-f17e6352b44f",
         "grams": 50,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
         "grams": 240,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "3a83d6c5-80e3-4f05-9441-f0fc22a7ae5a",
         "grams": 10,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "d714c64b-e1d8-4c5b-9c41-99eda133b460",
         "grams": 480,
-        "layer": ""
+        "layer": "內餡"
       },
       {
         "ingredientId": "65a4ab22-fe5e-4f54-8101-2ab6dcbd71c4",
         "grams": 12,
-        "layer": ""
+        "layer": "蛋糕體"
       },
       {
         "ingredientId": "489e8fd6-903e-4bdf-b0af-52410f157717",
         "grams": 120,
-        "layer": ""
+        "layer": "內餡"
       },
       {
         "ingredientId": "d41b55e1-8d9a-450a-bdeb-ae14596a4782",
         "grams": 70,
-        "layer": ""
+        "layer": "擠花造型"
+      },
+      {
+        "ingredientId": "14eb8d38-2b47-4572-aa65-b04fbf3dd32d",
+        "grams": 10,
+        "layer": "酒糖水"
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 10,
+        "layer": "酒糖水"
+      },
+      {
+        "ingredientId": "6f010dfc-d7ed-4b4f-99c1-a8d8d2efb235",
+        "grams": 20,
+        "layer": "酒糖水"
       }
     ],
     "sortOrder": 150,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [
+      {
+        "method": "冷凍",
+        "days": "21 天"
+      }
+    ],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com",
+    "mine": true,
+    "moldId": "6a6888fc-318f-474f-b7e7-c938533c5942",
+    "ownerName": "jim",
+    "public": true
   },
   {
     "_id": "bc433d48-c0c1-4037-bcbf-185cc102f25b",
@@ -1115,11 +1260,11 @@
     ],
     "sortOrder": 170,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "d71f656a-2bf3-4eab-921b-9a109fbcc198",
@@ -1129,19 +1274,31 @@
     "price": 15,
     "note": "",
     "steps": [
-      "為了避免奶油融化,乾性材料(麵粉、糖粉、鹽、杏仁粉,以及紅茶口味的紅玉紅茶粉)秤在一起,進冷凍庫冰30分鐘以上。奶油切成小塊後,淋上香草醬、鮮奶油,進冷藏室冰30分鐘以上。(Pro Tip:奶油不要冰冷凍庫!溫度太低反而會讓麵團無法成團)",
-      "食物處理機內先加入乾性材料運轉30秒混合均勻,加入奶油碗,麵團一開始會呈現砂礫狀,不要擔心它不成團,繼續打2分鐘左右,當麵團開始成團後立即停止。",
-      "放在保鮮膜上來回整形成緊密的麵團(避免中心有孔洞),直徑約4cm的長條狀,移動到烘焙紙捲起來用刮板收成圓形。烘焙紙兩端扭轉收起,放進冷凍庫內冰兩小時以上。",
-      "不用退冰,直接切成一片1.5cm厚度,如果餅乾有變形的話這時候稍微在桌面滾一滾恢復圓形,用手捏著餅乾中心邊緣在粗砂糖的碗內滾一圈,沾滿糖粒。",
-      "烤盤上放洞洞矽膠墊,擺上餅乾,放中層以160/150度烤13分鐘,轉180/170度續烤10分鐘直到表面微微上色,總共烘烤23分鐘,出爐,完全放涼再移動至烤盤架上。(Pro Tip:山崎烤箱烤溫平均中途不需掉頭;若烤箱上色不均,第一階段結束請180度掉頭)"
+      "為了避免奶油融化,乾性材料(麵粉、糖粉、鹽、杏仁粉,以及紅茶口味的紅玉紅茶粉)秤在一起,進冷凍庫冰30分鐘以上",
+      "奶油切成小塊後,淋上香草醬、鮮奶油,進冷藏室冰30分鐘以上(Pro Tip:奶油不要冰冷凍庫!溫度太低反而會讓麵團無法成團)",
+      "食物處理機內先加入乾性材料,運轉30秒混合均勻",
+      "加入奶油碗繼續打約2分鐘:麵團一開始會呈現砂礫狀,不要擔心它不成團,當麵團開始成團後立即停止",
+      "放在保鮮膜上來回整形成緊密的麵團(避免中心有孔洞),直徑約4cm的長條狀",
+      "移動到烘焙紙捲起來,用刮板收成圓形;烘焙紙兩端扭轉收起,放進冷凍庫內冰兩小時以上",
+      "不用退冰,直接切成一片1.5cm厚度;如果餅乾有變形,稍微在桌面滾一滾恢復圓形",
+      "用手捏著餅乾中心,邊緣在粗砂糖的碗內滾一圈,沾滿糖粒",
+      "烤盤上放洞洞矽膠墊,擺上餅乾,放中層以160/150度烤13分鐘,轉180/170度續烤10分鐘直到表面微微上色(總共23分鐘);出爐完全放涼再移動至烤盤架上(Pro Tip:山崎烤箱烤溫平均中途不需掉頭;若烤箱上色不均,第一階段結束請180度掉頭)"
     ],
     "bakes": [
-      "中層 160/150°C 13分鐘",
-      "180/170°C 續烤10分鐘(共23分鐘)"
+      {
+        "temp": "160/150°C",
+        "time": "13分鐘",
+        "note": "中層"
+      },
+      {
+        "temp": "180/170°C",
+        "time": "10分鐘",
+        "note": "續烤,總共23分鐘"
+      }
     ],
     "links": [
       {
-        "title": "厚燒奶油酥餅 / Galette au beurre — ciao.kitchen",
+        "title": "厚燒奶油酥餅",
         "url": "https://ciao.kitchen/thick-butter-cookies/"
       }
     ],
@@ -1189,11 +1346,89 @@
     ],
     "sortOrder": 30,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com",
+    "moldId": null,
+    "public": true
+  },
+  {
+    "_id": "d9a35e1b-2748-4992-926b-270ff906dc9a",
+    "bakes": [
+      {
+        "temp": "170°C",
+        "time": "10分鐘",
+        "note": ""
+      }
+    ],
+    "category": "餅乾常溫",
+    "createdAt": "2026-07-12T14:12:20.863Z",
+    "deletedAt": null,
+    "finishedGrams": null,
+    "items": [
+      {
+        "ingredientId": "685038fd-8f73-4166-b464-42f8e5bf0bee",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "d8b3cae2-b974-4b9d-adb4-97036cde6e16",
+        "grams": 37,
+        "layer": ""
+      },
+      {
+        "ingredientId": "303e0aeb-c92e-49b2-bd65-76e4acecd1da",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "afb9235b-7be2-46b4-98da-549da45d3917",
+        "grams": 40,
+        "layer": ""
+      },
+      {
+        "ingredientId": "a2915b6d-61b1-4fad-bd08-0f36c65b1925",
+        "grams": 2,
+        "layer": ""
+      },
+      {
+        "ingredientId": "90cd9f6d-d33a-450d-ba3f-01a03dd00b27",
+        "grams": 2,
+        "layer": ""
+      }
+    ],
+    "links": [
+      {
+        "title": "食不相瞞貓舌頭餅乾",
+        "url": "https://www.youtube.com/watch?v=8VkWNc2O9VA"
+      }
+    ],
+    "moldId": null,
+    "name": "貓舌頭餅乾(藍朵夏)",
+    "note": "",
+    "ownerId": "shccgxqp@gmail.com",
+    "price": null,
+    "public": true,
+    "servings": 18,
+    "sortOrder": 210,
+    "steps": [
+      "先將奶油取出於室溫下回溫到很柔軟(但不要融化成液體狀)",
+      "將奶油持續攪拌到白色，有點像是美乃滋的質感。",
+      "將白砂糖分兩次加入奶油，充分攪拌均勻。",
+      "接著將一半的蛋白加入，攪拌均勻。",
+      "與蛋白拌勻後，加入鹽與香草精，拌勻。",
+      "加入一半的低筋麵粉(20g)，攪拌到看不到粉粉。",
+      "再次將剩餘的一半的蛋白加入，拌勻後，把剩餘的麵粉也加入(做法跟之前都一樣)。",
+      "將拌好的麵糊放入擠花袋中(花嘴為10mm)。",
+      "以擠花袋在平板烤盤上，擠出7公分長的條狀麵團(擠成圓形的也可以)，彼此間隔 3 公分。",
+      "烤箱預熱 170° C(記得預熱時烤箱內不要放置任何烤盤)。",
+      "把貓舌頭送入烤箱烤9~10分鐘。",
+      "烤好後，立即從烤箱取出，並從烤盤上移到網架上放涼(收工囉)。"
+    ],
+    "storage": [],
+    "updatedAt": "2026-07-13T07:37:51.607Z"
   },
   {
     "_id": "eaeb3c44-d70e-4cd9-8eaf-635077ecbcb1",
@@ -1219,11 +1454,11 @@
     ],
     "sortOrder": 190,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com"
   },
   {
     "_id": "ecd72b68-085b-432a-8364-cef52a1b59dd",
@@ -1231,9 +1466,31 @@
     "servings": 8,
     "category": "蛋糕冷藏",
     "price": 70,
-    "note": "東京No.1起司蛋糕 Mr. Cheesecake 米其林三星主廚的夢幻甜點",
-    "steps": [],
-    "bakes": [],
+    "note": "東京No.1起司蛋糕 Mr. Cheesecake 改成平民超市版本",
+    "steps": [
+      "提早自製酸奶油（關鍵步驟）：\n取一小碗，倒入動物性鮮奶油 180g 與 檸檬汁 30g，用湯匙攪拌均勻。在室溫下靜置 15-30 分鐘，液體會逐漸凝固成像濃稠優格的「固態酸奶油」，備用。\n(備註：此步驟能完美解決麵糊過稀的問題，並提供軟心起司蛋糕核心的酸香與濃郁度)",
+      "烤箱預熱與環境準備：\n將烤箱調整至 180°C 預熱。準備一個 6 吋圓形模具，裡面仔細鋪好烘焙紙。同時燒一鍋熱水，留作最後隔水烘烤（水浴法）使用。",
+      "隔水軟化融化乳酪：\n準備一個大打發盆，放入菲力鮮奶油乳酪 225g 和細砂糖 100g。將盆子架在熱水鍋上隔水加熱，用手動打蛋器持續攪打，直到乳酪完全軟化、細砂糖融化，質地呈現非常光滑絲絨狀後，即可離開熱水備用。",
+      "調製酸香優格基底：\n在另一個碗中，放入步驟 1 自製的酸奶油（全部）、希臘式優格 50g，如果有剩餘的 9g 檸檬汁也在此時加入，使用橡皮刮刀或手動打蛋器將它們完全攪拌均勻。",
+      "分次乳化全蛋液：\n將全蛋液 110g（約 2 顆蛋）分 3 次慢慢添加到步驟 4 的優格糊中。每次加入後，都必須使用手動打蛋器充分攪拌，確認蛋液完全被吸收、乳化均勻後，才能再加下一次。",
+      "拌入玉米粉：\n接著將玉米粉 20g 篩入步驟 5 的蛋液糊中，用打蛋器輕柔攪拌至完全看不到粉粒，質地均勻細緻。",
+      "加熱香料巧克力鮮奶油：\n拿一個小鍋，倒入剩餘的動物性鮮奶油 100g、白鈕扣巧克力 50g 以及 莫諾尼香草醬 3g。開中火加熱，期間要稍微攪拌讓白巧克力完全融化。當看到液體邊緣開始冒出微小泡泡（即將沸騰）時，立刻關火移開。",
+      "融合兩大核心麵糊：\n將步驟 7 剛熱好的香草巧克力鮮奶油，慢慢且分次倒入步驟 3 的乳酪糊中，用打蛋器攪拌均勻。",
+      "混合最終麵糊並過篩：\n接著將步驟 6 的蛋液優格粉糊，倒入步驟 8 的起司糊中，徹底攪拌混合至完全光滑。為了追求極致細膩的軟心口感，務必將整盆麵糊用細篩網過篩 1-2 次，濾掉未融化的起司碎渣，然後倒入準備好的模具中。",
+      "水浴烘烤與冷藏熟成：\n將模具放入一個深烤盤中，在烤盤內注入約 2-3 公分高的熱水。送入已預熱 180°C 的烤箱烘烤 25 分鐘，隨即將溫度降至 150°C 繼續烘烤 20 分鐘。出爐放涼後，連同模具送入冰箱冷藏至少 4 小時。"
+    ],
+    "bakes": [
+      {
+        "temp": "180°C",
+        "time": "25",
+        "note": ""
+      },
+      {
+        "temp": "150°C",
+        "time": "20",
+        "note": "(烤完放涼才能進冰箱)"
+      }
+    ],
     "links": [
       {
         "title": "Mr. Cheesecake 東京No.1起司蛋糕 (YouTube)",
@@ -1289,11 +1546,20 @@
     ],
     "sortOrder": 130,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [
+      {
+        "method": "冷凍",
+        "days": "21 天"
+      }
+    ],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com",
+    "mine": true,
+    "moldId": null,
+    "ownerName": "jim",
+    "public": true
   },
   {
     "_id": "fef0e3a7-19dc-4ca4-bef1-d473ab1cd712",
@@ -1301,12 +1567,23 @@
     "servings": 8,
     "category": "蛋糕冷藏",
     "price": 100,
-    "note": "",
-    "steps": [],
+    "note": "參考國內國外10部以上總結出來",
+    "steps": [
+      "預先打發鮮奶油： 將冷藏的鮮奶油（建議量約 100g - 150g）倒入盆中，打發至有明顯紋路、約 7 分發（質地像濃稠優格，晃動時會微微流動即可），完成後先放回冰箱冷藏備用。",
+      "準備咖啡酒液： 準備一個寬口淺盤（口徑需能容納整支手指餅乾），倒入濃縮咖啡與 15g 蘭姆酒混合均勻，放涼備用。",
+      "攪打蛋黃： 準備一個耐熱的打發盆，加入 2 個新鮮蛋黃、細砂糖、以及 15g 蘭姆酒，用手動打蛋器攪打至質地濃稠且顏色泛白。",
+      "隔水加熱殺菌： 起一鍋熱水（水量不要碰觸到打發盆底部），水微滾後轉小火。將打發盆架在鍋上隔水加熱，期間必須持續不停地攪打，防止蛋黃過熱結塊。",
+      "離火攪打降溫： 持續攪打至糖完全融化、蛋黃糊溫度達到 70°C 即可移開火源。離火後需要繼續攪打幫助散熱，直到蛋黃糊完全降至室溫。",
+      "混合馬斯卡邦： 將馬斯卡邦起司加入降溫後的蛋黃糊中，使用電動攪打器以最低速混勻。一旦混合到質地光滑就要立刻停手，避免過度攪拌導致油水分離。",
+      "翻拌鮮奶油： 從冰箱取出步驟 1 打好的鮮奶油，分兩次加入起司糊中。改用橡皮刮刀以「翻拌」的方式輕柔混合均勻，即完成最終的蓬鬆內餡。",
+      "手指餅乾鋪底： 將手指餅乾雙面快速浸入蘭姆酒咖啡液中（停留時間不超過 1 秒，避免餅乾過濕軟爛），隨即平鋪在容器底部，並用烘焙刷沾少許咖啡液補刷在沒浸潤到的死角。",
+      "內餡與餅乾交疊： 在餅乾上鋪上一層厚厚的馬斯卡邦鮮奶油內餡，抹平後，再重複一次「鋪餅乾、刷咖啡、堆內餡」的動作，以一層餅乾、一層內餡的方式填滿容器。",
+      "冷藏與裝飾： 完成後蓋上保鮮膜，送入冰箱冷藏至少 6 小時（冷藏 24 小時風味更佳）。享用前一刻，在表面均勻灑上一層無糖可可粉即可。"
+    ],
     "bakes": [],
     "links": [
       {
-        "title": "食不相瞞 #96 義式經典提拉米蘇 (YouTube)",
+        "title": "義式經典提拉米蘇 (YouTube)",
         "url": "https://www.youtube.com/watch?v=IUt0l_QUGR0"
       }
     ],
@@ -1354,10 +1631,19 @@
     ],
     "sortOrder": 120,
     "createdAt": "2026-07-08T06:23:51.032Z",
-    "updatedAt": "2026-07-08T06:50:05.349Z",
+    "updatedAt": "2026-07-13T07:37:51.607Z",
     "finishedGrams": null,
-    "shelfLifeDays": null,
-    "storage": "",
-    "deletedAt": null
+    "storage": [
+      {
+        "method": "冷凍",
+        "days": "21 天"
+      }
+    ],
+    "deletedAt": null,
+    "ownerId": "shccgxqp@gmail.com",
+    "mine": true,
+    "moldId": null,
+    "ownerName": "jim",
+    "public": true
   }
 ]

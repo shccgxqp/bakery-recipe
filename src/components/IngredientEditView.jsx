@@ -16,6 +16,23 @@ const NUT_FIELDS = [
   ['sodium', '鈉(mg)'],
 ]
 
+const SOURCE_TYPES = [
+  ['package_label', '實體包裝標示'],
+  ['manufacturer', '原廠／代理商'],
+  ['official_db', '政府公開資料庫'],
+  ['user_input', '使用者自行輸入'],
+  ['unknown', '尚未確認'],
+]
+
+const VERIFY_STATES = [
+  ['pending', '待確認'],
+  ['verified', '已查核'],
+  ['needs_review', '需要複核'],
+  ['outdated', '可能已過期'],
+]
+
+const newEvidence = () => ({ id: crypto.randomUUID(), type: 'package_label', scopes: ['identity', 'nutrition', 'ingredients', 'allergens'], title: '', url: '', reference: '', checkedAt: '', confidence: 'high' })
+
 /* 過敏原勾選群(含有 / 可能含有 共用) */
 function AllergenPicker({ list, value, onChange }) {
   const toggle = a =>
@@ -50,6 +67,8 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
   const [subIngredients, setSubIngredients] = useState(ing?.subIngredients || '')
   const [labelDate, setLabelDate] = useState(ing?.labelDate || '')
   const [note, setNote] = useState(ing?.note || '')
+  const [verification, setVerification] = useState(ing?.verification || { status: ing ? 'pending' : 'pending', latestVerifiedAt: '' })
+  const [evidence, setEvidence] = useState(ing?.evidence || [])
 
   /* 查重只在新增模式跑(編輯自己就是那筆,不用比) */
   const similar = useMemo(
@@ -82,6 +101,17 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
         subIngredients: subIngredients.trim(),
         labelDate: labelDate || null,
         note: note.trim(),
+        verification: {
+          status: verification.status || 'pending',
+          latestVerifiedAt: verification.latestVerifiedAt || null,
+        },
+        evidence: evidence
+          .map(item => ({
+            ...item,
+            title: item.title.trim(), url: item.url.trim(), reference: item.reference.trim(),
+            checkedAt: item.checkedAt || null,
+          }))
+          .filter(item => item.title || item.url || item.reference),
       }, priceInfo)
     } catch (err) {
       toast('儲存失敗:' + err.message, { type: 'error' })
@@ -192,6 +222,57 @@ export default function IngredientEditView({ ing, ING, allergenList, ingCatOrder
             <input value={note} onChange={e => setNote(e.target.value)} />
           </div>
         </div>
+
+        <section className="mt-5 border-t-2 border-ink pt-3">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h3 className="text-xs font-bold tracking-[.12em] text-ink-soft">資料查核與來源</h3>
+              <p className="mt-1 text-[12px] text-ink-soft">包裝商品優先填原廠、代理商或實體包裝；原型食材填衛福部資料庫。未確認就保留待確認，不猜測。</p>
+            </div>
+            <button type="button" className="btn btn-sm" onClick={() => setEvidence(items => [...items, newEvidence()])}>＋ 新增來源</button>
+          </div>
+
+          <div className="mt-3 grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">
+            <div className="field">
+              <label>查核狀態</label>
+              <select value={verification.status} onChange={e => setVerification(v => ({ ...v, status: e.target.value }))}>
+                {VERIFY_STATES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label>最後查核日</label>
+              <input type="date" value={verification.latestVerifiedAt || ''} onChange={e => setVerification(v => ({ ...v, latestVerifiedAt: e.target.value }))} />
+            </div>
+          </div>
+
+          {evidence.map((item, index) => (
+            <div key={item.id || index} className="mt-3 rounded-[--radius-sm] border border-line bg-paper/50 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[12px] font-bold text-ink-soft">來源 {index + 1}</span>
+                <button type="button" className="text-[12px] text-danger underline" onClick={() => setEvidence(items => items.filter((_, i) => i !== index))}>移除</button>
+              </div>
+              <div className="mt-2 grid grid-cols-1 gap-x-3.5 gap-y-2.5 sm:grid-cols-2">
+                <div className="field"><label>來源類型</label>
+                  <select value={item.type} onChange={e => setEvidence(items => items.map((x, i) => i === index ? { ...x, type: e.target.value } : x))}>
+                    {SOURCE_TYPES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                  </select>
+                </div>
+                <div className="field"><label>查核日</label>
+                  <input type="date" value={item.checkedAt || ''} onChange={e => setEvidence(items => items.map((x, i) => i === index ? { ...x, checkedAt: e.target.value } : x))} />
+                </div>
+                <div className="field sm:col-span-2"><label>來源名稱／頁面標題</label>
+                  <input value={item.title} placeholder="例：Isigny Sainte-Mère 無鹽奶油產品標示" onChange={e => setEvidence(items => items.map((x, i) => i === index ? { ...x, title: e.target.value } : x))} />
+                </div>
+                <div className="field sm:col-span-2"><label>來源網址(實體包裝可空)</label>
+                  <input type="url" value={item.url} placeholder="https://…" onChange={e => setEvidence(items => items.map((x, i) => i === index ? { ...x, url: e.target.value } : x))} />
+                </div>
+                <div className="field sm:col-span-2"><label>佐證編號／條碼／資料庫品項</label>
+                  <input value={item.reference} placeholder="例：包裝條碼或 TFDA 品項名稱" onChange={e => setEvidence(items => items.map((x, i) => i === index ? { ...x, reference: e.target.value } : x))} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
 
         <div className="mt-6 flex justify-end gap-2 border-t-2 border-ink pt-3">
           <button type="button" className="btn" onClick={cancel} disabled={saving}>取消</button>

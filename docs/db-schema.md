@@ -42,9 +42,41 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
   mayContain: [],               // 「可能含有」(產線交叉污染警語,照包裝抄)
   subIngredients: "",           // 包裝「成分」欄原文照抄(含添加物的合規寫法,
                                 //  如「膨脹劑(碳酸氫鈉)」),食譜「內容物」標示展開用
-  labelDate: null,              // 標示登記日 'YYYY-MM-DD':營養/成分是哪天從包裝抄的。
-                                //  廠商改配方 → 直接更新資料+更新此欄;歷史靠每日 git 備份
+  labelDate: null,              // 標示登記日 'YYYY-MM-DD':營養/成分是哪天從包裝抄的
   note: "",                     // 備註(購買通路…),選填
+
+  /* 資料來源與查核(v4.7.0):數值、成分、過敏原都必須可追溯。
+     包裝商品優先 package_label/manufacturer;原型食材優先 official_db;
+     不確定時 status:'pending'+per100g:null,不猜測或套用相似品。 */
+  verification: {
+    status: "verified",        // "pending" | "verified" | "needs_review" | "outdated"
+    latestVerifiedAt: "2026-07-15" // 最近人工核對日;null = 未查核
+  },
+  evidence: [{
+    id: "uuid…",               // 前端產生,只在本材料目前版本內唯一
+    type: "package_label",     // "package_label" | "manufacturer" | "official_db" |
+                                // "user_input" | "unknown"
+    scopes: ["identity", "nutrition", "ingredients", "allergens"],
+    title: "Isigny 無鹽奶油包裝營養標示", // 來源頁名或包裝描述
+    url: "https://…",          // 原廠/代理商/政府頁;實體包裝可為空字串
+    reference: "條碼或 TFDA 品項名稱", // 可空,用來鎖定同品項
+    checkedAt: "2026-07-15",   // 此來源的查核日
+    confidence: "high"         // "high" | "medium" | "pending"
+  }],
+
+  /* 僅供追溯的舊版(v4.7.0):伺服器管理,client 不可自行覆寫。任一公開參考資料
+     改變時,原本的資料自動封存至此。一般材料搜尋/選材/營養計算只讀根層目前值;
+     /ing/:id/history 才查看 history,避免同品項的新舊資料混在一起。 */
+  history: [{
+    id: "uuid…",
+    archivedAt: ISODate,
+    reason: "材料資料更新",
+    name: "依思尼 無鹽奶油", category: "乳製品", brand: "依思尼", spec: "",
+    per100g: { /* 舊版 8 項營養,或 null */ },
+    allergens: ["牛奶羊奶"], mayContain: [], subIngredients: "…",
+    labelDate: "2025-03-01", note: "", evidence: [/* 當時來源 */],
+    verification: { status: "verified", latestVerifiedAt: "2025-03-01" }
+  }],
 
   createdBy: "shccgxqp@gmail.com", // 帳號系統 phase 4(2026-07-10)加的;伺服器蓋章,
                                 //  不信任 client。建立者本人或站長(role:"owner")才能改/刪
@@ -253,6 +285,13 @@ db.recipes.createIndex({ name: 1 }, { unique: true, partialFilterExpression: { d
 `deletedAt: null`;之後可做「資源回收桶」介面還原。誤刪可救、同步時「刪除」
 不再是危險操作。client 在 upsert 裡夾帶的 `deletedAt` 會被伺服器剝除,
 不能用寫入偽造刪除狀態。
+
+### v4.7.0 既有材料回填
+
+部署來源／版本歷史功能後，執行一次 `node scripts/backfill-ingredient-provenance.mjs`。
+它會對**包含軟刪除資料**在內、還沒有新欄位的材料，僅補上
+`verification:{status:'pending',latestVerifiedAt:null}`、`evidence:[]`、`history:[]`；
+不會修改營養、成分、過敏原或既有來源資料。執行前仍須先完成備份。
 
 ## 三、API(Vercel Serverless Functions,`api/` 目錄;v4.0.0 全面 token 制)
 
