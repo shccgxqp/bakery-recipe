@@ -20,6 +20,13 @@ MongoDB Atlas(M0)+ Vercel Serverless Functions。
 
 ### `ingredients`(材料)
 
+> **v4.7.0 後續架構調整已拍板、尚未實作**：目前文件下方的 `per100g`/
+> `history` 是現行格式。材料正式改為多版本模型後，營養、成分、過敏原與來源將
+> 移至不可變的材料版本文件，食譜 `items` 加 `ingredientVersionId`；舊版可依
+> `lifecycle`/`availability` 仍提供選取。設計與遷移規則以
+> `docs/research/ingredient-versioning-decision.md` 為準，完成前不可將新查證資料
+> 批次覆寫目前材料。
+
 ```js
 {
   _id: "8b1f4c2e-…",            // 字串 UUID,前端產生
