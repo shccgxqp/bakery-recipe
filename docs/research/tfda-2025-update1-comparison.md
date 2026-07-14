@@ -5,7 +5,7 @@
 
 ## 檔案與比對方法
 
-- 使用者提供的本機檔：`食品營養成分資料庫2025版UPDATE1EXCEL(另開新視窗).xlsx`。
+- 原始依據檔已隨 repo 歸檔：[食品營養成分資料庫2025版UPDATE1EXCEL（另開新視窗）.xlsx](sources/食品營養成分資料庫2025版UPDATE1EXCEL(另開新視窗).xlsx)（2,037,712 bytes；SHA-256：`06AC8A9071B796B6AA4066E2A11B57105C2A0A1493C90C0F4B9CB976A55FC827`）。
 - 活頁簿名稱為「台灣食品成分表」；資料列明示全部數值為「每 100g 可食部分」。
 - 線上對照來源：[衛福部食藥署食品營養成分資料集（InfoId=20）](https://data.fda.gov.tw/opendata/exportDataList.do?InfoId=20&logType=5&method=ExportData)，以及其[政府資料開放頁](https://data.gov.tw/dataset/8543)。
 - 用「整合編號」逐筆比對，而非只以中文名稱比對。Excel 保存的是高精度分析值；公開 API 的 `每100克含量` 為顯示用四捨五入值。
